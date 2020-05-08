@@ -72,15 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Midl</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -98,6 +102,24 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <Midl>
+      <AdditionalMetadataDirectories>$(FrameworkSdkDir)References\10.0.19613.0\Windows.Foundation.FoundationContract\4.0.0.0</AdditionalMetadataDirectories>
+    </Midl>
+    <Midl>
+      <EnableWindowsRuntime>true</EnableWindowsRuntime>
+      <MetadataFileName>$(IntDir)$(ProjectName).winmd</MetadataFileName>
+      <AdditionalOptions>/nomidl /struct_by_ref %(AdditionalOptions)</AdditionalOptions>
+    </Midl>
+    <CustomBuildStep>
+      <Command>cppwinrt.exe -in $(IntDir)$(ProjectName).winmd -comp "$(ProjectDir)Generated Files\Sources" -out "$(ProjectDir)Generated Files" -ref 10.0.19613.0 -prefix -name $(ProjectName) -optimize</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Invoking cppwinrt.exe</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(ProjectDir)Generated Files\module.g.cpp</Outputs>
+      <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,6 +137,24 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <Midl>
+      <AdditionalMetadataDirectories>$(FrameworkSdkDir)References\10.0.19613.0\Windows.Foundation.FoundationContract\4.0.0.0</AdditionalMetadataDirectories>
+    </Midl>
+    <Midl>
+      <EnableWindowsRuntime>true</EnableWindowsRuntime>
+      <MetadataFileName>$(IntDir)$(ProjectName).winmd</MetadataFileName>
+      <AdditionalOptions>/nomidl /struct_by_ref %(AdditionalOptions)</AdditionalOptions>
+    </Midl>
+    <CustomBuildStep>
+      <Command>cppwinrt.exe -in $(IntDir)$(ProjectName).winmd -comp "$(ProjectDir)Generated Files\Sources" -out "$(ProjectDir)Generated Files" -ref 10.0.19613.0 -prefix -name $(ProjectName) -optimize</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Invoking cppwinrt.exe</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(ProjectDir)Generated Files\module.g.cpp</Outputs>
+      <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -136,6 +176,24 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <Midl>
+      <AdditionalMetadataDirectories>$(FrameworkSdkDir)References\10.0.19613.0\Windows.Foundation.FoundationContract\4.0.0.0</AdditionalMetadataDirectories>
+    </Midl>
+    <Midl>
+      <EnableWindowsRuntime>true</EnableWindowsRuntime>
+      <MetadataFileName>$(IntDir)$(ProjectName).winmd</MetadataFileName>
+      <AdditionalOptions>/nomidl /struct_by_ref %(AdditionalOptions)</AdditionalOptions>
+    </Midl>
+    <CustomBuildStep>
+      <Command>cppwinrt.exe -in $(IntDir)$(ProjectName).winmd -comp "$(ProjectDir)Generated Files\Sources" -out "$(ProjectDir)Generated Files" -ref 10.0.19613.0 -prefix -name $(ProjectName) -optimize</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Invoking cppwinrt.exe</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(ProjectDir)Generated Files\module.g.cpp</Outputs>
+      <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -157,6 +215,24 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
     </Link>
+    <Midl>
+      <AdditionalMetadataDirectories>$(FrameworkSdkDir)References\10.0.19613.0\Windows.Foundation.FoundationContract\4.0.0.0</AdditionalMetadataDirectories>
+    </Midl>
+    <Midl>
+      <EnableWindowsRuntime>true</EnableWindowsRuntime>
+      <MetadataFileName>$(IntDir)$(ProjectName).winmd</MetadataFileName>
+      <AdditionalOptions>/nomidl /struct_by_ref %(AdditionalOptions)</AdditionalOptions>
+    </Midl>
+    <CustomBuildStep>
+      <Command>cppwinrt.exe -in $(IntDir)$(ProjectName).winmd -comp "$(ProjectDir)Generated Files\Sources" -out "$(ProjectDir)Generated Files" -ref 10.0.19613.0 -prefix -name $(ProjectName) -optimize</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>Invoking cppwinrt.exe</Message>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>$(ProjectDir)Generated Files\module.g.cpp</Outputs>
+      <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -169,6 +245,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="Microsoft.UI.UIAutomation.idl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
