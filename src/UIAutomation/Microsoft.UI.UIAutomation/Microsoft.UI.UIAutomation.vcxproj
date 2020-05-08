@@ -89,18 +89,20 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;MICROSOFTUIUIAUTOMATION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/bigobj /await /D WIN32_LEAN_AND_MEAN /D NOMINMAX %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)Generated Files;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>module.def</ModuleDefinitionFile>
     </Link>
     <Midl>
       <AdditionalMetadataDirectories>$(FrameworkSdkDir)References\10.0.19613.0\Windows.Foundation.FoundationContract\4.0.0.0</AdditionalMetadataDirectories>
@@ -124,18 +126,20 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;MICROSOFTUIUIAUTOMATION_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/bigobj /await /D WIN32_LEAN_AND_MEAN /D NOMINMAX %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)Generated Files;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>module.def</ModuleDefinitionFile>
     </Link>
     <Midl>
       <AdditionalMetadataDirectories>$(FrameworkSdkDir)References\10.0.19613.0\Windows.Foundation.FoundationContract\4.0.0.0</AdditionalMetadataDirectories>
@@ -159,7 +163,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -168,6 +172,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/bigobj /await /D WIN32_LEAN_AND_MEAN /D NOMINMAX %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)Generated Files;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -175,6 +180,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>module.def</ModuleDefinitionFile>
     </Link>
     <Midl>
       <AdditionalMetadataDirectories>$(FrameworkSdkDir)References\10.0.19613.0\Windows.Foundation.FoundationContract\4.0.0.0</AdditionalMetadataDirectories>
@@ -198,7 +204,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -207,6 +213,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalOptions>/bigobj /await /D WIN32_LEAN_AND_MEAN /D NOMINMAX %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)Generated Files;$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -214,6 +221,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <ModuleDefinitionFile>module.def</ModuleDefinitionFile>
     </Link>
     <Midl>
       <AdditionalMetadataDirectories>$(FrameworkSdkDir)References\10.0.19613.0\Windows.Foundation.FoundationContract\4.0.0.0</AdditionalMetadataDirectories>
@@ -235,21 +243,57 @@
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AutomationRemoteAnyObjectMethods.g.h" />
+    <ClInclude Include="AutomationRemoteElementMethods.g.h" />
+    <ClInclude Include="AutomationRemoteOperation.h" />
+    <ClInclude Include="AutomationRemoteOperationMethods.g.h" />
+    <ClInclude Include="AutomationRemoteOperationResultSet.h" />
+    <ClInclude Include="MessageBuilder.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RemoteOperationGraph.h" />
+    <ClInclude Include="RemoteOperationInstructionEnumValues.g.h" />
+    <ClInclude Include="RemoteOperationInstructionEnumValuesArray.g.h" />
+    <ClInclude Include="RemoteOperationInstructions.g.h" />
+    <ClInclude Include="RemoteOperationInstructions.h" />
+    <ClInclude Include="RemoteOperationInstructionSerialization.h" />
+    <ClInclude Include="RemoteOperationInstructionSerializerMethods.g.h" />
+    <ClInclude Include="RemoteOperationInstructionsVariantParams.g.h" />
+    <ClInclude Include="Standins.g.h" />
+    <ClInclude Include="Standins.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AutomationRemoteOperation.cpp" />
+    <ClCompile Include="AutomationRemoteOperationResultSet.cpp" />
+    <ClCompile Include="Client.g.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Generated Files\module.g.cpp" />
+    <ClCompile Include="MessageBuilder.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RemoteOperationGraph.cpp" />
+    <ClCompile Include="RemoteOperationInstructionSerialization.cpp" />
+    <ClCompile Include="RemoteOperationInstructionSerialization.g.cpp" />
+    <ClCompile Include="Standins.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="Microsoft.UI.UIAutomation.idl" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="module.def" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Microsoft.Windows.ImplementationLibrary.1.0.191107.2\build\native\Microsoft.Windows.ImplementationLibrary.targets" Condition="Exists('..\packages\Microsoft.Windows.ImplementationLibrary.1.0.191107.2\build\native\Microsoft.Windows.ImplementationLibrary.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Windows.ImplementationLibrary.1.0.191107.2\build\native\Microsoft.Windows.ImplementationLibrary.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Windows.ImplementationLibrary.1.0.191107.2\build\native\Microsoft.Windows.ImplementationLibrary.targets'))" />
+  </Target>
 </Project>

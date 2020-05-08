@@ -1,8 +1,15 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
 #pragma once
 
 #include <unknwn.h>
-#include <Windows.h>
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Foundation.Collections.h>
 
+#include <Windows.h>
+#include <UIAutomation.h>
+
+#include <algorithm>
+#include <iterator>
+#include <vector>
