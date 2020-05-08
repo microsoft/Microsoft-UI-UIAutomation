@@ -122,6 +122,12 @@
       <Outputs>$(ProjectDir)Generated Files\module.g.cpp</Outputs>
       <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
     </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>if not exist $(OutDir)\winmd mkdir $(OutDir)\winmd &amp;&amp; copy $(IntDir)$(ProjectName).winmd $(OutDir)\winmd\$(ProjectName).winmd</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy winmd to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -159,6 +165,12 @@
       <Outputs>$(ProjectDir)Generated Files\module.g.cpp</Outputs>
       <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
     </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>if not exist $(OutDir)\winmd mkdir $(OutDir)\winmd &amp;&amp; copy $(IntDir)$(ProjectName).winmd $(OutDir)\winmd\$(ProjectName).winmd</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy winmd to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -200,6 +212,12 @@
       <Outputs>$(ProjectDir)Generated Files\module.g.cpp</Outputs>
       <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
     </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>if not exist $(OutDir)\winmd mkdir $(OutDir)\winmd &amp;&amp; copy $(IntDir)$(ProjectName).winmd $(OutDir)\winmd\$(ProjectName).winmd</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy winmd to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -241,6 +259,12 @@
       <Outputs>$(ProjectDir)Generated Files\module.g.cpp</Outputs>
       <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
     </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>if not exist $(OutDir)\winmd mkdir $(OutDir)\winmd &amp;&amp; copy $(IntDir)$(ProjectName).winmd $(OutDir)\winmd\$(ProjectName).winmd</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copy winmd to output directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AutomationRemoteAnyObjectMethods.g.h" />
