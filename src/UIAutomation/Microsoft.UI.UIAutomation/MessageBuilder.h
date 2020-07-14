@@ -25,6 +25,7 @@ public:
     void WriteUnsignedInt(unsigned int);
     void WriteDouble(double);
     void WriteString(std::wstring_view);
+    void WriteGuid(const GUID&);
 
     // Takes ownership of the buffer that contains the serialized representation of all values
     // that have been written to the builder thus far.

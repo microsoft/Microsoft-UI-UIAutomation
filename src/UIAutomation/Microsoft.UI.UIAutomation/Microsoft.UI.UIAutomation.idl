@@ -115,6 +115,16 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteDouble GetY();
     }
 
+    runtimeclass AutomationRemoteGuid : AutomationRemoteObject
+    {
+        void Set(AutomationRemoteGuid rhs);
+        AutomationRemoteBool IsEqual(AutomationRemoteGuid rhs);
+        AutomationRemoteBool IsNotEqual(AutomationRemoteGuid rhs);
+
+        AutomationRemoteAnnotationType LookupAnnotationType();
+        AutomationRemotePropertyId LookupPropertyId();
+    }
+
     runtimeclass AutomationRemoteArray : AutomationRemoteObject
     {
         void Set(AutomationRemoteArray rhs);
@@ -195,6 +205,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemotePoint AsPoint();
         AutomationRemoteBool IsRect();
         AutomationRemoteRect AsRect();
+        AutomationRemoteBool IsGuid();
+        AutomationRemoteGuid AsGuid();
         AutomationRemoteBool IsArray();
         AutomationRemoteArray AsArray();
         AutomationRemoteBool IsStringMap();
@@ -270,6 +282,7 @@ namespace Microsoft.UI.UIAutomation
         void Set(AutomationRemoteAnnotationType rhs);
         AutomationRemoteBool IsEqual(AutomationRemoteAnnotationType rhs);
         AutomationRemoteBool IsNotEqual(AutomationRemoteAnnotationType rhs);
+        AutomationRemoteGuid LookupGuid();
     };
 
     enum AutomationBulletStyle
@@ -731,6 +744,7 @@ namespace Microsoft.UI.UIAutomation
         void Set(AutomationRemotePropertyId rhs);
         AutomationRemoteBool IsEqual(AutomationRemotePropertyId rhs);
         AutomationRemoteBool IsNotEqual(AutomationRemotePropertyId rhs);
+        AutomationRemoteGuid LookupGuid();
     };
 
     enum AutomationRowOrColumnMajor
@@ -1630,6 +1644,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteString NewString(String initialValue);
         AutomationRemotePoint NewPoint(Windows.Foundation.Point initialValue);
         AutomationRemoteRect NewRect(Windows.Foundation.Rect initialValue);
+        Boolean IsGuidSupported();
+        AutomationRemoteGuid NewGuid(Guid initialValue);
         AutomationRemoteArray NewArray();
         AutomationRemoteStringMap NewStringMap();
         AutomationRemoteAnyObject NewNull();

@@ -323,6 +323,35 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    // AutomationRemoteGuid
+
+    AutomationRemoteGuid::AutomationRemoteGuid(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
+    {
+    }
+
+    winrt::AutomationRemoteAnnotationType AutomationRemoteGuid::LookupAnnotationType()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::LookupId{
+            resultId,
+            m_operandId,
+            AutomationIdentifierType_Annotation
+        });
+        return Make<AutomationRemoteAnnotationType>(resultId);
+    }
+
+    winrt::AutomationRemotePropertyId AutomationRemoteGuid::LookupPropertyId()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::LookupId{
+            resultId,
+            m_operandId,
+            AutomationIdentifierType_Property
+        });
+        return Make<AutomationRemotePropertyId>(resultId);
+    }
+
     // AutomationRemoteArray
 
     AutomationRemoteArray::AutomationRemoteArray(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
@@ -668,6 +697,21 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteRect AutomationRemoteAnyObject::AsRect()
     {
         return As<AutomationRemoteRect>();
+    }
+
+    winrt::AutomationRemoteBool AutomationRemoteAnyObject::IsGuid()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::IsGuid{
+            resultId,
+            m_operandId
+        });
+        return Make<AutomationRemoteBool>(resultId);
+    }
+
+    winrt::AutomationRemoteGuid AutomationRemoteAnyObject::AsGuid()
+    {
+        return As<AutomationRemoteGuid>();
     }
 
     winrt::AutomationRemoteBool AutomationRemoteAnyObject::IsArray()

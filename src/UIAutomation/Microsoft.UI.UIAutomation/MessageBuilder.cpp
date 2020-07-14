@@ -46,6 +46,12 @@ void MessageBuilder::WriteString(std::wstring_view val)
     WriteBytes(reinterpret_cast<const uint8_t*>(val.data()), val.size() * sizeof(wchar_t));
 }
 
+void MessageBuilder::WriteGuid(const GUID& val)
+{
+    static_assert(sizeof(GUID) == 16, "GUID expected to be 16 bytes");
+    WriteBytes(reinterpret_cast<const uint8_t*>(&val), sizeof(val));
+}
+
 std::vector<uint8_t> MessageBuilder::DetachBuffer()
 {
     return std::move(m_buffer);

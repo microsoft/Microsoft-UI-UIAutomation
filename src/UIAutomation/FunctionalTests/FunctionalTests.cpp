@@ -102,5 +102,154 @@ namespace FunctionalTests
 
             Assert::AreEqual(winrt::hstring(L"Display is 0"), name);
         }
+
+        // Asserts that we can initialize a remote GUID operand with a GUID constant, then get that same GUID
+        // back as a result.
+        TEST_METHOD(NewGuidTest)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            op.ImportElement(calc.as<winrt::AutomationElement>());
+
+            winrt::guid guid{ Name_Property_GUID };
+            auto remoteGuid = op.NewGuid(guid);
+            auto guidToken = op.RequestResponse(remoteGuid);
+
+            auto results = op.Execute();
+            Assert::IsTrue(SUCCEEDED(results.OperationStatus()));
+            auto guidResult = winrt::unbox_value<winrt::guid>(results.GetResult(guidToken));
+
+            Assert::IsTrue(guid == guidResult);
+        }
+
+        // Asserts that calling IsGuid on an AutomationRemoteAnyObject that points to a GUID returns true.
+        TEST_METHOD(IsGuidTest)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            op.ImportElement(calc.as<winrt::AutomationElement>());
+
+            winrt::guid guid{ Name_Property_GUID };
+            auto remoteGuid = op.NewGuid(guid);
+
+            // In the high-level builder API, the easiest way to create an AutomationRemoteAnyObject stand-in
+            // from an arbitrary operand is to add that operand to a remote array and get it back out.
+            auto remoteArray = op.NewArray();
+            remoteArray.Append(remoteGuid);
+            auto remoteGuidAsAnyObject = remoteArray.GetAt(op.NewUint(0));
+
+            auto remoteIsGuid = remoteGuidAsAnyObject.IsGuid();
+            auto isGuidToken = op.RequestResponse(remoteIsGuid);
+
+            auto results = op.Execute();
+            Assert::IsTrue(SUCCEEDED(results.OperationStatus()));
+            auto isGuidResult = winrt::unbox_value<bool>(results.GetResult(isGuidToken));
+
+            Assert::IsTrue(isGuidResult);
+        }
+
+        // Asserts that calling IsEqual with two remote copies of the same GUID returns true.
+        TEST_METHOD(EqualGuidsTest)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            op.ImportElement(calc.as<winrt::AutomationElement>());
+
+            winrt::guid guid{ Name_Property_GUID };
+            auto remoteGuid1 = op.NewGuid(guid);
+            auto remoteGuid2 = op.NewGuid(guid);
+
+            auto remoteIsEqual = remoteGuid1.IsEqual(remoteGuid2);
+            auto isEqualToken = op.RequestResponse(remoteIsEqual);
+
+            auto results = op.Execute();
+            Assert::IsTrue(SUCCEEDED(results.OperationStatus()));
+            auto isEqualResult = winrt::unbox_value<bool>(results.GetResult(isEqualToken));
+
+            Assert::IsTrue(isEqualResult);
+        }
+
+        // Asserts that calling IsEqual with two different remote GUID operands returns false.
+        TEST_METHOD(NonEqualGuidsTest)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            op.ImportElement(calc.as<winrt::AutomationElement>());
+
+            winrt::guid guid1{ Name_Property_GUID };
+            winrt::guid guid2{ ControlType_Property_GUID };
+
+            auto remoteGuid1 = op.NewGuid(guid1);
+            auto remoteGuid2 = op.NewGuid(guid2);
+
+            auto remoteIsEqual = remoteGuid1.IsEqual(remoteGuid2);
+            auto isEqualToken = op.RequestResponse(remoteIsEqual);
+
+            auto results = op.Execute();
+            Assert::IsTrue(SUCCEEDED(results.OperationStatus()));
+            auto isEqualResult = winrt::unbox_value<bool>(results.GetResult(isEqualToken));
+
+            Assert::IsFalse(isEqualResult);
+        }
+
+        // Asserts that calling LookupPropertyId on a property GUID returns the expected integer ID.
+        TEST_METHOD(LookupPropertyIdTest)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            op.ImportElement(calc.as<winrt::AutomationElement>());
+
+            winrt::guid guid{ Name_Property_GUID };
+            constexpr auto intId = UIA_NamePropertyId;
+
+            auto remoteGuid = op.NewGuid(guid);
+            auto remotePropertyId = remoteGuid.LookupPropertyId();
+            auto propertyIdToken = op.RequestResponse(remotePropertyId);
+
+            auto results = op.Execute();
+            Assert::IsTrue(SUCCEEDED(results.OperationStatus()));
+            auto intIdResult = winrt::unbox_value<int32_t>(results.GetResult(propertyIdToken));
+
+            Assert::IsTrue(intId == intIdResult);
+        }
+
+        // Asserts that calling LookupGuid on a remote property ID returns the expected property GUID.
+        TEST_METHOD(LookupPropertyGuidTest)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            op.ImportElement(calc.as<winrt::AutomationElement>());
+
+            constexpr auto propertyId = winrt::AutomationPropertyId::Name;
+            winrt::guid guid{ Name_Property_GUID };
+
+            auto remotePropertyId = op.NewEnum(propertyId);
+            auto remoteGuid = remotePropertyId.LookupGuid();
+            auto guidToken = op.RequestResponse(remoteGuid);
+
+            auto results = op.Execute();
+            Assert::IsTrue(SUCCEEDED(results.OperationStatus()));
+            auto guidResult = winrt::unbox_value<winrt::guid>(results.GetResult(guidToken));
+
+            Assert::IsTrue(guid == guidResult);
+        }
     };
 }

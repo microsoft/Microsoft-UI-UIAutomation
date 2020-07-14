@@ -102,6 +102,19 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return make<AutomationRemoteRect>(newId, *this);
     }
 
+    bool AutomationRemoteOperation::IsGuidSupported() const
+    {
+        return m_remoteOperation.IsOpcodeSupported(static_cast<uint32_t>(bytecode::InstructionType::NewGuid));
+    }
+
+    winrt::AutomationRemoteGuid AutomationRemoteOperation::NewGuid(const winrt::guid& initialValue)
+    {
+        const auto newId = GetNextId();
+        InsertInstruction(bytecode::NewGuid{ newId, initialValue });
+
+        return make<AutomationRemoteGuid>(newId, *this);
+    }
+
     winrt::AutomationRemoteArray AutomationRemoteOperation::NewArray()
     {
         const auto newId = GetNextId();

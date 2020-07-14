@@ -32,6 +32,7 @@ private:
     void Write(const std::wstring& value);
     void Write(const UiaPoint& value);
     void Write(const UiaRect& value);
+    void Write(const GUID& value);
 
     // Write the instructions themselves...
     void Write(const bytecode::Nop&);
@@ -44,6 +45,7 @@ private:
     void Write(const bytecode::NewString&);
     void Write(const bytecode::NewPoint&);
     void Write(const bytecode::NewRect&);
+    void Write(const bytecode::NewGuid&);
     void Write(const bytecode::NewArray&);
     void Write(const bytecode::NewStringMap&);
     void Write(const bytecode::NewNull&);
@@ -103,6 +105,8 @@ private:
     void Write(const bytecode::Compare&);
     void Write(const bytecode::GetPropertyValue&);
     void Write(const bytecode::Navigate&);
+    void Write(const bytecode::LookupId&);
+    void Write(const bytecode::LookupGuid&);
     void Write(const bytecode::GetterBase&);
 #include "RemoteOperationInstructionSerializerMethods.g.h"
 
