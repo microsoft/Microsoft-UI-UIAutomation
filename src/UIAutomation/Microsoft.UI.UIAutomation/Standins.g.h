@@ -105,6 +105,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         void Set(const class_type& rhs);
         winrt::AutomationRemoteBool IsEqual(const class_type& rhs);
         winrt::AutomationRemoteBool IsNotEqual(const class_type& rhs);
+        winrt::AutomationRemoteGuid LookupGuid();
     };
 
     class AutomationRemoteBulletStyle : public AutomationRemoteBulletStyleT<AutomationRemoteBulletStyle, AutomationRemoteObject>
@@ -249,6 +250,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         void Set(const class_type& rhs);
         winrt::AutomationRemoteBool IsEqual(const class_type& rhs);
         winrt::AutomationRemoteBool IsNotEqual(const class_type& rhs);
+        winrt::AutomationRemoteGuid LookupGuid();
     };
 
     class AutomationRemoteRowOrColumnMajor : public AutomationRemoteRowOrColumnMajorT<AutomationRemoteRowOrColumnMajor, AutomationRemoteObject>

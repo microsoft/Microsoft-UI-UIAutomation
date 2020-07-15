@@ -95,6 +95,17 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return AutomationRemoteObject::IsNotEqual<AutomationRemoteAnnotationType>(rhs);
     }
 
+    winrt::AutomationRemoteGuid AutomationRemoteAnnotationType::LookupGuid()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::LookupGuid{
+            resultId,
+            m_operandId,
+            AutomationIdentifierType_Annotation
+        });
+        return Make<AutomationRemoteGuid>(resultId);
+    }
+
     winrt::AutomationRemoteAnnotationType AutomationRemoteOperation::NewEnum(AutomationAnnotationType initialValue)
     {
         const auto resultId = GetNextId();
@@ -589,6 +600,17 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteBool AutomationRemotePropertyId::IsNotEqual(const AutomationRemotePropertyId::class_type& rhs)
     {
         return AutomationRemoteObject::IsNotEqual<AutomationRemotePropertyId>(rhs);
+    }
+
+    winrt::AutomationRemoteGuid AutomationRemotePropertyId::LookupGuid()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::LookupGuid{
+            resultId,
+            m_operandId,
+            AutomationIdentifierType_Property
+        });
+        return Make<AutomationRemoteGuid>(resultId);
     }
 
     winrt::AutomationRemotePropertyId AutomationRemoteOperation::NewEnum(AutomationPropertyId initialValue)

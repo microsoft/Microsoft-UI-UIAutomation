@@ -63,6 +63,11 @@ void RemoteOperationInstructionSerializer::Write(const UiaRect& value)
     m_builder.WriteDouble(value.height);
 }
 
+void RemoteOperationInstructionSerializer::Write(const GUID& value)
+{
+    m_builder.WriteGuid(value);
+}
+
 void RemoteOperationInstructionSerializer::Serialize(const Instruction& genericInstruction)
 {
     std::visit([&](const auto& instruction)
@@ -125,6 +130,12 @@ void RemoteOperationInstructionSerializer::Write(const NewPoint& instruction)
 }
 
 void RemoteOperationInstructionSerializer::Write(const NewRect& instruction)
+{
+    Write(instruction.resultId);
+    Write(instruction.initialValue);
+}
+
+void RemoteOperationInstructionSerializer::Write(const NewGuid& instruction)
 {
     Write(instruction.resultId);
     Write(instruction.initialValue);
@@ -427,6 +438,20 @@ void RemoteOperationInstructionSerializer::Write(const bytecode::Navigate& instr
     Write(instruction.resultId);
     Write(instruction.targetId);
     Write(instruction.directionId);
+}
+
+void RemoteOperationInstructionSerializer::Write(const bytecode::LookupId& instruction)
+{
+    Write(instruction.resultId);
+    Write(instruction.guidId);
+    Write(static_cast<int>(instruction.idType));
+}
+
+void RemoteOperationInstructionSerializer::Write(const bytecode::LookupGuid& instruction)
+{
+    Write(instruction.resultId);
+    Write(instruction.intIdId);
+    Write(static_cast<int>(instruction.idType));
 }
 
 void RemoteOperationInstructionSerializer::Write(const GetterBase& instruction)

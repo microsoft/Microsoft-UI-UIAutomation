@@ -59,6 +59,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteString NewString(hstring const& initialValue);
         winrt::AutomationRemotePoint NewPoint(Windows::Foundation::Point const& initialValue);
         winrt::AutomationRemoteRect NewRect(Windows::Foundation::Rect const& initialValue);
+        bool IsGuidSupported() const;
+        winrt::AutomationRemoteGuid NewGuid(const winrt::guid& initialValue);
         winrt::AutomationRemoteArray NewArray();
         winrt::AutomationRemoteStringMap NewStringMap();
         winrt::AutomationRemoteAnyObject NewNull();

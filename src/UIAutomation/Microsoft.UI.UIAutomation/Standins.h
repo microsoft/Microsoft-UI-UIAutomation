@@ -12,6 +12,7 @@
 #include "AutomationRemoteString.g.h"
 #include "AutomationRemotePoint.g.h"
 #include "AutomationRemoteRect.g.h"
+#include "AutomationRemoteGuid.g.h"
 #include "AutomationRemoteArray.g.h"
 #include "AutomationRemoteStringMap.g.h"
 #include "AutomationRemoteElement.g.h"
@@ -448,6 +449,30 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteDouble GetY();
     };
 
+    class AutomationRemoteGuid : public AutomationRemoteGuidT<AutomationRemoteGuid, AutomationRemoteObject>
+    {
+    public:
+        AutomationRemoteGuid(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
+
+        void Set(const class_type& rhs)
+        {
+            AutomationRemoteObject::Set<AutomationRemoteGuid>(rhs);
+        }
+
+        auto IsEqual(const class_type& rhs)
+        {
+            return AutomationRemoteObject::IsEqual<AutomationRemoteGuid>(rhs);
+        }
+
+        auto IsNotEqual(const class_type& rhs)
+        {
+            return AutomationRemoteObject::IsNotEqual<AutomationRemoteGuid>(rhs);
+        }
+
+        winrt::AutomationRemoteAnnotationType LookupAnnotationType();
+        winrt::AutomationRemotePropertyId LookupPropertyId();
+    };
+
     class AutomationRemoteArray : public AutomationRemoteArrayT<AutomationRemoteArray, AutomationRemoteObject>
     {
     public:
@@ -531,6 +556,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemotePoint AsPoint();
         winrt::AutomationRemoteBool IsRect();
         winrt::AutomationRemoteRect AsRect();
+        winrt::AutomationRemoteBool IsGuid();
+        winrt::AutomationRemoteGuid AsGuid();
         winrt::AutomationRemoteBool IsArray();
         winrt::AutomationRemoteArray AsArray();
         winrt::AutomationRemoteBool IsStringMap();

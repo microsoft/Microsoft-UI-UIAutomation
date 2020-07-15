@@ -36,105 +36,111 @@ constexpr int MakePatternRelatedObjectMethodInstructionType(PATTERNID patternId,
 // The instruction enum value here map to the instruction opcode, defined and documented by the UIAutomation platform.
 enum class InstructionType
 {
-    Nop = 0,
-    Set,
+    Nop = 0x00,
+    Set = 0x01,
 
     // Control flow
-    ForkIfTrue,
-    ForkIfFalse,
-    Fork,
-    Halt,
+    ForkIfTrue = 0x02,
+    ForkIfFalse = 0x03,
+    Fork = 0x04,
+    Halt = 0x05,
 
     // Loops
-    NewLoopBlock,
-    EndLoopBlock,
-    BreakLoop,
-    ContinueLoop,
+    NewLoopBlock = 0x06,
+    EndLoopBlock = 0x07,
+    BreakLoop = 0x08,
+    ContinueLoop = 0x09,
 
     // Error handling
-    NewTryBlock,
-    EndTryBlock,
-    SetOperationStatus,
-    GetOperationStatus,
+    NewTryBlock = 0x0a,
+    EndTryBlock = 0x0b,
+    SetOperationStatus = 0x0c,
+    GetOperationStatus = 0x0d,
 
     // Arithmetic
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
-    BinaryAdd,
-    BinarySubtract,
-    BinaryMultiply,
-    BinaryDivide,
+    Add = 0x0e,
+    Subtract = 0x0f,
+    Multiply = 0x10,
+    Divide = 0x11,
+    BinaryAdd = 0x12,
+    BinarySubtract = 0x13,
+    BinaryMultiply = 0x14,
+    BinaryDivide = 0x15,
 
     // Boolean operators
-    InPlaceBoolNot,
-    InPlaceBoolAnd,
-    InPlaceBoolOr,
+    InPlaceBoolNot = 0x16,
+    InPlaceBoolAnd = 0x17,
+    InPlaceBoolOr = 0x18,
 
-    BoolNot,
-    BoolAnd,
-    BoolOr,
+    BoolNot = 0x19,
+    BoolAnd = 0x1a,
+    BoolOr = 0x1b,
 
     // Generic comparison
-    Compare,
+    Compare = 0x1c,
 
     // New object constructors
-    NewInt,
-    NewUint,
-    NewBool,
-    NewDouble,
-    NewChar,
-    NewString,
-    NewPoint,
-    NewRect,
-    NewArray,
-    NewStringMap,
-    NewNull,
+    NewInt = 0x1d,
+    NewUint = 0x1e,
+    NewBool = 0x1f,
+    NewDouble = 0x20,
+    NewChar = 0x21,
+    NewString = 0x22,
+    NewPoint = 0x23,
+    NewRect = 0x24,
+    NewArray = 0x25,
+    NewStringMap = 0x26,
+    NewNull = 0x27,
 
     // Point and Rect methods
-    GetPointProperty,
-    GetRectProperty,
+    GetPointProperty = 0x28,
+    GetRectProperty = 0x29,
 
     // RemoteArray methods
-    RemoteArrayAppend,
-    RemoteArraySetAt,
-    RemoteArrayRemoveAt,
-    RemoteArrayGetAt,
-    RemoteArraySize,
+    RemoteArrayAppend = 0x2a,
+    RemoteArraySetAt = 0x2b,
+    RemoteArrayRemoveAt = 0x2c,
+    RemoteArrayGetAt = 0x2d,
+    RemoteArraySize = 0x2e,
 
     // RemoteStringMap methods
-    RemoteStringMapInsert,
-    RemoteStringMapRemove,
-    RemoteStringMapHasKey,
-    RemoteStringMapLookup,
-    RemoteStringMapSize,
+    RemoteStringMapInsert = 0x2f,
+    RemoteStringMapRemove = 0x30,
+    RemoteStringMapHasKey = 0x31,
+    RemoteStringMapLookup = 0x32,
+    RemoteStringMapSize = 0x33,
 
     // RemoteString methods
-    RemoteStringGetAt,
-    RemoteStringSubstr,
-    RemoteStringConcat,
-    RemoteStringSize,
+    RemoteStringGetAt = 0x34,
+    RemoteStringSubstr = 0x35,
+    RemoteStringConcat = 0x36,
+    RemoteStringSize = 0x37,
 
     // UIA element methods
-    GetPropertyValue,
-    Navigate,
+    GetPropertyValue = 0x38,
+    Navigate = 0x39,
 
     // Type interrogation methods
-    IsNull,
-    IsNotSupported,
-    IsMixedAttribute,
-    IsBool,
-    IsInt,
-    IsUint,
-    IsDouble,
-    IsChar,
-    IsString,
-    IsPoint,
-    IsRect,
-    IsArray,
-    IsStringMap,
-    IsElement,
+    IsNull = 0x3a,
+    IsNotSupported = 0x3b,
+    IsMixedAttribute = 0x3c,
+    IsBool = 0x3d,
+    IsInt = 0x3e,
+    IsUint = 0x3f,
+    IsDouble = 0x40,
+    IsChar = 0x41,
+    IsString = 0x42,
+    IsPoint = 0x43,
+    IsRect = 0x44,
+    IsArray = 0x45,
+    IsStringMap = 0x46,
+    IsElement = 0x47,
+
+    // GUID support
+    NewGuid = 0x48,
+    IsGuid = 0x49,
+    LookupId = 0x4a,
+    LookupGuid = 0x4b,
 
     // UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValues.g.h"
@@ -215,6 +221,10 @@ constexpr std::array c_supportedInstructions =
     InstructionType::IsArray,
     InstructionType::IsStringMap,
     InstructionType::IsElement,
+    InstructionType::NewGuid,
+    InstructionType::IsGuid,
+    InstructionType::LookupId,
+    InstructionType::LookupGuid,
 
     // Auto-generated UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValuesArray.g.h"
@@ -819,6 +829,39 @@ struct IsElement : GetterBase
     constexpr static InstructionType type = InstructionType::IsElement;
 };
 
+struct NewGuid
+{
+    constexpr static InstructionType type = InstructionType::NewGuid;
+
+    OperandId resultId;
+    GUID initialValue;
+};
+
+struct IsGuid : GetterBase
+{
+    constexpr static InstructionType type = InstructionType::IsGuid;
+};
+
+struct LookupId
+{
+    constexpr static InstructionType type = InstructionType::LookupId;
+
+    OperandId resultId;
+
+    OperandId guidId;
+    AutomationIdentifierType idType;
+};
+
+struct LookupGuid
+{
+    constexpr static InstructionType type = InstructionType::LookupGuid;
+
+    OperandId resultId;
+
+    OperandId intIdId;
+    AutomationIdentifierType idType;
+};
+
 #include "RemoteOperationInstructions.g.h"
 
 using Instruction = std::variant<
@@ -921,7 +964,11 @@ using Instruction = std::variant<
     IsRect,
     IsArray,
     IsStringMap,
-    IsElement
+    IsElement,
+    NewGuid,
+    IsGuid,
+    LookupId,
+    LookupGuid
 
 #include "RemoteOperationInstructionsVariantParams.g.h"
     >;
