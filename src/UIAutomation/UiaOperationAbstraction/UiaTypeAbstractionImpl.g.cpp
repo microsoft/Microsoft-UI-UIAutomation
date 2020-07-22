@@ -2230,20 +2230,25 @@
         return outValue;
     }
 
-    UiaElement UiaTextRange::GetEnclosingElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest /* = nullptr */)
+    UiaElement UiaTextRange::GetEnclosingElement(std::optional<UiaCacheRequest> cacheRequest /* = std::nullopt */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
         {
             this->ToRemote();
-            return std::get<AutomationRemoteTextRange>(m_member).GetEnclosingElement();
+            auto result = std::get<AutomationRemoteTextRange>(m_member).GetEnclosingElement();
+            if (cacheRequest)
+            {
+                PopulateCacheHelper(result, *cacheRequest);
+            }
+            return result;
         }
 
         winrt::com_ptr<IUIAutomationElement> outValue;
         if (cacheRequest)
         {
             winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationTextRange>>(m_member).as<IUIAutomationTextRange3>()->GetEnclosingElementBuildCache(
-                cacheRequest,
+                cacheRequest->get(),
                 outValue.put()));
         }
         else
@@ -2394,20 +2399,25 @@
             alignToTop));
     }
 
-    UiaArray<UiaElement> UiaTextRange::GetChildren(_In_opt_ IUIAutomationCacheRequest* cacheRequest /* = nullptr */)
+    UiaArray<UiaElement> UiaTextRange::GetChildren(std::optional<UiaCacheRequest> cacheRequest /* = std::nullopt */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
         {
             this->ToRemote();
-            return std::get<AutomationRemoteTextRange>(m_member).GetChildren();
+            auto result = std::get<AutomationRemoteTextRange>(m_member).GetChildren();
+            if (cacheRequest)
+            {
+                PopulateCacheHelper(result, *cacheRequest);
+            }
+            return result;
         }
 
         winrt::com_ptr<IUIAutomationElementArray> outValue;
         if (cacheRequest)
         {
             winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationTextRange>>(m_member).as<IUIAutomationTextRange3>()->GetChildrenBuildCache(
-                cacheRequest,
+                cacheRequest->get(),
                 outValue.put()));
         }
         else
@@ -5020,6 +5030,93 @@
         return localPropertyValue;
     }
 
+    UiaCacheRequest::UiaCacheRequest(_In_ IUIAutomationCacheRequest* cacheRequest):
+        UiaTypeBase(MakeWinrtComPtr(cacheRequest))
+    {
+    }
+
+    UiaCacheRequest::UiaCacheRequest(winrt::com_ptr<IUIAutomationCacheRequest> const& cacheRequest):
+        UiaTypeBase(cacheRequest)
+    {
+    }
+
+    UiaCacheRequest::UiaCacheRequest(winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest const& cacheRequest):
+        UiaTypeBase(cacheRequest)
+    {
+    }
+
+    UiaCacheRequest::UiaCacheRequest(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject const& cacheRequest):
+        UiaTypeBase(cacheRequest.AsCacheRequest())
+    {
+    }
+
+    UiaCacheRequest::operator winrt::com_ptr<IUIAutomationCacheRequest>() const
+    {
+        return std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member);
+    }
+
+    UiaCacheRequest::operator wil::com_ptr<IUIAutomationCacheRequest>() const
+    {
+        return wil::com_ptr<IUIAutomationCacheRequest>(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member).get());
+    }
+
+    IUIAutomationCacheRequest* UiaCacheRequest::get() const
+    {
+        return std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member).get();
+    }
+
+    void UiaCacheRequest::reset()
+    {
+        std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member) = nullptr;
+    }
+
+    IUIAutomationCacheRequest** UiaCacheRequest::operator&()
+    {
+        reset();
+        return std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member).put();
+    }
+
+
+    UiaBool UiaCacheRequest::IsNull() const
+    {
+        if (UiaOperationAbstraction::ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<AutomationRemoteCacheRequest>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->IsNull();
+            }
+        }
+
+        return !get();
+    }
+
+    void UiaCacheRequest::AddProperty(UiaPropertyId propertyId)
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            std::get<AutomationRemoteCacheRequest>(m_member).AddProperty(propertyId);
+        }
+        else
+        {
+            winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member)->AddProperty(propertyId));
+        }
+    }
+
+    void UiaCacheRequest::AddPattern(UiaPatternId patternId)
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            std::get<AutomationRemoteCacheRequest>(m_member).AddPattern(patternId);
+        }
+        else
+        {
+            winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member)->AddPattern(patternId));
+        }
+    }
+
     UiaElement::UiaElement(_In_ IUIAutomationElement* element):
         UiaTypeBase(MakeWinrtComPtr(element))
     {
@@ -6957,13 +7054,18 @@
         return localPattern;
     }
 
-    UiaElement UiaElement::GetParentElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest /* = nullptr */)
+    UiaElement UiaElement::GetParentElement(std::optional<UiaCacheRequest> cacheRequest /* = std::nullopt */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
         {
             ToRemote();
-            return std::get<AutomationRemoteElement>(m_member).GetParentElement();
+            auto element = std::get<AutomationRemoteElement>(m_member).GetParentElement();
+            if (cacheRequest)
+            {
+                element.PopulateCache(*cacheRequest);
+            }
+            return element;
         }
 
         const auto& localElement = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);
@@ -6971,7 +7073,7 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetParentElementBuildCache(localElement.get(), cacheRequest, localResult.put()));
+            winrt::check_hresult(walker->GetParentElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
         }
         else
         {
@@ -6981,13 +7083,18 @@
         return localResult;
     }
 
-    UiaElement UiaElement::GetFirstChildElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest /* = nullptr */)
+    UiaElement UiaElement::GetFirstChildElement(std::optional<UiaCacheRequest> cacheRequest /* = std::nullopt */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
         {
             ToRemote();
-            return std::get<AutomationRemoteElement>(m_member).GetFirstChildElement();
+            auto element = std::get<AutomationRemoteElement>(m_member).GetFirstChildElement();
+            if (cacheRequest)
+            {
+                element.PopulateCache(*cacheRequest);
+            }
+            return element;
         }
 
         const auto& localElement = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);
@@ -6995,7 +7102,7 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetFirstChildElementBuildCache(localElement.get(), cacheRequest, localResult.put()));
+            winrt::check_hresult(walker->GetFirstChildElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
         }
         else
         {
@@ -7005,13 +7112,18 @@
         return localResult;
     }
 
-    UiaElement UiaElement::GetLastChildElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest /* = nullptr */)
+    UiaElement UiaElement::GetLastChildElement(std::optional<UiaCacheRequest> cacheRequest /* = std::nullopt */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
         {
             ToRemote();
-            return std::get<AutomationRemoteElement>(m_member).GetLastChildElement();
+            auto element = std::get<AutomationRemoteElement>(m_member).GetLastChildElement();
+            if (cacheRequest)
+            {
+                element.PopulateCache(*cacheRequest);
+            }
+            return element;
         }
 
         const auto& localElement = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);
@@ -7019,7 +7131,7 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetLastChildElementBuildCache(localElement.get(), cacheRequest, localResult.put()));
+            winrt::check_hresult(walker->GetLastChildElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
         }
         else
         {
@@ -7029,13 +7141,18 @@
         return localResult;
     }
 
-    UiaElement UiaElement::GetNextSiblingElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest /* = nullptr */)
+    UiaElement UiaElement::GetNextSiblingElement(std::optional<UiaCacheRequest> cacheRequest /* = std::nullopt */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
         {
             ToRemote();
-            return std::get<AutomationRemoteElement>(m_member).GetNextSiblingElement();
+            auto element = std::get<AutomationRemoteElement>(m_member).GetNextSiblingElement();
+            if (cacheRequest)
+            {
+                element.PopulateCache(*cacheRequest);
+            }
+            return element;
         }
 
         const auto& localElement = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);
@@ -7043,7 +7160,7 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetNextSiblingElementBuildCache(localElement.get(), cacheRequest, localResult.put()));
+            winrt::check_hresult(walker->GetNextSiblingElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
         }
         else
         {
@@ -7053,13 +7170,18 @@
         return localResult;
     }
 
-    UiaElement UiaElement::GetPreviousSiblingElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest /* = nullptr */)
+    UiaElement UiaElement::GetPreviousSiblingElement(std::optional<UiaCacheRequest> cacheRequest /* = std::nullopt */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
         {
             ToRemote();
-            return std::get<AutomationRemoteElement>(m_member).GetPreviousSiblingElement();
+            auto element = std::get<AutomationRemoteElement>(m_member).GetPreviousSiblingElement();
+            if (cacheRequest)
+            {
+                element.PopulateCache(*cacheRequest);
+            }
+            return element;
         }
 
         const auto& localElement = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);
@@ -7067,7 +7189,7 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetPreviousSiblingElementBuildCache(localElement.get(), cacheRequest, localResult.put()));
+            winrt::check_hresult(walker->GetPreviousSiblingElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
         }
         else
         {

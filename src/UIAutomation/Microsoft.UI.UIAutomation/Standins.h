@@ -15,6 +15,7 @@
 #include "AutomationRemoteGuid.g.h"
 #include "AutomationRemoteArray.g.h"
 #include "AutomationRemoteStringMap.g.h"
+#include "AutomationRemoteCacheRequest.g.h"
 #include "AutomationRemoteElement.g.h"
 #include "AutomationRemoteAnyObject.g.h"
 #include "AutomationRemoteOperation.h"
@@ -504,6 +505,20 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         Microsoft::UI::UIAutomation::AutomationRemoteUint Size();
     };
 
+    class AutomationRemoteCacheRequest : public AutomationRemoteCacheRequestT<AutomationRemoteCacheRequest, AutomationRemoteObject>
+    {
+    public:
+        AutomationRemoteCacheRequest(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
+
+        void Set(const class_type& rhs)
+        {
+            AutomationRemoteObject::Set<AutomationRemoteCacheRequest>(rhs);
+        }
+
+        void AddProperty(const winrt::AutomationRemotePropertyId& propertyId);
+        void AddPattern(const winrt::AutomationRemotePatternId& patternId);
+    };
+
     class AutomationRemoteElement : public AutomationRemoteElementT<AutomationRemoteElement, AutomationRemoteObject>
     {
     public:
@@ -525,6 +540,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteElement GetLastChildElement();
         winrt::AutomationRemoteElement GetNextSiblingElement();
         winrt::AutomationRemoteElement GetPreviousSiblingElement();
+
+        void PopulateCache(const winrt::AutomationRemoteCacheRequest& cacheRequest);
 
 #include "AutomationRemoteElementMethods.g.h"
 
@@ -564,6 +581,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteStringMap AsStringMap();
         winrt::AutomationRemoteBool IsElement();
         winrt::AutomationRemoteElement AsElement();
+        winrt::AutomationRemoteBool IsCacheRequest();
+        winrt::AutomationRemoteCacheRequest AsCacheRequest();
 
 #include "AutomationRemoteAnyObjectMethods.g.h"
 

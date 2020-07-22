@@ -236,6 +236,12 @@ namespace UiaOperationAbstraction
             }
         }
 
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest NewRemoteCacheRequest()
+        {
+            THROW_HR_IF(E_INVALIDARG, !m_useRemoteApi);
+            return m_remoteOperation.NewCacheRequest();
+        }
+
         void AbortOperationWithHresult(HRESULT hr);
 
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperationResultSet Execute()
@@ -1907,4 +1913,16 @@ namespace UiaOperationAbstraction
     };
 
     bool ShouldUseRemoteApi();
+
+    // Each of these helpers is an overload which populates the cache(s) for
+    // its first argument. The one which takes a single element will populate
+    // the cache just for that element, while the one which takes an array will
+    // assume all items in the array are UIA elements and will populate the
+    // cache for each.
+    void PopulateCacheHelper(
+        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement& element,
+        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest);
+    void PopulateCacheHelper(
+        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& elements,
+        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest);
 };

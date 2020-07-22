@@ -582,6 +582,37 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    AutomationRemotePatternId::AutomationRemotePatternId(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
+    {
+    }
+
+    void AutomationRemotePatternId::Set(const AutomationRemotePatternId::class_type& rhs)
+    {
+        AutomationRemoteObject::Set<AutomationRemotePatternId>(rhs);
+    }
+
+    winrt::AutomationRemoteBool AutomationRemotePatternId::IsEqual(const AutomationRemotePatternId::class_type& rhs)
+    {
+        return AutomationRemoteObject::IsEqual<AutomationRemotePatternId>(rhs);
+    }
+
+    winrt::AutomationRemoteBool AutomationRemotePatternId::IsNotEqual(const AutomationRemotePatternId::class_type& rhs)
+    {
+        return AutomationRemoteObject::IsNotEqual<AutomationRemotePatternId>(rhs);
+    }
+
+    winrt::AutomationRemotePatternId AutomationRemoteOperation::NewEnum(AutomationPatternId initialValue)
+    {
+        const auto resultId = GetNextId();
+        InsertInstruction(bytecode::NewInt{
+            resultId,
+            static_cast<int>(initialValue)
+        });
+        const auto result = make<AutomationRemotePatternId>(resultId, *this);
+        return result;
+    }
+
     AutomationRemotePropertyId::AutomationRemotePropertyId(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
         : base_type(operandId, parent)
     {
@@ -3494,6 +3525,11 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteOutlineStyles AutomationRemoteAnyObject::AsOutlineStyles()
     {
         return As<AutomationRemoteOutlineStyles>();
+    }
+
+    winrt::AutomationRemotePatternId AutomationRemoteAnyObject::AsPatternId()
+    {
+        return As<AutomationRemotePatternId>();
     }
 
     winrt::AutomationRemotePropertyId AutomationRemoteAnyObject::AsPropertyId()

@@ -167,17 +167,29 @@ namespace Microsoft.UI.UIAutomation
     delegate void AutomationRemoteOperationScopeHandler();
 
     runtimeclass AutomationRemotePropertyId;
+    runtimeclass AutomationRemotePatternId;
+
+    runtimeclass AutomationRemoteCacheRequest : AutomationRemoteObject
+    {
+        void Set(AutomationRemoteCacheRequest rhs);
+        void AddProperty(AutomationRemotePropertyId propertyId);
+        void AddPattern(AutomationRemotePatternId patternId);
+    }
 
     partial runtimeclass AutomationRemoteElement : AutomationRemoteObject
     {
         void Set(AutomationRemoteElement rhs);
+
         [default_overload] AutomationRemoteAnyObject GetPropertyValue(AutomationRemotePropertyId propertyId);
         AutomationRemoteAnyObject GetPropertyValue(AutomationRemotePropertyId propertyId, AutomationRemoteBool ignoreDefaultValue);
+
         AutomationRemoteElement GetParentElement();
         AutomationRemoteElement GetFirstChildElement();
         AutomationRemoteElement GetLastChildElement();
         AutomationRemoteElement GetNextSiblingElement();
         AutomationRemoteElement GetPreviousSiblingElement();
+
+        void PopulateCache(AutomationRemoteCacheRequest cacheRequest);
     }
 
     unsealed runtimeclass AutomationRemoteObject
@@ -213,9 +225,11 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteStringMap AsStringMap();
         AutomationRemoteBool IsElement();
         AutomationRemoteElement AsElement();
+        AutomationRemoteBool IsCacheRequest();
+        AutomationRemoteCacheRequest AsCacheRequest();
     }
 
-        enum AutomationActiveEnd
+    enum AutomationActiveEnd
     {
         None = 0,
         Start = 1,
@@ -558,6 +572,52 @@ namespace Microsoft.UI.UIAutomation
         void Set(AutomationRemoteOutlineStyles rhs);
         AutomationRemoteBool IsEqual(AutomationRemoteOutlineStyles rhs);
         AutomationRemoteBool IsNotEqual(AutomationRemoteOutlineStyles rhs);
+    };
+
+    enum AutomationPatternId
+    {
+        Invoke = 10000,
+        Selection = 10001,
+        Value = 10002,
+        RangeValue = 10003,
+        Scroll = 10004,
+        ExpandCollapse = 10005,
+        Grid = 10006,
+        GridItem = 10007,
+        MultipleView = 10008,
+        Window = 10009,
+        SelectionItem = 10010,
+        Dock = 10011,
+        Table = 10012,
+        TableItem = 10013,
+        Text = 10014,
+        Toggle = 10015,
+        Transform = 10016,
+        ScrollItem = 10017,
+        LegacyIAccessible = 10018,
+        ItemContainer = 10019,
+        VirtualizedItem = 10020,
+        SynchronizedInput = 10021,
+        ObjectModel = 10022,
+        Annotation = 10023,
+        UIA_TextPattern2Id = 10024,
+        Styles = 10025,
+        Spreadsheet = 10026,
+        SpreadsheetItem = 10027,
+        UIA_TransformPattern2Id = 10028,
+        TextChild = 10029,
+        Drag = 10030,
+        DropTarget = 10031,
+        TextEdit = 10032,
+        CustomNavigation = 10033,
+        UIA_SelectionPattern2Id = 10034,
+    };
+
+    runtimeclass AutomationRemotePatternId : AutomationRemoteObject
+    {
+        void Set(AutomationRemotePatternId rhs);
+        AutomationRemoteBool IsEqual(AutomationRemotePatternId rhs);
+        AutomationRemoteBool IsNotEqual(AutomationRemotePatternId rhs);
     };
 
     enum AutomationPropertyId
@@ -1547,6 +1607,7 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteNavigateDirection AsNavigateDirection();
         AutomationRemoteOrientationType AsOrientationType();
         AutomationRemoteOutlineStyles AsOutlineStyles();
+        AutomationRemotePatternId AsPatternId();
         AutomationRemotePropertyId AsPropertyId();
         AutomationRemoteRowOrColumnMajor AsRowOrColumnMajor();
         AutomationRemoteSayAsInterpretAs AsSayAsInterpretAs();
@@ -1603,6 +1664,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteOrientationType NewEnum(AutomationOrientationType initialValue);
         [method_name("NewEnumWithOutlineStyles")]
         AutomationRemoteOutlineStyles NewEnum(AutomationOutlineStyles initialValue);
+        [method_name("NewEnumWithPatternId")]
+        AutomationRemotePatternId NewEnum(AutomationPatternId initialValue);
         [method_name("NewEnumWithPropertyId")]
         AutomationRemotePropertyId NewEnum(AutomationPropertyId initialValue);
         [method_name("NewEnumWithRowOrColumnMajor")]
@@ -1646,6 +1709,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteRect NewRect(Windows.Foundation.Rect initialValue);
         Boolean IsGuidSupported();
         AutomationRemoteGuid NewGuid(Guid initialValue);
+        Boolean IsCacheRequestSupported();
+        AutomationRemoteCacheRequest NewCacheRequest();
         AutomationRemoteArray NewArray();
         AutomationRemoteStringMap NewStringMap();
         AutomationRemoteAnyObject NewNull();

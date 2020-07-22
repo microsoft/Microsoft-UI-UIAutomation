@@ -76,6 +76,10 @@
         OutlineStyles,
         winrt::Microsoft::UI::UIAutomation::AutomationOutlineStyles,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteOutlineStyles>;
+    using UiaPatternId = UiaEnum<
+        PATTERNID,
+        winrt::Microsoft::UI::UIAutomation::AutomationPatternId,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemotePatternId>;
     using UiaPropertyId = UiaEnum<
         PROPERTYID,
         winrt::Microsoft::UI::UIAutomation::AutomationPropertyId,
@@ -136,6 +140,54 @@
         ZoomUnit,
         winrt::Microsoft::UI::UIAutomation::AutomationZoomUnit,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteZoomUnit>;
+
+    class UiaCacheRequest: public UiaTypeBase<
+        winrt::com_ptr<IUIAutomationCacheRequest>,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>
+    {
+    public:
+        UiaCacheRequest(_In_ IUIAutomationCacheRequest* cacheRequest);
+        UiaCacheRequest(winrt::com_ptr<IUIAutomationCacheRequest> const& cacheRequest);
+        UiaCacheRequest(winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest const& cacheRequest);
+        explicit UiaCacheRequest(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject const& cacheRequest);
+        UiaCacheRequest(const UiaCacheRequest& other) = default;
+
+        operator winrt::com_ptr<IUIAutomationCacheRequest>() const;
+        operator wil::com_ptr<IUIAutomationCacheRequest>() const;
+
+        IUIAutomationCacheRequest* get() const;
+        IUIAutomationCacheRequest* operator->() const {return get();}
+        void reset();
+        IUIAutomationCacheRequest** operator&();
+        operator bool() const {return !!get();}
+        UiaBool operator!() const {return IsNull();}
+        operator UiaBool() const {return !IsNull();}
+
+        template <typename T>
+        void copy_to(T** to) const try
+        {
+            std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member).as(to);
+        }
+        catch(...)
+        {
+            THROW_HR(static_cast<HRESULT>(winrt::to_hresult()));
+        }
+
+        template <>
+        void copy_to(IUIAutomationCacheRequest** to) const try
+        {
+            std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member).copy_to(to);
+        }
+        catch(...)
+        {
+            THROW_HR(static_cast<HRESULT>(winrt::to_hresult()));
+        }
+
+        UiaBool IsNull() const;
+        void AddProperty(UiaPropertyId propertyId);
+        void AddPattern(UiaPatternId patternId);
+
+    };
 
     class UiaElement;
 
@@ -964,7 +1016,7 @@
         UiaTextRange FindText(UiaString text, UiaBool backward, UiaBool ignoreCase);
         UiaVariant GetAttributeValue(UiaTextAttributeId attr);
         UiaArray<UiaRect> GetBoundingRectangles();
-        UiaElement GetEnclosingElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest = nullptr);
+        UiaElement GetEnclosingElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
         UiaString GetText(UiaInt maxLength);
         UiaInt Move(UiaTextUnit unit, UiaInt count);
         UiaInt MoveEndpointByUnit(UiaTextPatternRangeEndpoint endpoint, UiaTextUnit unit, UiaInt count);
@@ -973,7 +1025,7 @@
         void AddToSelection();
         void RemoveFromSelection();
         void ScrollIntoView(UiaBool alignToTop);
-        UiaArray<UiaElement> GetChildren(_In_opt_ IUIAutomationCacheRequest* cacheRequest = nullptr);
+        UiaArray<UiaElement> GetChildren(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
         void ShowContextMenu();
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
@@ -2200,11 +2252,11 @@
         UiaCustomNavigationPattern GetCustomNavigationPattern(bool useCachedApi);
         UiaSelectionPattern2 GetSelectionPattern2(bool useCachedApi);
 
-        UiaElement GetParentElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest = nullptr);
-        UiaElement GetFirstChildElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest = nullptr);
-        UiaElement GetLastChildElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest = nullptr);
-        UiaElement GetNextSiblingElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest = nullptr);
-        UiaElement GetPreviousSiblingElement(_In_opt_ IUIAutomationCacheRequest* cacheRequest = nullptr);
+        UiaElement GetParentElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
+        UiaElement GetFirstChildElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
+        UiaElement GetLastChildElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
+        UiaElement GetNextSiblingElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
+        UiaElement GetPreviousSiblingElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
