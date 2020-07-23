@@ -16,12 +16,20 @@ namespace winrt
     using namespace winrt::Microsoft::UI::UIAutomation;
 }
 
+
 namespace Microsoft::VisualStudio::CppUnitTestFramework
 {
-    // This template specialization is required to allow the CppUnitTestFramework to compare `winrt::hstring`s in
-    // its assert macro. The string returned here will be printed in the output of the assert.
+    // This template specialization is required to allow the
+    // CppUnitTestFramework to compare `winrt::hstring`s in its assert macro.
+    // The string returned here will be printed in the output of the assert.
+    //
+    // Suppress unused warning on ToString function. While it may not be used
+    // in all .cpp files that include this header, it is still used in some.
+#pragma warning(push)
+#pragma warning(disable: 4505)
     template<>
     std::wstring ToString(const winrt::hstring& str)
+#pragma warning(pop)
     {
         return str.c_str();
     }
