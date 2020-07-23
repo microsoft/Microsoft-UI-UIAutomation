@@ -40,23 +40,6 @@ namespace UiaOperationAbstractionTests
             std::void_t<decltype(std::declval<T>().FromRemoteResult(std::declval<winrt::Windows::Foundation::IInspectable>()))>
         > : std::true_type{};
 
-    UiaOperationAbstraction::UiaCacheRequest CreateCacheRequest(const bool useRemoteOperations)
-    {
-        if (useRemoteOperations)
-        {
-            return UiaOperationScope::GetCurrentDelegator()->NewRemoteCacheRequest();
-        }
-        else
-        {
-            winrt::com_ptr<IUIAutomation> automation;
-            THROW_IF_FAILED(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
-
-            winrt::com_ptr<IUIAutomationCacheRequest> cacheRequest;
-            automation->CreateCacheRequest(cacheRequest.put());
-            return cacheRequest;
-        }
-    }
-
     TEST_CLASS(UiaOperationAbstractionTests)
     {
     public:
@@ -117,7 +100,7 @@ namespace UiaOperationAbstractionTests
             UiaTextPattern textPattern = childText.GetTextPattern(false /*useCached*/);
             UiaTextRange textRange = textPattern.GetDocumentRange();
 
-            auto cacheRequest = CreateCacheRequest(useRemoteOperations);
+            auto cacheRequest = UiaOperationScope::GetCurrentDelegator()->CreateCacheRequest();
             cacheRequest.AddProperty(static_cast<winrt::AutomationPropertyId>(UIA_NamePropertyId));
             auto uncachedTextElement = textRange.GetEnclosingElement();
             auto cachedTextElement = textRange.GetEnclosingElement(cacheRequest);
@@ -169,7 +152,7 @@ namespace UiaOperationAbstractionTests
 
             UiaElement element = calc;
 
-            auto cacheRequest = CreateCacheRequest(useRemoteOperations);
+            auto cacheRequest = UiaOperationScope::GetCurrentDelegator()->CreateCacheRequest();
             cacheRequest.AddProperty(static_cast<winrt::AutomationPropertyId>(UIA_NamePropertyId));
 
             // Get the parent of the parent, since this should be the window element.

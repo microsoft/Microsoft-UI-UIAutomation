@@ -39,6 +39,7 @@ namespace UiaOperationAbstraction
 
     class UiaBool;
     class UiaInt;
+    class UiaCacheRequest;
 
     using Resolver = std::function<void(winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperationResultSet&)>;
 
@@ -236,11 +237,7 @@ namespace UiaOperationAbstraction
             }
         }
 
-        winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest NewRemoteCacheRequest()
-        {
-            THROW_HR_IF(E_INVALIDARG, !m_useRemoteApi);
-            return m_remoteOperation.NewCacheRequest();
-        }
+        UiaOperationAbstraction::UiaCacheRequest CreateCacheRequest();
 
         void AbortOperationWithHresult(HRESULT hr);
 

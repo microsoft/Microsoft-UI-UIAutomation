@@ -654,6 +654,23 @@ namespace UiaOperationAbstraction
         return m_useRemoteApi;
     }
 
+    UiaCacheRequest UiaOperationDelegator::CreateCacheRequest()
+    {
+        if (m_useRemoteApi)
+        {
+            return m_remoteOperation.NewCacheRequest();
+        }
+        else
+        {
+            winrt::com_ptr<IUIAutomation> automation;
+            THROW_IF_FAILED(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
+
+            winrt::com_ptr<IUIAutomationCacheRequest> cacheRequest;
+            automation->CreateCacheRequest(cacheRequest.put());
+            return cacheRequest;
+        }
+    }
+
     void UiaOperationDelegator::AbortOperationWithHresult(HRESULT hr)
     {
         if (m_useRemoteApi && m_remoteOperation)
