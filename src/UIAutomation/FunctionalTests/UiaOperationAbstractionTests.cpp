@@ -102,6 +102,8 @@ namespace UiaOperationAbstractionTests
 
             auto cacheRequest = UiaOperationScope::GetCurrentDelegator()->CreateCacheRequest();
             cacheRequest.AddProperty(static_cast<winrt::AutomationPropertyId>(UIA_NamePropertyId));
+            cacheRequest.AddPattern(static_cast<winrt::AutomationPatternId>(UIA_TextPatternId));
+
             auto uncachedTextElement = textRange.GetEnclosingElement();
             auto cachedTextElement = textRange.GetEnclosingElement(cacheRequest);
             scope.BindResult(uncachedTextElement);
@@ -114,12 +116,21 @@ namespace UiaOperationAbstractionTests
                 {
                     uncachedTextElement.GetName(true /*useCachedApi*/);
                 });
+                Assert::ExpectException<winrt::hresult_error>([&]()
+                {
+                    uncachedTextElement.GetTextPattern(true /*useCachedApi*/);
+                });
             }
 
             {
                 const auto name = cachedTextElement.GetName(true /*useCachedApi*/);
                 Assert::IsNotNull(name.get());
                 Assert::AreEqual(std::wstring(name.get()), std::wstring(L"0"));
+
+                auto pattern = cachedTextElement.GetTextPattern(true /*useCachedApi*/);
+                Assert::IsNotNull(pattern.get());
+                const auto selection = pattern.GetSupportedTextSelection();
+                Assert::AreEqual(static_cast<uint32_t>(selection), static_cast<uint32_t>(SupportedTextSelection_Single));
             }
         }
 
@@ -154,6 +165,7 @@ namespace UiaOperationAbstractionTests
 
             auto cacheRequest = UiaOperationScope::GetCurrentDelegator()->CreateCacheRequest();
             cacheRequest.AddProperty(static_cast<winrt::AutomationPropertyId>(UIA_NamePropertyId));
+            cacheRequest.AddPattern(static_cast<winrt::AutomationPatternId>(UIA_TextPatternId));
 
             // Get the parent of the parent, since this should be the window element.
             auto uncachedParent = element.GetParentElement().GetParentElement();
@@ -168,12 +180,20 @@ namespace UiaOperationAbstractionTests
                 {
                     uncachedParent.GetName(true /*useCachedApi*/);
                 });
+                Assert::ExpectException<winrt::hresult_error>([&]()
+                {
+                    uncachedParent.GetTextPattern(true /*useCachedApi*/);
+                });
             }
 
             {
                 const auto name = cachedParent.GetName(true /*useCachedApi*/);
                 Assert::IsNotNull(name.get());
                 Assert::AreEqual(std::wstring(name.get()), std::wstring(L"Calculator"));
+
+                const auto pattern = cachedParent.GetTextPattern(true /*useCachedApi*/);
+                // This element does not support the text pattern.
+                Assert::IsNull(pattern.get());
             }
         }
 
