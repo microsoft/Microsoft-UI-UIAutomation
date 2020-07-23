@@ -101,8 +101,8 @@ namespace UiaOperationAbstractionTests
             UiaTextRange textRange = textPattern.GetDocumentRange();
 
             auto cacheRequest = UiaOperationScope::GetCurrentDelegator()->CreateCacheRequest();
-            cacheRequest.AddProperty(static_cast<winrt::AutomationPropertyId>(UIA_NamePropertyId));
-            cacheRequest.AddPattern(static_cast<winrt::AutomationPatternId>(UIA_TextPatternId));
+            cacheRequest.AddProperty(UIA_NamePropertyId);
+            cacheRequest.AddPattern(UIA_TextPatternId);
 
             auto uncachedTextElement = textRange.GetEnclosingElement();
             auto cachedTextElement = textRange.GetEnclosingElement(cacheRequest);
@@ -164,8 +164,8 @@ namespace UiaOperationAbstractionTests
             UiaElement element = calc;
 
             auto cacheRequest = UiaOperationScope::GetCurrentDelegator()->CreateCacheRequest();
-            cacheRequest.AddProperty(static_cast<winrt::AutomationPropertyId>(UIA_NamePropertyId));
-            cacheRequest.AddPattern(static_cast<winrt::AutomationPatternId>(UIA_TextPatternId));
+            cacheRequest.AddProperty(UIA_NamePropertyId);
+            cacheRequest.AddPattern(UIA_TextPatternId);
 
             // Get the parent of the parent, since this should be the window element.
             auto uncachedParent = element.GetParentElement().GetParentElement();
