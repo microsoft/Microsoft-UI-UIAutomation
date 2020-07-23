@@ -600,7 +600,7 @@ namespace Microsoft.UI.UIAutomation
         SynchronizedInput = 10021,
         ObjectModel = 10022,
         Annotation = 10023,
-        UIA_TextPattern2Id = 10024,
+        Text2 = 10024,
         Styles = 10025,
         Spreadsheet = 10026,
         SpreadsheetItem = 10027,
