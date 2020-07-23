@@ -213,7 +213,7 @@ namespace WinRTWrapperTests
             array.Append(cacheRequest);
             const auto cacheRequestAsAnyObject = array.GetAt(op.NewUint(0));
 
-            const auto isCacheRequest = cacheRequestAsAnyObject.IsGuid();
+            const auto isCacheRequest = cacheRequestAsAnyObject.IsCacheRequest();
             const auto isCacheRequestToken = op.RequestResponse(isCacheRequest);
 
             const auto results = op.Execute();
@@ -325,10 +325,8 @@ namespace WinRTWrapperTests
             {
                 winrt::com_ptr<IUIAutomationTextPattern> textPattern;
                 AssertSucceeded(calcResult->GetCachedPatternAs(UIA_TextPatternId, IID_PPV_ARGS(&textPattern)));
-                Assert::IsNotNull(textPattern.get());
-                SupportedTextSelection selection{};
-                AssertSucceeded(textPattern->get_SupportedTextSelection(&selection));
-                Assert::AreEqual(static_cast<uint32_t>(selection), static_cast<uint32_t>(SupportedTextSelection_None));
+                // This element does not support the text pattern.
+                Assert::IsNull(textPattern.get());
             }
         }
 
@@ -392,24 +390,16 @@ namespace WinRTWrapperTests
 
             cacheRequest.AddProperty(op.NewEnum(static_cast<winrt::AutomationPropertyId>(UIA_ControlTypePropertyId)));
             cacheRequest.AddPattern(op.NewEnum(static_cast<winrt::AutomationPatternId>(UIA_ValuePatternId)));
-            remoteCalc.PopulateCache(cacheRequest);
-            const auto calcToken = op.RequestResponse(remoteCalc);
+
+            const auto text = remoteCalc.GetFirstChildElement().GetFirstChildElement();
+            text.PopulateCache(cacheRequest);
+            const auto textToken = op.RequestResponse(text);
 
             const auto results = op.Execute();
             AssertSucceeded(results.OperationStatus());
 
             const auto windowResult = results.GetResult(windowToken).as<IUIAutomationElement>();
-            const auto calcResult = results.GetResult(calcToken).as<IUIAutomationElement>();
-
-            // Make sure this is the same element we passed in.
-            {
-                winrt::com_ptr<IUIAutomation> automation;
-                AssertSucceeded(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
-                BOOL equals = FALSE;
-
-                AssertSucceeded(automation->CompareElements(calcResult.get(), calc.get(), &equals));
-                Assert::IsTrue(equals);
-            }
+            const auto textResult = results.GetResult(textToken).as<IUIAutomationElement>();
 
             // Make sure the name property is cached on the window, but the control type property is not.
             {
@@ -428,12 +418,12 @@ namespace WinRTWrapperTests
             // Make sure both properties are cached on calc.
             {
                 wil::unique_bstr name;
-                AssertSucceeded(calcResult->get_CachedName(&name));
+                AssertSucceeded(textResult->get_CachedName(&name));
                 Assert::IsNotNull(name.get());
-                Assert::AreEqual(std::wstring(name.get()), std::wstring(L"Display is 0"));
+                Assert::AreEqual(std::wstring(name.get()), std::wstring(L"0"));
 
                 CONTROLTYPEID controlType{};
-                AssertSucceeded(calcResult->get_CachedControlType(&controlType));
+                AssertSucceeded(textResult->get_CachedControlType(&controlType));
                 Assert::AreEqual(static_cast<long>(controlType), static_cast<long>(UIA_TextControlTypeId));
             }
 
@@ -455,14 +445,14 @@ namespace WinRTWrapperTests
             // Make sure both patterns are cached on calc.
             {
                 winrt::com_ptr<IUIAutomationTextPattern> textPattern;
-                AssertSucceeded(calcResult->GetCachedPatternAs(UIA_TextPatternId, IID_PPV_ARGS(&textPattern)));
+                AssertSucceeded(textResult->GetCachedPatternAs(UIA_TextPatternId, IID_PPV_ARGS(&textPattern)));
                 Assert::IsNotNull(textPattern.get());
                 SupportedTextSelection selection{};
                 AssertSucceeded(textPattern->get_SupportedTextSelection(&selection));
-                Assert::AreEqual(static_cast<uint32_t>(selection), static_cast<uint32_t>(SupportedTextSelection_None));
+                Assert::AreEqual(static_cast<uint32_t>(selection), static_cast<uint32_t>(SupportedTextSelection_Single));
 
                 winrt::com_ptr<IUIAutomationValuePattern> valuePattern;
-                AssertSucceeded(calcResult->GetCachedPatternAs(UIA_ValuePatternId, IID_PPV_ARGS(&valuePattern)));
+                AssertSucceeded(textResult->GetCachedPatternAs(UIA_ValuePatternId, IID_PPV_ARGS(&valuePattern)));
                 // This element does not support the value pattern.
                 Assert::IsNull(valuePattern.get());
             }

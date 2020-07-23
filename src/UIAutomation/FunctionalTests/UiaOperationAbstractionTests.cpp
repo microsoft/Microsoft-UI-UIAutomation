@@ -44,7 +44,7 @@ namespace UiaOperationAbstractionTests
     {
         if (useRemoteOperations)
         {
-            UiaOperationScope::GetCurrentDelegator()->NewRemoteCacheRequest();
+            return UiaOperationScope::GetCurrentDelegator()->NewRemoteCacheRequest();
         }
         else
         {
@@ -87,12 +87,12 @@ namespace UiaOperationAbstractionTests
         }
         TEST_METHOD(ElementGetNameLocalTest)
         {
-            GetParentElementTest(false);
+            ElementGetNameTest(false);
         }
 
         TEST_METHOD(ElementGetNameRemoteTest)
         {
-            GetParentElementTest(true);
+            ElementGetNameTest(true);
         }
 
         // Asserts that GetEnclosingElement can be called with a cache request.
@@ -113,7 +113,8 @@ namespace UiaOperationAbstractionTests
             auto scope = UiaOperationScope::StartNew();
 
             UiaElement element = calc;
-            UiaTextPattern textPattern = element.GetTextPattern(false /*useCached*/);
+            UiaElement childText = element.GetFirstChildElement().GetFirstChildElement();
+            UiaTextPattern textPattern = childText.GetTextPattern(false /*useCached*/);
             UiaTextRange textRange = textPattern.GetDocumentRange();
 
             auto cacheRequest = CreateCacheRequest(useRemoteOperations);
@@ -126,7 +127,7 @@ namespace UiaOperationAbstractionTests
             scope.Resolve();
 
             {
-                Assert::ExpectException<wil::ResultException>([&]()
+                Assert::ExpectException<winrt::hresult_error>([&]()
                 {
                     uncachedTextElement.GetName(true /*useCachedApi*/);
                 });
@@ -135,7 +136,7 @@ namespace UiaOperationAbstractionTests
             {
                 const auto name = cachedTextElement.GetName(true /*useCachedApi*/);
                 Assert::IsNotNull(name.get());
-                Assert::AreEqual(std::wstring(name.get()), std::wstring(L"Display is 0"));
+                Assert::AreEqual(std::wstring(name.get()), std::wstring(L"0"));
             }
         }
 
@@ -180,7 +181,7 @@ namespace UiaOperationAbstractionTests
             scope.Resolve();
 
             {
-                Assert::ExpectException<wil::ResultException>([&]()
+                Assert::ExpectException<winrt::hresult_error>([&]()
                 {
                     uncachedParent.GetName(true /*useCachedApi*/);
                 });
