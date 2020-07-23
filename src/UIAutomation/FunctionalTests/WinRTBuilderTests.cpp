@@ -258,28 +258,9 @@ namespace WinRTBuilderTests
 
             const auto window = remoteCalc.GetParentElement().GetParentElement();
             window.PopulateCache(cacheRequest);
-            const auto windowToken = op.RequestResponse(window);
 
             const auto results = op.Execute();
             AssertSucceeded(results.OperationStatus());
-
-            const auto windowResult = results.GetResult(windowToken).as<IUIAutomationElement>();
-
-            // Make sure the name property is cached.
-            {
-                wil::unique_bstr name;
-                AssertSucceeded(windowResult->get_CachedName(&name));
-                Assert::IsNotNull(name.get());
-                Assert::AreEqual(std::wstring(name.get()), std::wstring(L"Calculator"));
-            }
-
-            // Make sure the text pattern is cached.
-            {
-                winrt::com_ptr<IUIAutomationTextPattern> textPattern;
-                AssertSucceeded(windowResult->GetCachedPatternAs(UIA_TextPatternId, IID_PPV_ARGS(&textPattern)));
-                // This element does not support the text pattern.
-                Assert::IsNull(textPattern.get());
-            }
         }
 
         // Asserts that an imported element's cache can be populated.
