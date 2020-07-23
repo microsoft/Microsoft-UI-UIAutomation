@@ -7,9 +7,9 @@
 #include "ModernApp.h"
 #include "TestUtils.h"
 
-namespace WinRTWrapperTests
+namespace WinRTBuilderTests
 {
-    TEST_CLASS(WinRTWrapperTests)
+    TEST_CLASS(WinRTBuilderTests)
     {
     public:
         // Asserts that it's possible to activate the AutomationRemoteOperation runtimeclass.

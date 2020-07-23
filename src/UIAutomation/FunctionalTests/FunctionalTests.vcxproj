@@ -169,7 +169,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="WinRTWrapperTests.cpp" />
+    <ClCompile Include="WinRTBuilderTests.cpp" />
     <ClCompile Include="UiaOperationAbstractionTests.cpp" />
     <ClCompile Include="ModernApp.cpp" />
     <ClCompile Include="pch.cpp">

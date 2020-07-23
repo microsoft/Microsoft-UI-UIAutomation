@@ -21,7 +21,7 @@
     <ClCompile Include="ModernApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WinRTWrapperTests.cpp">
+    <ClCompile Include="WinRTBuilderTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UiaOperationAbstractionTests.cpp">
