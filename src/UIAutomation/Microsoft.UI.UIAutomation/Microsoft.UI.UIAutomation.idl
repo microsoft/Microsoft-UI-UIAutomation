@@ -604,13 +604,13 @@ namespace Microsoft.UI.UIAutomation
         Styles = 10025,
         Spreadsheet = 10026,
         SpreadsheetItem = 10027,
-        UIA_TransformPattern2Id = 10028,
+        Transform2 = 10028,
         TextChild = 10029,
         Drag = 10030,
         DropTarget = 10031,
         TextEdit = 10032,
         CustomNavigation = 10033,
-        UIA_SelectionPattern2Id = 10034,
+        Selection2 = 10034,
     };
 
     runtimeclass AutomationRemotePatternId : AutomationRemoteObject
