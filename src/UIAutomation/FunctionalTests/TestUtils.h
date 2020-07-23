@@ -45,6 +45,7 @@ void LogOutput(Args&&... args)
 // Returns the found element on success.
 inline winrt::com_ptr<IUIAutomationElement> WaitForElementFocus(const wchar_t* elementName, int retries = 100)
 {
+    static constexpr DWORD c_sleepMilliseconds = 50;
     winrt::com_ptr<IUIAutomation> automation;
     THROW_IF_FAILED(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
 
@@ -55,7 +56,7 @@ inline winrt::com_ptr<IUIAutomationElement> WaitForElementFocus(const wchar_t* e
         if (getFocusedElementHr == E_INVALIDARG)
         {
             LogOutput(L"GetFocusedElement returned E_INVALIDARG; retrying");
-            Sleep(50);
+            Sleep(c_sleepMilliseconds);
             continue;
         }
         THROW_IF_FAILED(getFocusedElementHr);
@@ -70,7 +71,7 @@ inline winrt::com_ptr<IUIAutomationElement> WaitForElementFocus(const wchar_t* e
             return element;
         }
 
-        ::Sleep(50);
+        ::Sleep(c_sleepMilliseconds);
     }
 
     LogOutput(L"Element never gained focus.");
