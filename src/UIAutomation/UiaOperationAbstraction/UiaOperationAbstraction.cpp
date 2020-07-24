@@ -578,32 +578,30 @@ namespace UiaOperationAbstraction
         m_member = static_cast<UIA_HWND>(LongToHandle(intermediate));
     }
 
-    using UiaCacheRequestBaseType =
-        UiaTypeBase<
-            winrt::com_ptr<IUIAutomationCacheRequest>,
-            winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>;
-
     struct UiaCacheRequestHelper
     {
-        static UiaCacheRequestBaseType CreateBaseClass();
-    };
+        using UiaCacheRequestBaseType =
+            UiaTypeBase<
+                winrt::com_ptr<IUIAutomationCacheRequest>,
+                winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>;
 
-    /*static*/ UiaCacheRequestBaseType UiaCacheRequestHelper::CreateBaseClass()
-    {
-        const auto delegator = UiaOperationScope::GetCurrentDelegator();
-        if (delegator && delegator->GetUseRemoteApi())
+        static UiaCacheRequestBaseType CreateBaseClass()
         {
-            // We have direct access to m_remoteOperation here because we're a
-            // friend class.
-            return delegator->m_remoteOperation.NewCacheRequest();
+            const auto delegator = UiaOperationScope::GetCurrentDelegator();
+            if (delegator && delegator->GetUseRemoteApi())
+            {
+                // We have direct access to m_remoteOperation here because
+                // we're a friend class.
+                return delegator->m_remoteOperation.NewCacheRequest();
+            }
+            else
+            {
+                winrt::com_ptr<IUIAutomationCacheRequest> cacheRequest;
+                THROW_IF_FAILED(g_automation.get()->CreateCacheRequest(cacheRequest.put()));
+                return cacheRequest;
+            }
         }
-        else
-        {
-            winrt::com_ptr<IUIAutomationCacheRequest> cacheRequest;
-            THROW_IF_FAILED(g_automation.get()->CreateCacheRequest(cacheRequest.put()));
-            return cacheRequest;
-        }
-    }
+    };
 
     UiaCacheRequest::UiaCacheRequest() :
         UiaTypeBase(UiaCacheRequestHelper::CreateBaseClass()) {}
