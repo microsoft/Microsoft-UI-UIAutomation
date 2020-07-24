@@ -663,7 +663,7 @@ namespace UiaOperationAbstraction
         else
         {
             winrt::com_ptr<IUIAutomationCacheRequest> cacheRequest;
-            g_automation.get()->CreateCacheRequest(cacheRequest.put());
+            THROW_IF_FAILED(g_automation.get()->CreateCacheRequest(cacheRequest.put()));
             return cacheRequest;
         }
     }
