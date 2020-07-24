@@ -101,7 +101,7 @@ namespace UiaOperationAbstractionTests
             UiaTextPattern textPattern = childText.GetTextPattern(false /*useCached*/);
             UiaTextRange textRange = textPattern.GetDocumentRange();
 
-            auto cacheRequest = UiaOperationScope::GetCurrentDelegator()->CreateCacheRequest();
+            UiaOperationAbstraction::UiaCacheRequest cacheRequest;
             cacheRequest.AddProperty(UIA_NamePropertyId);
             cacheRequest.AddPattern(UIA_TextPatternId);
 
@@ -165,7 +165,7 @@ namespace UiaOperationAbstractionTests
 
             UiaElement element = calc;
 
-            auto cacheRequest = UiaOperationScope::GetCurrentDelegator()->CreateCacheRequest();
+            UiaOperationAbstraction::UiaCacheRequest cacheRequest;
             cacheRequest.AddProperty(UIA_NamePropertyId);
             cacheRequest.AddPattern(UIA_TextPatternId);
 

@@ -155,6 +155,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="SafeArrayUtil.h" />
     <ClInclude Include="UiaOperationAbstraction.h" />
+    <ClInclude Include="UiaTypeAbstractionEnums.g.h" />
     <ClInclude Include="UiaTypeAbstraction.g.h" />
   </ItemGroup>
   <ItemGroup>

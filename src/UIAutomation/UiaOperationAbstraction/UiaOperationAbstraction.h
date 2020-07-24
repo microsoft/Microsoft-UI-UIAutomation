@@ -39,7 +39,6 @@ namespace UiaOperationAbstraction
 
     class UiaBool;
     class UiaInt;
-    class UiaCacheRequest;
 
     using Resolver = std::function<void(winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperationResultSet&)>;
 
@@ -65,6 +64,15 @@ namespace UiaOperationAbstraction
     class UiaOperationDelegator
     {
     public:
+        // Friend a helper class to allow UiaCacheRequest to have a single
+        // default constructor. UiaCacheRequestHelper implements a static
+        // function which reads m_remoteOperation in order to optionally call
+        // m_remoteOperation.NewCacheRequest. Using a friend class here
+        // provides additional encapsulation for the user of this library,
+        // since otherwise we would need to implement a public function on
+        // UiaOperationDelegator which UiaCacheRequest's constructor could call.
+        friend struct UiaCacheRequestHelper;
+
         UiaOperationDelegator();
         UiaOperationDelegator(bool useRemoteApi);
 
@@ -236,8 +244,6 @@ namespace UiaOperationAbstraction
                 throw UiaOperationAbstraction::LoopContinueException();
             }
         }
-
-        UiaOperationAbstraction::UiaCacheRequest CreateCacheRequest();
 
         void AbortOperationWithHresult(HRESULT hr);
 
@@ -1545,6 +1551,19 @@ namespace UiaOperationAbstraction
             }
         }
     }
+
+#include "UiaTypeAbstractionEnums.g.h"
+
+    class UiaCacheRequest: public UiaTypeBase<
+        winrt::com_ptr<IUIAutomationCacheRequest>,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>
+    {
+    public:
+        UiaCacheRequest();
+
+        void AddProperty(UiaPropertyId propertyId);
+        void AddPattern(UiaPatternId patternId);
+    };
 
 #include "UiaTypeAbstraction.g.h"
 

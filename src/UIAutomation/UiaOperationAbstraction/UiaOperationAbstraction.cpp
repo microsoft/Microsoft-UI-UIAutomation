@@ -578,6 +578,62 @@ namespace UiaOperationAbstraction
         m_member = static_cast<UIA_HWND>(LongToHandle(intermediate));
     }
 
+    using UiaCacheRequestBaseType =
+        UiaTypeBase<
+            winrt::com_ptr<IUIAutomationCacheRequest>,
+            winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>;
+
+    struct UiaCacheRequestHelper
+    {
+        static UiaCacheRequestBaseType CreateBaseClass();
+    };
+
+    /*static*/ UiaCacheRequestBaseType UiaCacheRequestHelper::CreateBaseClass()
+    {
+        const auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            // We have direct access to m_remoteOperation here because we're a
+            // friend class.
+            return delegator->m_remoteOperation.NewCacheRequest();
+        }
+        else
+        {
+            winrt::com_ptr<IUIAutomationCacheRequest> cacheRequest;
+            THROW_IF_FAILED(g_automation.get()->CreateCacheRequest(cacheRequest.put()));
+            return cacheRequest;
+        }
+    }
+
+    UiaCacheRequest::UiaCacheRequest() :
+        UiaTypeBase(UiaCacheRequestHelper::CreateBaseClass()) {}
+
+    void UiaCacheRequest::AddProperty(UiaPropertyId propertyId)
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            std::get<AutomationRemoteCacheRequest>(m_member).AddProperty(propertyId);
+        }
+        else
+        {
+            winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member)->AddProperty(propertyId));
+        }
+    }
+
+    void UiaCacheRequest::AddPattern(UiaPatternId patternId)
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            std::get<AutomationRemoteCacheRequest>(m_member).AddPattern(patternId);
+        }
+        else
+        {
+            winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member)->AddPattern(patternId));
+        }
+    }
+
     namespace impl
     {
         template <>
@@ -652,20 +708,6 @@ namespace UiaOperationAbstraction
     bool UiaOperationDelegator::GetUseRemoteApi() const
     {
         return m_useRemoteApi;
-    }
-
-    UiaCacheRequest UiaOperationDelegator::CreateCacheRequest()
-    {
-        if (m_useRemoteApi)
-        {
-            return m_remoteOperation.NewCacheRequest();
-        }
-        else
-        {
-            winrt::com_ptr<IUIAutomationCacheRequest> cacheRequest;
-            THROW_IF_FAILED(g_automation.get()->CreateCacheRequest(cacheRequest.put()));
-            return cacheRequest;
-        }
     }
 
     void UiaOperationDelegator::AbortOperationWithHresult(HRESULT hr)

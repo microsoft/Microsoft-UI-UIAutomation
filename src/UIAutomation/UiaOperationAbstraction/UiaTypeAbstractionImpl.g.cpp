@@ -2248,7 +2248,7 @@
         if (cacheRequest)
         {
             winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationTextRange>>(m_member).as<IUIAutomationTextRange3>()->GetEnclosingElementBuildCache(
-                cacheRequest->get(),
+                (*cacheRequest.value()).get(),
                 outValue.put()));
         }
         else
@@ -2417,7 +2417,7 @@
         if (cacheRequest)
         {
             winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationTextRange>>(m_member).as<IUIAutomationTextRange3>()->GetChildrenBuildCache(
-                cacheRequest->get(),
+                (*cacheRequest.value()).get(),
                 outValue.put()));
         }
         else
@@ -5030,93 +5030,6 @@
         return localPropertyValue;
     }
 
-    UiaCacheRequest::UiaCacheRequest(_In_ IUIAutomationCacheRequest* cacheRequest):
-        UiaTypeBase(MakeWinrtComPtr(cacheRequest))
-    {
-    }
-
-    UiaCacheRequest::UiaCacheRequest(winrt::com_ptr<IUIAutomationCacheRequest> const& cacheRequest):
-        UiaTypeBase(cacheRequest)
-    {
-    }
-
-    UiaCacheRequest::UiaCacheRequest(winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest const& cacheRequest):
-        UiaTypeBase(cacheRequest)
-    {
-    }
-
-    UiaCacheRequest::UiaCacheRequest(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject const& cacheRequest):
-        UiaTypeBase(cacheRequest.AsCacheRequest())
-    {
-    }
-
-    UiaCacheRequest::operator winrt::com_ptr<IUIAutomationCacheRequest>() const
-    {
-        return std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member);
-    }
-
-    UiaCacheRequest::operator wil::com_ptr<IUIAutomationCacheRequest>() const
-    {
-        return wil::com_ptr<IUIAutomationCacheRequest>(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member).get());
-    }
-
-    IUIAutomationCacheRequest* UiaCacheRequest::get() const
-    {
-        return std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member).get();
-    }
-
-    void UiaCacheRequest::reset()
-    {
-        std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member) = nullptr;
-    }
-
-    IUIAutomationCacheRequest** UiaCacheRequest::operator&()
-    {
-        reset();
-        return std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member).put();
-    }
-
-
-    UiaBool UiaCacheRequest::IsNull() const
-    {
-        if (UiaOperationAbstraction::ShouldUseRemoteApi())
-        {
-            auto remoteValue = std::get_if<AutomationRemoteCacheRequest>(&m_member);
-            if (remoteValue)
-            {
-                return remoteValue->IsNull();
-            }
-        }
-
-        return !get();
-    }
-
-    void UiaCacheRequest::AddProperty(UiaPropertyId propertyId)
-    {
-        auto delegator = UiaOperationScope::GetCurrentDelegator();
-        if (delegator && delegator->GetUseRemoteApi())
-        {
-            std::get<AutomationRemoteCacheRequest>(m_member).AddProperty(propertyId);
-        }
-        else
-        {
-            winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member)->AddProperty(propertyId));
-        }
-    }
-
-    void UiaCacheRequest::AddPattern(UiaPatternId patternId)
-    {
-        auto delegator = UiaOperationScope::GetCurrentDelegator();
-        if (delegator && delegator->GetUseRemoteApi())
-        {
-            std::get<AutomationRemoteCacheRequest>(m_member).AddPattern(patternId);
-        }
-        else
-        {
-            winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member)->AddPattern(patternId));
-        }
-    }
-
     UiaElement::UiaElement(_In_ IUIAutomationElement* element):
         UiaTypeBase(MakeWinrtComPtr(element))
     {
@@ -7073,7 +6986,10 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetParentElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
+            winrt::check_hresult(walker->GetParentElementBuildCache(
+                localElement.get(),
+                (*cacheRequest.value()).get(),
+                localResult.put()));
         }
         else
         {
@@ -7102,7 +7018,10 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetFirstChildElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
+            winrt::check_hresult(walker->GetFirstChildElementBuildCache(
+                localElement.get(),
+                (*cacheRequest.value()).get(),
+                localResult.put()));
         }
         else
         {
@@ -7131,7 +7050,10 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetLastChildElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
+            winrt::check_hresult(walker->GetLastChildElementBuildCache(
+                localElement.get(),
+                (*cacheRequest.value()).get(),
+                localResult.put()));
         }
         else
         {
@@ -7160,7 +7082,10 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetNextSiblingElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
+            winrt::check_hresult(walker->GetNextSiblingElementBuildCache(
+                localElement.get(),
+                (*cacheRequest.value()).get(),
+                localResult.put()));
         }
         else
         {
@@ -7189,7 +7114,10 @@
         winrt::com_ptr<IUIAutomationElement> localResult;
         if (cacheRequest)
         {
-            winrt::check_hresult(walker->GetPreviousSiblingElementBuildCache(localElement.get(), cacheRequest->get(), localResult.put()));
+            winrt::check_hresult(walker->GetPreviousSiblingElementBuildCache(
+                localElement.get(),
+                (*cacheRequest.value()).get(),
+                localResult.put()));
         }
         else
         {
