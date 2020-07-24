@@ -40,6 +40,18 @@ namespace UiaOperationAbstractionTests
             std::void_t<decltype(std::declval<T>().FromRemoteResult(std::declval<winrt::Windows::Foundation::IInspectable>()))>
         > : std::true_type{};
 
+    auto InitializeUiaOperationAbstraction(const bool useRemoteOperations)
+    {
+        winrt::com_ptr<IUIAutomation> automation;
+        THROW_IF_FAILED(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
+        UiaOperationAbstraction::Initialize(useRemoteOperations, automation.get());
+
+        return wil::scope_exit([]()
+        {
+            UiaOperationAbstraction::Cleanup();
+        });
+    }
+
     TEST_CLASS(UiaOperationAbstractionTests)
     {
     public:
@@ -50,13 +62,7 @@ namespace UiaOperationAbstractionTests
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
 
-            winrt::com_ptr<IUIAutomation> automation;
-            THROW_IF_FAILED(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
-            UiaOperationAbstraction::Initialize(useRemoteOperations, automation.get());
-            auto cleanup = wil::scope_exit([&]()
-            {
-                UiaOperationAbstraction::Cleanup();
-            });
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -68,6 +74,7 @@ namespace UiaOperationAbstractionTests
 
             Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(name).get()), std::wstring(L"Display is 0"));
         }
+
         TEST_METHOD(ElementGetNameLocalTest)
         {
             ElementGetNameTest(false);
@@ -86,13 +93,7 @@ namespace UiaOperationAbstractionTests
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
 
-            winrt::com_ptr<IUIAutomation> automation;
-            THROW_IF_FAILED(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
-            UiaOperationAbstraction::Initialize(useRemoteOperations, automation.get());
-            auto cleanup = wil::scope_exit([&]()
-            {
-                UiaOperationAbstraction::Cleanup();
-            });
+            const auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -153,13 +154,7 @@ namespace UiaOperationAbstractionTests
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
 
-            winrt::com_ptr<IUIAutomation> automation;
-            THROW_IF_FAILED(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
-            UiaOperationAbstraction::Initialize(useRemoteOperations, automation.get());
-            auto cleanup = wil::scope_exit([&]()
-            {
-                UiaOperationAbstraction::Cleanup();
-            });
+            const auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
