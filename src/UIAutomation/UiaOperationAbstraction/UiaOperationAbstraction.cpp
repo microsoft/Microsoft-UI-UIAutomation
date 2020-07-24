@@ -678,6 +678,31 @@ namespace UiaOperationAbstraction
 
             return result;
         }
+
+        void PopulateCacheHelper(
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement& element,
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest)
+        {
+            element.PopulateCache(cacheRequest);
+        }
+
+        void PopulateCacheHelper(
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& elements,
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest)
+        {
+            auto delegator = UiaOperationScope::GetCurrentDelegator();
+
+            UiaUint size = elements.Size();
+            UiaUint i{ 0 };
+            delegator->For(
+                [](){} /* initialize */,
+                [&]() { return i < size; } /* condition */,
+                [&]() { i += 1; } /* modification */,
+                [&]() /* body */
+                {
+                    elements.GetAt(i).AsElement().PopulateCache(cacheRequest);
+                });
+        }
     } // namespace impl
 
     void Initialize(bool useRemoteOperations, _In_ IUIAutomation* automation) noexcept
@@ -1942,30 +1967,5 @@ namespace UiaOperationAbstraction
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         return delegator && delegator->GetUseRemoteApi();
-    }
-
-    void PopulateCacheHelper(
-        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement& element,
-        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest)
-    {
-        element.PopulateCache(cacheRequest);
-    }
-
-    void PopulateCacheHelper(
-        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& elements,
-        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest)
-    {
-        auto delegator = UiaOperationScope::GetCurrentDelegator();
-
-        UiaUint size = elements.Size();
-        UiaUint i{ 0 };
-        delegator->For(
-            [](){} /* initialize */,
-            [&]() { return i < size; } /* condition */,
-            [&]() { i += 1; } /* modification */,
-            [&]() /* body */
-            {
-                elements.GetAt(i).AsElement().PopulateCache(cacheRequest);
-            });
     }
 } // namespace UiaOperationAbstraction
