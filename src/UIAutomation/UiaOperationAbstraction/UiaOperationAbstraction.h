@@ -973,6 +973,8 @@ namespace UiaOperationAbstraction
         }
     };
 
+#include "UiaTypeAbstractionEnums.g.h"
+
     class UiaPoint : public UiaTypeBase<
         winrt::Windows::Foundation::Point,
         winrt::Microsoft::UI::UIAutomation::AutomationRemotePoint>
@@ -1551,8 +1553,6 @@ namespace UiaOperationAbstraction
             }
         }
     }
-
-#include "UiaTypeAbstractionEnums.g.h"
 
     class UiaCacheRequest: public UiaTypeBase<
         winrt::com_ptr<IUIAutomationCacheRequest>,
