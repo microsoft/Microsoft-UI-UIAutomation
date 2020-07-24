@@ -78,8 +78,9 @@ namespace UiaOperationAbstractionTests
             ElementGetNameTest(true);
         }
 
-        // Asserts that GetEnclosingElement can be called with a cache request.
-        void GetEnclosingElementTest(const bool useRemoteOperations)
+        // Asserts that a pattern method (in this case GetEnclosingElement) can
+        // be called with or without a cache request.
+        void CacheRequestPatternMethodTest(const bool useRemoteOperations)
         {
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
@@ -134,18 +135,19 @@ namespace UiaOperationAbstractionTests
             }
         }
 
-        TEST_METHOD(GetEnclosingElementLocalTest)
+        TEST_METHOD(CacheRequestPatternMethodLocalTest)
         {
-            GetEnclosingElementTest(false);
+            CacheRequestPatternMethodTest(false);
         }
 
-        TEST_METHOD(GetEnclosingElementRemoteTest)
+        TEST_METHOD(CacheRequestPatternMethodRemoteTest)
         {
-            GetEnclosingElementTest(true);
+            CacheRequestPatternMethodTest(true);
         }
 
-        // Asserts that GetParentElement can be called with a cache request.
-        void GetParentElementTest(const bool useRemoteOperations)
+        // Asserts that a navigation method (in this case GetParentElement) can
+        // be called with or without a cache request.
+        void CacheRequestNavigationMethodTest(const bool useRemoteOperations)
         {
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
@@ -197,14 +199,14 @@ namespace UiaOperationAbstractionTests
             }
         }
 
-        TEST_METHOD(GetParentElementLocalTest)
+        TEST_METHOD(CacheRequestNavigationMethodLocalTest)
         {
-            GetParentElementTest(false);
+            CacheRequestNavigationMethodTest(false);
         }
 
-        TEST_METHOD(GetParentElementRemoteTest)
+        TEST_METHOD(CacheRequestNavigationMethodRemoteTest)
         {
-            GetParentElementTest(true);
+            CacheRequestNavigationMethodTest(true);
         }
 
         // Asserts that UiaCacheRequest can't be returned from a remote
