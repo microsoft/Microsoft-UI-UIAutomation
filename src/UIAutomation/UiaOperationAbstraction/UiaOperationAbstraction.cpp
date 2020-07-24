@@ -662,11 +662,8 @@ namespace UiaOperationAbstraction
         }
         else
         {
-            winrt::com_ptr<IUIAutomation> automation;
-            THROW_IF_FAILED(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
-
             winrt::com_ptr<IUIAutomationCacheRequest> cacheRequest;
-            automation->CreateCacheRequest(cacheRequest.put());
+            g_automation.get()->CreateCacheRequest(cacheRequest.put());
             return cacheRequest;
         }
     }
