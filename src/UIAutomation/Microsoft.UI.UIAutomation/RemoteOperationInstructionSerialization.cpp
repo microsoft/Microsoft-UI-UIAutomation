@@ -156,6 +156,11 @@ void RemoteOperationInstructionSerializer::Write(const NewNull& instruction)
     Write(instruction.resultId);
 }
 
+void RemoteOperationInstructionSerializer::Write(const NewCacheRequest& instruction)
+{
+    Write(instruction.resultId);
+}
+
 void RemoteOperationInstructionSerializer::Write(const GetPointProperty& instruction)
 {
     Write(instruction.resultId);
@@ -440,6 +445,12 @@ void RemoteOperationInstructionSerializer::Write(const bytecode::Navigate& instr
     Write(instruction.directionId);
 }
 
+void RemoteOperationInstructionSerializer::Write(const bytecode::PopulateCache& instruction)
+{
+    Write(instruction.elementId);
+    Write(instruction.cacheRequestId);
+}
+
 void RemoteOperationInstructionSerializer::Write(const bytecode::LookupId& instruction)
 {
     Write(instruction.resultId);
@@ -452,6 +463,18 @@ void RemoteOperationInstructionSerializer::Write(const bytecode::LookupGuid& ins
     Write(instruction.resultId);
     Write(instruction.intIdId);
     Write(static_cast<int>(instruction.idType));
+}
+
+void RemoteOperationInstructionSerializer::Write(const bytecode::CacheRequestAddProperty& instruction)
+{
+    Write(instruction.cacheRequestId);
+    Write(instruction.propertyIdId);
+}
+
+void RemoteOperationInstructionSerializer::Write(const bytecode::CacheRequestAddPattern& instruction)
+{
+    Write(instruction.cacheRequestId);
+    Write(instruction.patternIdId);
 }
 
 void RemoteOperationInstructionSerializer::Write(const GetterBase& instruction)

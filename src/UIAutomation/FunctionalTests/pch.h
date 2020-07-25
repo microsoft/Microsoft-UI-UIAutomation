@@ -18,5 +18,7 @@
 #include <wil/result.h>
 #include <wil/com.h>
 
+#include <winrt/Windows.Foundation.h>
+
 #include <string>
 #include <sstream>

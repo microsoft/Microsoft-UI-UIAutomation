@@ -578,6 +578,60 @@ namespace UiaOperationAbstraction
         m_member = static_cast<UIA_HWND>(LongToHandle(intermediate));
     }
 
+    struct UiaCacheRequestHelper
+    {
+        using UiaCacheRequestBaseType =
+            UiaTypeBase<
+                winrt::com_ptr<IUIAutomationCacheRequest>,
+                winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>;
+
+        static UiaCacheRequestBaseType CreateBaseClass()
+        {
+            const auto delegator = UiaOperationScope::GetCurrentDelegator();
+            if (delegator && delegator->GetUseRemoteApi())
+            {
+                // We have direct access to m_remoteOperation here because
+                // we're a friend class.
+                return delegator->m_remoteOperation.NewCacheRequest();
+            }
+            else
+            {
+                winrt::com_ptr<IUIAutomationCacheRequest> cacheRequest;
+                THROW_IF_FAILED(g_automation.get()->CreateCacheRequest(cacheRequest.put()));
+                return cacheRequest;
+            }
+        }
+    };
+
+    UiaCacheRequest::UiaCacheRequest() :
+        UiaTypeBase(UiaCacheRequestHelper::CreateBaseClass()) {}
+
+    void UiaCacheRequest::AddProperty(UiaPropertyId propertyId)
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            std::get<AutomationRemoteCacheRequest>(m_member).AddProperty(propertyId);
+        }
+        else
+        {
+            winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member)->AddProperty(propertyId));
+        }
+    }
+
+    void UiaCacheRequest::AddPattern(UiaPatternId patternId)
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            std::get<AutomationRemoteCacheRequest>(m_member).AddPattern(patternId);
+        }
+        else
+        {
+            winrt::check_hresult(std::get<winrt::com_ptr<IUIAutomationCacheRequest>>(m_member)->AddPattern(patternId));
+        }
+    }
+
     namespace impl
     {
         template <>
@@ -623,6 +677,31 @@ namespace UiaOperationAbstraction
             }
 
             return result;
+        }
+
+        void PopulateCacheHelper(
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement& element,
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest)
+        {
+            element.PopulateCache(cacheRequest);
+        }
+
+        void PopulateCacheHelper(
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& elements,
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest)
+        {
+            auto delegator = UiaOperationScope::GetCurrentDelegator();
+
+            UiaUint size = elements.Size();
+            UiaUint i{ 0 };
+            delegator->For(
+                [](){} /* initialize */,
+                [&]() { return i < size; } /* condition */,
+                [&]() { i += 1; } /* modification */,
+                [&]() /* body */
+                {
+                    elements.GetAt(i).AsElement().PopulateCache(cacheRequest);
+                });
         }
     } // namespace impl
 

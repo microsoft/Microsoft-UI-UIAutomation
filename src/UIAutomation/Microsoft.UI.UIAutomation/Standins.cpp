@@ -479,6 +479,29 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    // AutomationRemoteCacheRequest
+
+    AutomationRemoteCacheRequest::AutomationRemoteCacheRequest(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
+    {
+    }
+
+    void AutomationRemoteCacheRequest::AddProperty(const winrt::AutomationRemotePropertyId& propertyId)
+    {
+        m_parent->InsertInstruction(bytecode::CacheRequestAddProperty{
+            m_operandId,
+            GetOperandId<AutomationRemotePropertyId>(propertyId)
+        });
+    }
+
+    void AutomationRemoteCacheRequest::AddPattern(const winrt::AutomationRemotePatternId& patternId)
+    {
+        m_parent->InsertInstruction(bytecode::CacheRequestAddPattern{
+            m_operandId,
+            GetOperandId<AutomationRemotePatternId>(patternId)
+        });
+    }
+
     // AutomationRemoteElement
 
     AutomationRemoteElement::AutomationRemoteElement(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
@@ -540,6 +563,14 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteElement AutomationRemoteElement::GetPreviousSiblingElement()
     {
         return Navigate(NavigateDirection_PreviousSibling);
+    }
+
+    void AutomationRemoteElement::PopulateCache(const winrt::AutomationRemoteCacheRequest& cacheRequest)
+    {
+        m_parent->InsertInstruction(bytecode::PopulateCache{
+            m_operandId,
+            GetOperandId<AutomationRemoteCacheRequest>(cacheRequest)
+        });
     }
 
     // AutomationRemoteAnyObject
@@ -760,5 +791,21 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteElement AutomationRemoteAnyObject::AsElement()
     {
         return As<AutomationRemoteElement>();
+    }
+
+    winrt::AutomationRemoteBool AutomationRemoteAnyObject::IsCacheRequest()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::IsCacheRequest{
+            resultId,
+            m_operandId
+        });
+        const auto result = Make<AutomationRemoteBool>(resultId);
+        return result;
+    }
+
+    winrt::AutomationRemoteCacheRequest AutomationRemoteAnyObject::AsCacheRequest()
+    {
+        return As<AutomationRemoteCacheRequest>();
     }
 }

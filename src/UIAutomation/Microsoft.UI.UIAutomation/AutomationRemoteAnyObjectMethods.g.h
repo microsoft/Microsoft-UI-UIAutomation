@@ -92,6 +92,7 @@
         winrt::AutomationRemoteNavigateDirection AsNavigateDirection();
         winrt::AutomationRemoteOrientationType AsOrientationType();
         winrt::AutomationRemoteOutlineStyles AsOutlineStyles();
+        winrt::AutomationRemotePatternId AsPatternId();
         winrt::AutomationRemotePropertyId AsPropertyId();
         winrt::AutomationRemoteRowOrColumnMajor AsRowOrColumnMajor();
         winrt::AutomationRemoteSayAsInterpretAs AsSayAsInterpretAs();

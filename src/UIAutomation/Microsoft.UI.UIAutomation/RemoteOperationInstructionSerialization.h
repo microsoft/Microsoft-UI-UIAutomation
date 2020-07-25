@@ -49,6 +49,7 @@ private:
     void Write(const bytecode::NewArray&);
     void Write(const bytecode::NewStringMap&);
     void Write(const bytecode::NewNull&);
+    void Write(const bytecode::NewCacheRequest&);
     void Write(const bytecode::GetPointProperty&);
     void Write(const bytecode::GetRectProperty&);
     void Write(const bytecode::SetOperationStatus&);
@@ -99,12 +100,16 @@ private:
     void Write(const bytecode::InPlaceBoolAnd&);
     void Write(const bytecode::InPlaceBoolOr&);
 
+    void Write(const bytecode::CacheRequestAddProperty&);
+    void Write(const bytecode::CacheRequestAddPattern&);
+
     void Write(const bytecode::BoolNot&);
     void Write(const bytecode::BoolAnd&);
     void Write(const bytecode::BoolOr&);
     void Write(const bytecode::Compare&);
     void Write(const bytecode::GetPropertyValue&);
     void Write(const bytecode::Navigate&);
+    void Write(const bytecode::PopulateCache&);
     void Write(const bytecode::LookupId&);
     void Write(const bytecode::LookupGuid&);
     void Write(const bytecode::GetterBase&);

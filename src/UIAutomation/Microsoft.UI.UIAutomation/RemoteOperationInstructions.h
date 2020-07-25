@@ -142,6 +142,13 @@ enum class InstructionType
     LookupId = 0x4a,
     LookupGuid = 0x4b,
 
+    // Cache requests
+    NewCacheRequest = 0x4c,
+    IsCacheRequest = 0x4d,
+    CacheRequestAddProperty = 0x4e,
+    CacheRequestAddPattern = 0x4f,
+    PopulateCache = 0x50,
+
     // UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValues.g.h"
 };
@@ -225,6 +232,11 @@ constexpr std::array c_supportedInstructions =
     InstructionType::IsGuid,
     InstructionType::LookupId,
     InstructionType::LookupGuid,
+    InstructionType::NewCacheRequest,
+    InstructionType::IsCacheRequest,
+    InstructionType::CacheRequestAddProperty,
+    InstructionType::CacheRequestAddPattern,
+    InstructionType::PopulateCache,
 
     // Auto-generated UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValuesArray.g.h"
@@ -862,6 +874,42 @@ struct LookupGuid
     AutomationIdentifierType idType;
 };
 
+struct NewCacheRequest
+{
+    constexpr static InstructionType type = InstructionType::NewCacheRequest;
+
+    OperandId resultId;
+};
+
+struct IsCacheRequest : GetterBase
+{
+    constexpr static InstructionType type = InstructionType::IsCacheRequest;
+};
+
+struct CacheRequestAddProperty
+{
+    constexpr static InstructionType type = InstructionType::CacheRequestAddProperty;
+
+    OperandId cacheRequestId;
+    OperandId propertyIdId;
+};
+
+struct CacheRequestAddPattern
+{
+    constexpr static InstructionType type = InstructionType::CacheRequestAddPattern;
+
+    OperandId cacheRequestId;
+    OperandId patternIdId;
+};
+
+struct PopulateCache
+{
+    constexpr static InstructionType type = InstructionType::PopulateCache;
+
+    OperandId elementId;
+    OperandId cacheRequestId;
+};
+
 #include "RemoteOperationInstructions.g.h"
 
 using Instruction = std::variant<
@@ -921,6 +969,8 @@ using Instruction = std::variant<
     NewArray,
     NewStringMap,
     NewNull,
+    NewGuid,
+    NewCacheRequest,
 
     // Point and Rect methods
     GetPointProperty,
@@ -949,6 +999,15 @@ using Instruction = std::variant<
     // UIA element methods
     GetPropertyValue,
     Navigate,
+    PopulateCache,
+
+    // GUID instructions
+    LookupId,
+    LookupGuid,
+
+    // Cache request methods
+    CacheRequestAddProperty,
+    CacheRequestAddPattern,
 
     // Type interrogation methods
     IsNull,
@@ -965,10 +1024,8 @@ using Instruction = std::variant<
     IsArray,
     IsStringMap,
     IsElement,
-    NewGuid,
     IsGuid,
-    LookupId,
-    LookupGuid
+    IsCacheRequest
 
 #include "RemoteOperationInstructionsVariantParams.g.h"
     >;

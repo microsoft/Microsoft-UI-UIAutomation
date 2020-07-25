@@ -64,6 +64,15 @@ namespace UiaOperationAbstraction
     class UiaOperationDelegator
     {
     public:
+        // Friend a helper class to allow UiaCacheRequest to have a single
+        // default constructor. UiaCacheRequestHelper implements a static
+        // function which reads m_remoteOperation in order to optionally call
+        // m_remoteOperation.NewCacheRequest. Using a friend class here
+        // provides additional encapsulation for the user of this library,
+        // since otherwise we would need to implement a public function on
+        // UiaOperationDelegator which UiaCacheRequest's constructor could call.
+        friend struct UiaCacheRequestHelper;
+
         UiaOperationDelegator();
         UiaOperationDelegator(bool useRemoteApi);
 
@@ -964,6 +973,8 @@ namespace UiaOperationAbstraction
         }
     };
 
+#include "UiaTypeAbstractionEnums.g.h"
+
     class UiaPoint : public UiaTypeBase<
         winrt::Windows::Foundation::Point,
         winrt::Microsoft::UI::UIAutomation::AutomationRemotePoint>
@@ -1058,6 +1069,18 @@ namespace UiaOperationAbstraction
 
             return result;
         }
+
+        // Each of these helpers is an overload which populates the cache(s)
+        // for its first argument. The one which takes a single element will
+        // populate the cache just for that element, while the one which takes
+        // an array will assume all items in the array are UIA elements and
+        // will populate the cache for each.
+        void PopulateCacheHelper(
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement& element,
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest);
+        void PopulateCacheHelper(
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& elements,
+            const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest);
     } // namespace impl
 
     template <class ItemWrapperType>
@@ -1542,6 +1565,17 @@ namespace UiaOperationAbstraction
             }
         }
     }
+
+    class UiaCacheRequest: public UiaTypeBase<
+        winrt::com_ptr<IUIAutomationCacheRequest>,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>
+    {
+    public:
+        UiaCacheRequest();
+
+        void AddProperty(UiaPropertyId propertyId);
+        void AddPattern(UiaPatternId patternId);
+    };
 
 #include "UiaTypeAbstraction.g.h"
 

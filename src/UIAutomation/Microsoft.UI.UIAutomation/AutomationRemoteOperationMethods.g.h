@@ -22,6 +22,7 @@
         winrt::AutomationRemoteNavigateDirection NewEnum(AutomationNavigateDirection initialValue);
         winrt::AutomationRemoteOrientationType NewEnum(AutomationOrientationType initialValue);
         winrt::AutomationRemoteOutlineStyles NewEnum(AutomationOutlineStyles initialValue);
+        winrt::AutomationRemotePatternId NewEnum(AutomationPatternId initialValue);
         winrt::AutomationRemotePropertyId NewEnum(AutomationPropertyId initialValue);
         winrt::AutomationRemoteRowOrColumnMajor NewEnum(AutomationRowOrColumnMajor initialValue);
         winrt::AutomationRemoteSayAsInterpretAs NewEnum(AutomationSayAsInterpretAs initialValue);

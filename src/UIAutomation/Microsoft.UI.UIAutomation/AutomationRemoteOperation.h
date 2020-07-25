@@ -61,6 +61,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteRect NewRect(Windows::Foundation::Rect const& initialValue);
         bool IsGuidSupported() const;
         winrt::AutomationRemoteGuid NewGuid(const winrt::guid& initialValue);
+        bool IsCacheRequestSupported() const;
+        winrt::AutomationRemoteCacheRequest NewCacheRequest();
         winrt::AutomationRemoteArray NewArray();
         winrt::AutomationRemoteStringMap NewStringMap();
         winrt::AutomationRemoteAnyObject NewNull();

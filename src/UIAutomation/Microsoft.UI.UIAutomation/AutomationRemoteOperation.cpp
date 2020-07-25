@@ -115,6 +115,19 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return make<AutomationRemoteGuid>(newId, *this);
     }
 
+    bool AutomationRemoteOperation::IsCacheRequestSupported() const
+    {
+        return m_remoteOperation.IsOpcodeSupported(static_cast<uint32_t>(bytecode::InstructionType::NewCacheRequest));
+    }
+
+    winrt::AutomationRemoteCacheRequest AutomationRemoteOperation::NewCacheRequest()
+    {
+        const auto newId = GetNextId();
+        InsertInstruction(bytecode::NewCacheRequest{ newId });
+
+        return make<AutomationRemoteCacheRequest>(newId, *this);
+    }
+
     winrt::AutomationRemoteArray AutomationRemoteOperation::NewArray()
     {
         const auto newId = GetNextId();

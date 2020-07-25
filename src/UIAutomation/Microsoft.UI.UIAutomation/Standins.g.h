@@ -22,6 +22,7 @@
 #include "AutomationRemoteNavigateDirection.g.h"
 #include "AutomationRemoteOrientationType.g.h"
 #include "AutomationRemoteOutlineStyles.g.h"
+#include "AutomationRemotePatternId.g.h"
 #include "AutomationRemotePropertyId.g.h"
 #include "AutomationRemoteRowOrColumnMajor.g.h"
 #include "AutomationRemoteSayAsInterpretAs.g.h"
@@ -238,6 +239,15 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     {
     public:
         AutomationRemoteOutlineStyles(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
+        void Set(const class_type& rhs);
+        winrt::AutomationRemoteBool IsEqual(const class_type& rhs);
+        winrt::AutomationRemoteBool IsNotEqual(const class_type& rhs);
+    };
+
+    class AutomationRemotePatternId : public AutomationRemotePatternIdT<AutomationRemotePatternId, AutomationRemoteObject>
+    {
+    public:
+        AutomationRemotePatternId(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
         void Set(const class_type& rhs);
         winrt::AutomationRemoteBool IsEqual(const class_type& rhs);
         winrt::AutomationRemoteBool IsNotEqual(const class_type& rhs);
