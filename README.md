@@ -1,3 +1,4 @@
+[![Build Status](https://dev.azure.com/ms/Microsoft-UI-UIAutomation/_apis/build/status/Microsoft-UI-UIAutomation%20Desktop%20CI?branchName=main)](https://dev.azure.com/ms/Microsoft-UI-UIAutomation/_build/latest?definitionId=378&branchName=main)
 
 # Windows UIAutomation platform utility libraries
 
