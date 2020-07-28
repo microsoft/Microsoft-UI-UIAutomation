@@ -48,7 +48,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Windows">
-      <HintPath>$(FrameworkSdkDir)UnionMetadata\10.0.19613.0\Windows.winmd</HintPath>
+      <HintPath>..\Microsoft.UI.UIAutomation\Generated Files\winmd\Windows.winmd</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
