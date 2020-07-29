@@ -123,7 +123,7 @@
       <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>(if not exist "$(OutDir)winmd" mkdir "$(OutDir)winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(OutDir)winmd\$(ProjectName).winmd" &amp;&amp; (if not exist "$(ProjectDir)Generated Files\winmd" mkdir "$(ProjectDir)Generated Files\winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(ProjectDir)Generated Files\winmd\$(ProjectName).winmd"</Command>
+      <Command>(if not exist "$(OutDir)winmd" mkdir "$(OutDir)winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(OutDir)winmd\$(ProjectName).winmd" &amp;&amp; (if not exist "$(ProjectDir)Generated Files\winmd" mkdir "$(ProjectDir)Generated Files\winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(ProjectDir)Generated Files\winmd\$(ProjectName).winmd" &amp;&amp; copy "$(FrameworkSdkDir)UnionMetadata\10.0.19613.0\Windows.winmd" "$(ProjectDir)Generated Files\winmd\Windows.winmd"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copy winmd to output directory</Message>
@@ -166,7 +166,7 @@
       <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>(if not exist "$(OutDir)winmd" mkdir "$(OutDir)winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(OutDir)winmd\$(ProjectName).winmd" &amp;&amp; (if not exist "$(ProjectDir)Generated Files\winmd" mkdir "$(ProjectDir)Generated Files\winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(ProjectDir)Generated Files\winmd\$(ProjectName).winmd"</Command>
+      <Command>(if not exist "$(OutDir)winmd" mkdir "$(OutDir)winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(OutDir)winmd\$(ProjectName).winmd" &amp;&amp; (if not exist "$(ProjectDir)Generated Files\winmd" mkdir "$(ProjectDir)Generated Files\winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(ProjectDir)Generated Files\winmd\$(ProjectName).winmd" &amp;&amp; copy "$(FrameworkSdkDir)UnionMetadata\10.0.19613.0\Windows.winmd" "$(ProjectDir)Generated Files\winmd\Windows.winmd"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copy winmd to output directory</Message>
@@ -213,7 +213,7 @@
       <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>(if not exist "$(OutDir)winmd" mkdir "$(OutDir)winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(OutDir)winmd\$(ProjectName).winmd" &amp;&amp; (if not exist "$(ProjectDir)Generated Files\winmd" mkdir "$(ProjectDir)Generated Files\winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(ProjectDir)Generated Files\winmd\$(ProjectName).winmd"</Command>
+      <Command>(if not exist "$(OutDir)winmd" mkdir "$(OutDir)winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(OutDir)winmd\$(ProjectName).winmd" &amp;&amp; (if not exist "$(ProjectDir)Generated Files\winmd" mkdir "$(ProjectDir)Generated Files\winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(ProjectDir)Generated Files\winmd\$(ProjectName).winmd" &amp;&amp; copy "$(FrameworkSdkDir)UnionMetadata\10.0.19613.0\Windows.winmd" "$(ProjectDir)Generated Files\winmd\Windows.winmd"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copy winmd to output directory</Message>
@@ -260,7 +260,7 @@
       <Inputs>$(IntDir)$(ProjectName).winmd</Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>(if not exist "$(OutDir)winmd" mkdir "$(OutDir)winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(OutDir)winmd\$(ProjectName).winmd" &amp;&amp; (if not exist "$(ProjectDir)Generated Files\winmd" mkdir "$(ProjectDir)Generated Files\winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(ProjectDir)Generated Files\winmd\$(ProjectName).winmd"</Command>
+      <Command>(if not exist "$(OutDir)winmd" mkdir "$(OutDir)winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(OutDir)winmd\$(ProjectName).winmd" &amp;&amp; (if not exist "$(ProjectDir)Generated Files\winmd" mkdir "$(ProjectDir)Generated Files\winmd") &amp;&amp; copy "$(IntDir)$(ProjectName).winmd" "$(ProjectDir)Generated Files\winmd\$(ProjectName).winmd" &amp;&amp; copy "$(FrameworkSdkDir)UnionMetadata\10.0.19613.0\Windows.winmd" "$(ProjectDir)Generated Files\winmd\Windows.winmd"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copy winmd to output directory</Message>
