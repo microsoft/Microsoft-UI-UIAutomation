@@ -287,6 +287,9 @@ namespace UiaOperationAbstraction
             double,
             winrt::Microsoft::UI::UIAutomation::AutomationRemoteDouble>& localDoubleVariant) const;
         void ConvertVariantDataToRemote(std::variant<
+            wchar_t,
+            winrt::Microsoft::UI::UIAutomation::AutomationRemoteChar>& localCharVariant) const;
+        void ConvertVariantDataToRemote(std::variant<
             wil::shared_bstr,
             winrt::Microsoft::UI::UIAutomation::AutomationRemoteString>& localStringVariant) const;
         void ConvertVariantDataToRemote(std::variant<
@@ -792,6 +795,29 @@ namespace UiaOperationAbstraction
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 
+    class UiaChar : public UiaTypeBase<wchar_t, winrt::Microsoft::UI::UIAutomation::AutomationRemoteChar>
+    {
+    public:
+        static constexpr VARTYPE c_comVariantType = VT_UI2;
+        static constexpr auto c_variantMember = &VARIANT::uiVal;
+        static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsChar;
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsChar;
+
+        UiaChar(wchar_t value);
+        UiaChar(winrt::Microsoft::UI::UIAutomation::AutomationRemoteChar remoteValue);
+        explicit UiaChar(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
+        UiaChar(const UiaChar&) = default;
+
+        operator wchar_t() const;
+
+        UiaChar& operator=(const UiaChar& other);
+
+        UiaBool operator==(const UiaChar& rhs) const;
+        UiaBool operator!=(const UiaChar& rhs) const;
+
+        void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
+    };
+
     class UiaString : public UiaTypeBase<wil::shared_bstr, winrt::Microsoft::UI::UIAutomation::AutomationRemoteString>
     {
     public:
@@ -826,6 +852,7 @@ namespace UiaOperationAbstraction
         UiaBool operator!=(const UiaString& rhs) const;
 
         UiaUint Length() const;
+        UiaChar At(UiaUint index);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };

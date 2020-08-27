@@ -542,6 +542,12 @@ namespace UiaOperationAbstraction
         m_member = winrt::unbox_value<double>(result);
     }
 
+    void UiaChar::FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
+    {
+        static_assert(sizeof(uint16_t) == sizeof(wchar_t), "uint16_t needs to be the same as wchar_t");
+        m_member = static_cast<wchar_t>(winrt::unbox_value<uint16_t>(result));
+    }
+
     void UiaString::FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
     {
         if (result)
@@ -799,6 +805,18 @@ namespace UiaOperationAbstraction
             if (auto localDouble = std::get_if<double>(&localDoubleVariant))
             {
                 localDoubleVariant = m_remoteOperation.NewDouble(*localDouble);
+            }
+        }
+    }
+
+    void UiaOperationDelegator::ConvertVariantDataToRemote(std::variant<wchar_t,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteChar>& localCharVariant) const
+    {
+        if (m_useRemoteApi && m_remoteOperation)
+        {
+            if (auto local = std::get_if<wchar_t>(&localCharVariant))
+            {
+                localCharVariant = m_remoteOperation.NewChar(*local);
             }
         }
     }
@@ -1244,6 +1262,43 @@ namespace UiaOperationAbstraction
         InPlaceArithmetic<UiaDouble, Divide>(this->m_member, rhs.m_member);
     }
 
+    UiaChar::UiaChar(wchar_t value) :
+        UiaTypeBase(value)
+    {
+        ToRemote();
+    }
+
+    UiaChar::UiaChar(winrt::Microsoft::UI::UIAutomation::AutomationRemoteChar remoteValue) :
+        UiaTypeBase(remoteValue)
+    {
+    }
+
+    UiaChar::UiaChar(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+        UiaTypeBase(remoteValue.AsChar())
+    {
+    }
+
+    UiaChar::operator wchar_t() const
+    {
+        return std::get<wchar_t>(m_member);
+    }
+
+    UiaChar& UiaChar::operator=(const UiaChar& other)
+    {
+        AssignCopyTo<UiaChar>(this->m_member, other.m_member);
+        return *this;
+    }
+
+    UiaBool UiaChar::operator==(const UiaChar& rhs) const
+    {
+        return BinaryOperator<UiaChar, Equal>(this->m_member, rhs.m_member);
+    }
+
+    UiaBool UiaChar::operator!=(const UiaChar& rhs) const
+    {
+        return BinaryOperator<UiaChar, NotEqual>(this->m_member, rhs.m_member);
+    }
+
     UiaString::UiaString(std::wstring value):
         UiaTypeBase(SafeToUniqueBstr(value))
     {
@@ -1372,6 +1427,25 @@ namespace UiaOperationAbstraction
         }
 
         return ::SysStringLen(std::get<wil::shared_bstr>(m_member).get());
+    }
+
+    UiaChar UiaString::At(UiaUint index)
+    {
+        if (ShouldUseRemoteApi())
+        {
+            ToRemote();
+            index.ToRemote();
+            return std::get<RemoteType>(m_member).GetAt(index);
+        }
+
+        const auto localVal = get();
+        const auto len = ::SysStringLen(localVal);
+        if (index >= len)
+        {
+            throw std::out_of_range("index out of bounds");
+        }
+
+        return localVal[index];
     }
 
     UiaPoint::UiaPoint(POINT point):
