@@ -215,5 +215,88 @@ namespace UiaOperationAbstractionTests
             static constexpr bool cacheRequestCanBeReturned = CanBeReturned<UiaOperationAbstraction::UiaCacheRequest>::value;
             static_assert(!cacheRequestCanBeReturned, "UiaCacheRequest should not be able to be returned from a remote operation.");
         }
+
+        void StringIndexing(const bool useRemoteOperations)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::com_ptr<IUIAutomation> automation;
+            THROW_IF_FAILED(::CoCreateInstance(__uuidof(CUIAutomation8), nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(automation.put())));
+            UiaOperationAbstraction::Initialize(useRemoteOperations, automation.get());
+            auto cleanup = wil::scope_exit([&]()
+            {
+                UiaOperationAbstraction::Cleanup();
+            });
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+
+            auto name = element.GetName(false /* useCached */);
+
+            auto c1 = name.At(0);
+            UiaUint i = name.Length();
+            i -= 1;
+            auto c2 = name.At(i);
+
+            UiaBool b1 = c1 == UiaChar(L'D');
+            UiaBool b2 = c1 != UiaChar(L'D');
+            UiaBool b3 = name.At(0) == name.At(0);
+            UiaBool b4 = name.At(0) == name.At(1);
+
+            UiaString hardCodedString{ L"ABCD" };
+            UiaBool b5 = hardCodedString.At(3) == name.At(0);
+            UiaBool b6 = name.At(0) == hardCodedString.At(3);
+            UiaBool b7 = hardCodedString.At(3) == UiaChar(L'D');
+
+            UiaArray<UiaChar> characters;
+            characters.Append(c1);
+            characters.Append(c2);
+
+            scope.BindResult(c1);
+            scope.BindResult(c2);
+
+            scope.BindResult(b1);
+            scope.BindResult(b2);
+            scope.BindResult(b3);
+            scope.BindResult(b4);
+            scope.BindResult(b5);
+            scope.BindResult(b6);
+            scope.BindResult(b7);
+
+            scope.BindResult(characters);
+
+            scope.Resolve();
+
+            {
+                Assert::AreEqual(static_cast<wchar_t>(c1), L'D');
+                Assert::AreEqual(static_cast<wchar_t>(c2), L'0');
+
+                Assert::AreEqual(static_cast<bool>(b1), true);
+                Assert::AreEqual(static_cast<bool>(b2), false);
+                Assert::AreEqual(static_cast<bool>(b3), true);
+                Assert::AreEqual(static_cast<bool>(b4), false);
+                Assert::AreEqual(static_cast<bool>(b5), true);
+                Assert::AreEqual(static_cast<bool>(b6), true);
+                Assert::AreEqual(static_cast<bool>(b7), true);
+
+                std::vector<wchar_t>& chars = *characters;
+                Assert::AreEqual(chars[0], L'D');
+                Assert::AreEqual(chars[1], L'0');
+            }
+        }
+
+        TEST_METHOD(StringIndexingLocal)
+        {
+            StringIndexing(false);
+        }
+
+        TEST_METHOD(StringIndexingRemote)
+        {
+            StringIndexing(true);
+        }
+
     };
 }
