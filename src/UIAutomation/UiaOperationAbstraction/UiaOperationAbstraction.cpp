@@ -1606,7 +1606,9 @@ namespace UiaOperationAbstraction
             (lhsLocalRect.Width != rhsLocalRect.Width) ||
             (lhsLocalRect.X != rhsLocalRect.X) ||
             (lhsLocalRect.Y != rhsLocalRect.Y);
-    }    UiaDouble UiaRect::GetHeight() const
+    }
+    
+    UiaDouble UiaRect::GetHeight() const
     {
         if (ShouldUseRemoteApi())
         {
