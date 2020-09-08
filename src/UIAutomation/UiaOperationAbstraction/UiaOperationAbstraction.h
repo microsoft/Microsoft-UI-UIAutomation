@@ -1041,6 +1041,12 @@ namespace UiaOperationAbstraction
 
         UiaBool operator==(const UiaRect& rhs) const;
         UiaBool operator!=(const UiaRect& rhs) const;
+
+        UiaDouble GetHeight() const;
+        UiaDouble GetWidth() const;
+        UiaDouble GetX() const;
+        UiaDouble GetY() const;
+
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 

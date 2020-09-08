@@ -1607,6 +1607,62 @@ namespace UiaOperationAbstraction
             (lhsLocalRect.X != rhsLocalRect.X) ||
             (lhsLocalRect.Y != rhsLocalRect.Y);
     }
+    
+    UiaDouble UiaRect::GetHeight() const
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->GetHeight();
+            }
+        }
+
+        return static_cast<double>(std::get<LocalType>(m_member).Height);
+    }
+
+    UiaDouble UiaRect::GetWidth() const
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->GetWidth();
+            }
+        }
+
+        return static_cast<double>(std::get<LocalType>(m_member).Width);
+    }
+
+    UiaDouble UiaRect::GetX() const
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->GetX();
+            }
+        }
+
+        return static_cast<double>(std::get<LocalType>(m_member).X);
+    }
+
+    UiaDouble UiaRect::GetY() const
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->GetY();
+            }
+        }
+
+        return static_cast<double>(std::get<LocalType>(m_member).Y);
+    }
 
     UiaHwnd::UiaHwnd(UIA_HWND hwnd):
         UiaTypeBase(hwnd)
