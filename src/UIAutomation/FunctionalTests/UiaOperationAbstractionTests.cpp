@@ -298,5 +298,93 @@ namespace UiaOperationAbstractionTests
             StringIndexing(true);
         }
 
+        void RectDimensions(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Fetch bounding rectangle for the focused display field.
+            //
+            // Since the UIA abstraction type mimics how `winrt::Windows::Foundation::Rect` works, use that
+            // as the type to compare against.
+            winrt::Windows::Foundation::Rect boundingRect{};
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                auto boundingRectangle = displayElement.GetBoundingRectangle(false /* useCachedApi */);
+                operationScope.BindResult(boundingRectangle);
+                operationScope.Resolve();
+
+                boundingRect = boundingRectangle;
+            }
+
+            // Before doing anything else, make sure the bounding rectangle is not empty.
+            //
+            // Do not compare the screen placement since the application (and therefore the element) can be
+            // at any screen position.
+            {
+                Assert::IsTrue(boundingRect.Width > 0);
+                Assert::IsTrue(boundingRect.Height > 0);
+            }
+
+            // Now that we have the bounding rectangle of the element, perform another operation that reads
+            // and returns individual fields of that bounding rectangle (using `UiaRect` APIs).
+            double x = 0.0;
+            double y = 0.0;
+            double width = 0.0;
+            double height = 0.0;
+            {
+                // Execute an operation to get individual fields that build the bounding rectangle.
+                auto operationScope = UiaOperationScope::StartNew();
+
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Decompose the bounding rectangle into individual fields.
+                auto boundingRectangle = displayElement.GetBoundingRectangle(false /* useCachedApi */);
+                auto boundingRectangleX = boundingRectangle.GetX();
+                auto boundingRectangleY = boundingRectangle.GetY();
+                auto boundingRectangleWidth = boundingRectangle.GetWidth();
+                auto boundingRectangleHeight = boundingRectangle.GetHeight();
+
+                // Return the field values.
+                operationScope.BindResult(boundingRectangleX);
+                operationScope.BindResult(boundingRectangleY);
+                operationScope.BindResult(boundingRectangleWidth);
+                operationScope.BindResult(boundingRectangleHeight);
+                operationScope.Resolve();
+
+                // Convert abstraction types to local types.
+                std::tie(x, y, width, height) = std::tuple(boundingRectangleX, boundingRectangleY, boundingRectangleWidth, boundingRectangleHeight);
+            }
+
+            // Compare fields of the element's bounding rectangle against the individually-fetched values.
+            {
+                Assert::AreEqual(static_cast<double>(boundingRect.X), x);
+                Assert::AreEqual(static_cast<double>(boundingRect.Y), y);
+                Assert::AreEqual(static_cast<double>(boundingRect.Width), width);
+                Assert::AreEqual(static_cast<double>(boundingRect.Height), height);
+            }
+        }
+
+        TEST_METHOD(RectDimensionsLocal)
+        {
+            RectDimensions(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(RectDimensionsRemote)
+        {
+            RectDimensions(true /* useRemoteOperations */);
+        }
     };
 }
