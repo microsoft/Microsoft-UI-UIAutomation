@@ -368,7 +368,7 @@ namespace UiaOperationAbstractionTests
                 std::tie(x, y, width, height) = std::tuple(boundingRectangleX, boundingRectangleY, boundingRectangleWidth, boundingRectangleHeight);
             }
 
-            // Compare fields of the element's bounding rectangle against the individually-fetched values.
+            // Compare fields of the element's bounding rectangle against the just-fetched values.
             {
                 Assert::AreEqual(static_cast<double>(boundingRect.X), x);
                 Assert::AreEqual(static_cast<double>(boundingRect.Y), y);
