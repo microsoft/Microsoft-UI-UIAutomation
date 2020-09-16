@@ -484,6 +484,16 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
             AutomationRemoteObject::Set<AutomationRemoteArray>(rhs);
         }
 
+        auto IsEqual(const class_type& rhs)
+        {
+            return AutomationRemoteObject::IsEqual<AutomationRemoteArray>(rhs);
+        }
+
+        auto IsNotEqual(const class_type& rhs)
+        {
+            return AutomationRemoteObject::IsNotEqual<AutomationRemoteArray>(rhs);
+        }
+
         void Append(winrt::AutomationRemoteObject obj);
         void SetAt(winrt::AutomationRemoteUint index, winrt::AutomationRemoteObject obj);
         winrt::AutomationRemoteAnyObject RemoveAt(winrt::AutomationRemoteUint index);

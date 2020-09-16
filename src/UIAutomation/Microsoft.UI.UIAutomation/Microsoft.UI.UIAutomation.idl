@@ -128,6 +128,8 @@ namespace Microsoft.UI.UIAutomation
     runtimeclass AutomationRemoteArray : AutomationRemoteObject
     {
         void Set(AutomationRemoteArray rhs);
+        AutomationRemoteBool IsEqual(AutomationRemoteArray rhs);
+        AutomationRemoteBool IsNotEqual(AutomationRemoteArray rhs);
 
         void Append(AutomationRemoteObject obj);
         void SetAt(AutomationRemoteUint index, AutomationRemoteObject obj);

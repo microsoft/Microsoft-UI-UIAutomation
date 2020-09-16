@@ -438,5 +438,64 @@ namespace WinRTBuilderTests
                 Assert::IsNull(valuePattern.get());
             }
         }
+
+        // Tests that we can compare Remote Arrays.
+        TEST_METHOD(RemoteArraysEqual)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            auto remoteElement = op.ImportElement(calc.as<winrt::AutomationElement>());
+            auto arr1 = op.NewArray();
+            arr1.Append(op.NewInt(1));
+            arr1.Append(op.NewInt(2));
+            auto arr2 = op.NewArray();
+            arr2.Append(op.NewInt(1));
+            arr2.Append(op.NewInt(2));
+
+            auto eq = arr1.IsEqual(arr2);
+
+            auto eqToken = op.RequestResponse(eq);
+            auto results = op.Execute();
+
+            AssertSucceeded(results.OperationStatus());
+            const bool equal = winrt::unbox_value<bool>(results.GetResult(eqToken));
+            Assert::AreEqual(true, equal);
+        }
+
+        // Tests that we can compare runtime IDs.
+        TEST_METHOD(RuntimeIdCompare)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            auto remoteElement = op.ImportElement(calc.as<winrt::AutomationElement>());
+
+            auto runtimeId1 = remoteElement.GetPropertyValue(op.NewEnum(static_cast<winrt::AutomationPropertyId>(UIA_RuntimeIdPropertyId))).AsArray();
+            auto runtimeId2 = remoteElement.GetPropertyValue(op.NewEnum(static_cast<winrt::AutomationPropertyId>(UIA_RuntimeIdPropertyId))).AsArray();
+            auto eq1 = runtimeId1.IsEqual(runtimeId2);
+
+            auto sibling = remoteElement.GetNextSiblingElement();
+            auto runtimeId3 = sibling.GetPropertyValue(op.NewEnum(static_cast<winrt::AutomationPropertyId>(UIA_RuntimeIdPropertyId))).AsArray();
+            auto eq2 = runtimeId1.IsEqual(runtimeId3);
+
+            auto original = sibling.GetPreviousSiblingElement();
+            auto runtimeId4 = original.GetPropertyValue(op.NewEnum(static_cast<winrt::AutomationPropertyId>(UIA_RuntimeIdPropertyId))).AsArray();
+            auto eq3 = runtimeId1.IsEqual(runtimeId4);
+
+            auto eq1Token = op.RequestResponse(eq1);
+            auto eq2Token = op.RequestResponse(eq2);
+            auto eq3Token = op.RequestResponse(eq3);
+            auto results = op.Execute();
+
+            AssertSucceeded(results.OperationStatus());
+            Assert::AreEqual(true, winrt::unbox_value<bool>(results.GetResult(eq1Token)));
+            Assert::AreEqual(false, winrt::unbox_value<bool>(results.GetResult(eq2Token)));
+            Assert::AreEqual(true, winrt::unbox_value<bool>(results.GetResult(eq3Token)));
+        }
     };
 }
