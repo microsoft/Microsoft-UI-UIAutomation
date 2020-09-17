@@ -4,6 +4,7 @@
 
 #pragma once
 
+        winrt::AutomationRemoteArray GetRuntimeId();
         winrt::AutomationRemoteInt GetProcessId();
         winrt::AutomationRemoteControlType GetControlType();
         winrt::AutomationRemoteString GetLocalizedControlType();

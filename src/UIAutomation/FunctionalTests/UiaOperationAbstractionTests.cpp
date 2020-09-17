@@ -85,6 +85,44 @@ namespace UiaOperationAbstractionTests
             ElementGetNameTest(true);
         }
 
+        // Asserts that you can get the runtime id of a UiaElement.
+        void ElementGetRuntimeIdTest(const bool useRemoteOperations)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            unique_safearray expected;
+            THROW_IF_FAILED(calc->GetRuntimeId(&expected));
+
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+            auto runtimeId = element.GetRuntimeId();
+            scope.BindResult(runtimeId);
+
+            scope.Resolve();
+
+            std::vector<int> actual = *runtimeId;
+            SafeArrayAccessor<int> sa(expected.get(), VT_I4);
+            for (unsigned int i = 0; i < actual.size(); ++i)
+            {
+                Assert::AreEqual(actual[i], sa[i]);
+            }
+        }
+
+        TEST_METHOD(ElementGetRuntimeIdLocalTest)
+        {
+            ElementGetRuntimeIdTest(false);
+        }
+
+        TEST_METHOD(ElementGetRuntimeIdRemoteTest)
+        {
+            ElementGetRuntimeIdTest(true);
+        }
+
         // Asserts that a pattern method (in this case GetEnclosingElement) can
         // be called with or without a cache request.
         void CacheRequestPatternMethodTest(const bool useRemoteOperations)

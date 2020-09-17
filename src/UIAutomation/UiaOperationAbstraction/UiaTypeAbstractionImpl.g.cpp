@@ -5099,6 +5099,21 @@
         return !get();
     }
 
+    UiaArray<UiaInt> UiaElement::GetRuntimeId()
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            this->ToRemote();
+            return std::get<AutomationRemoteElement>(m_member).GetRuntimeId();
+        }
+
+        auto localObject = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);
+        unique_safearray localPropertyValue;
+        winrt::check_hresult(localObject->GetRuntimeId(&localPropertyValue));
+        return localPropertyValue;
+    }
+
     UiaInt UiaElement::GetProcessId(bool useCachedApi)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
