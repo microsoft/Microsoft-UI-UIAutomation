@@ -107,6 +107,11 @@ namespace UiaOperationAbstractionTests
 
             std::vector<int> actual = *runtimeId;
             SafeArrayAccessor<int> sa(expected.get(), VT_I4);
+
+            // Verify the size of runtime id.
+            Assert::AreEqual(actual.size(), sa.Count());
+
+            // Verify individual number of runtime id.
             for (unsigned int i = 0; i < actual.size(); ++i)
             {
                 Assert::AreEqual(actual[i], sa[i]);
