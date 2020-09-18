@@ -109,7 +109,7 @@ namespace UiaOperationAbstractionTests
             SafeArrayAccessor<int> sa(expected.get(), VT_I4);
 
             // Verify the size of runtime id.
-            Assert::AreEqual(actual.size(), sa.Count());
+            Assert::AreEqual(static_cast<uint32_t>(actual.size()), static_cast<uint32_t>(sa.Count()));
 
             // Verify individual number of runtime id.
             for (unsigned int i = 0; i < actual.size(); ++i)
