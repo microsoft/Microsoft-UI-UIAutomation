@@ -1985,6 +1985,7 @@
 
         UiaBool IsNull() const;
 
+        UiaArray<UiaInt> GetRuntimeId();
         UiaInt GetProcessId(bool useCachedApi);
         UiaControlType GetControlType(bool useCachedApi);
         UiaString GetLocalizedControlType(bool useCachedApi);

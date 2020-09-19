@@ -2483,6 +2483,11 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return GetSpecificPropertyValue<AutomationRemoteInt>(UIA_Selection2ItemCountPropertyId);
     }
 
+    winrt::AutomationRemoteArray AutomationRemoteElement::GetRuntimeId()
+    {
+        return GetSpecificPropertyValue<AutomationRemoteArray>(UIA_RuntimeIdPropertyId);
+    }
+
     winrt::AutomationRemoteInt AutomationRemoteElement::GetProcessId()
     {
         return GetSpecificPropertyValue<AutomationRemoteInt>(UIA_ProcessIdPropertyId);

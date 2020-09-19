@@ -1437,6 +1437,7 @@ namespace Microsoft.UI.UIAutomation
 
     partial runtimeclass AutomationRemoteElement : AutomationRemoteObject
     {
+        AutomationRemoteArray GetRuntimeId();
         AutomationRemoteInt GetProcessId();
         AutomationRemoteControlType GetControlType();
         AutomationRemoteString GetLocalizedControlType();
