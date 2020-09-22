@@ -1680,6 +1680,11 @@ namespace UiaOperationAbstraction
     {
     }
 
+    UiaHwnd::operator UIA_HWND() const
+    {
+        return std::get<UIA_HWND>(m_member);
+    }
+
     UiaBool UiaHwnd::operator==(const UiaHwnd& rhs) const
     {
         return BinaryOperator<UiaHwnd, Equal>(this->m_member, rhs.m_member);
