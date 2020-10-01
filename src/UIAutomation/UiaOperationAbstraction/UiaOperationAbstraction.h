@@ -1186,6 +1186,42 @@ namespace UiaOperationAbstraction
             return *std::get<LocalType>(m_member);
         }
 
+        UiaBool operator==(const UiaArray& rhs) const
+        {
+            if (ShouldUseRemoteApi())
+            {
+                auto mutableThis = *this;
+                mutableThis.ToRemote();
+
+                auto mutableRhs = rhs;
+                mutableRhs.ToRemote();
+                return std::get<RemoteType>(mutableThis.m_member).IsEqual(std::get<RemoteType>(mutableRhs.m_member));
+            }
+
+            auto localVector = std::get<LocalType>(m_member);
+            auto localRhsVector = std::get<LocalType>(rhs.m_member);
+
+            if (localVector->size() != localRhsVector->size())
+            {
+                return false;
+            }
+
+            for (size_t i = 0; i < localVector->size(); ++i)
+            {
+                if (localVector->at(i) != localRhsVector->at(i))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        UiaBool operator!=(const UiaArray& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
         void ToRemote()
         {
             auto delegator = UiaOperationScope::GetCurrentDelegator();
