@@ -1139,7 +1139,7 @@ namespace UiaOperationAbstraction
             }
             else
             {
-                THROW_HR(E_UNEXPECTED);
+                static_assert(always_false<T>::value, "Unexpected array element comparison type.");
             }
         }
     } // namespace impl
