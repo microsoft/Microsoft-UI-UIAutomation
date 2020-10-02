@@ -429,5 +429,55 @@ namespace UiaOperationAbstractionTests
         {
             RectDimensions(true /* useRemoteOperations */);
         }
+
+        void ArrayEqualityComparisonTest(const bool useRemoteOperations)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+            UiaArray<UiaInt> runtimeIdFirst = element.GetRuntimeId();
+            UiaArray<UiaInt> runtimeIdSecond = element.GetRuntimeId();
+
+            UiaBool sameElementEqualResult{ false };
+            sameElementEqualResult = (runtimeIdFirst == runtimeIdSecond);
+            UiaBool sameElementNonEqualResult{ true };
+            sameElementNonEqualResult = (runtimeIdFirst != runtimeIdSecond);
+
+            UiaElement parent = element.GetParentElement();
+            UiaArray<UiaInt> runtimeIdParent = parent.GetRuntimeId();
+
+            UiaBool diffElementEqualResult{ true };
+            diffElementEqualResult = (runtimeIdFirst == runtimeIdParent);
+            UiaBool diffElementNonEqualResult{ false };
+            diffElementNonEqualResult = (runtimeIdFirst != runtimeIdParent);
+
+            scope.BindResult(sameElementEqualResult);
+            scope.BindResult(sameElementNonEqualResult);
+            scope.BindResult(diffElementEqualResult);
+            scope.BindResult(diffElementNonEqualResult);
+
+            scope.Resolve();
+
+            Assert::IsTrue(sameElementEqualResult);
+            Assert::IsFalse(sameElementNonEqualResult);
+            Assert::IsFalse(diffElementEqualResult);
+            Assert::IsTrue(diffElementNonEqualResult);
+        }
+
+        TEST_METHOD(ArrayEqualityComparisonLocalTest)
+        {
+            ArrayEqualityComparisonTest(false);
+        }
+
+        TEST_METHOD(ArrayEqualityComparisonRemoteTest)
+        {
+            ArrayEqualityComparisonTest(true);
+        }
     };
 }
