@@ -1114,6 +1114,34 @@ namespace UiaOperationAbstraction
         void PopulateCacheHelper(
             const winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& elements,
             const winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest& cacheRequest);
+
+        template<class T>
+        constexpr bool IsArrayElementEqual(T lhs, T rhs)
+        {
+            if constexpr (std::is_same_v<T, bool> ||
+                std::is_same_v<T, int> ||
+                std::is_same_v<T, unsigned int> ||
+                std::is_same_v<T, double>)
+            {
+                return lhs == rhs;
+            }
+            else if constexpr (std::is_same_v<T, wil::shared_bstr>)
+            {
+                return (UiaString(lhs) == UiaString(rhs));
+            }
+            else if constexpr (std::is_same_v<T, winrt::Windows::Foundation::Rect>)
+            {
+                return (UiaRect(lhs) == UiaRect(rhs));
+            }
+            else if constexpr (std::is_same_v<T, winrt::Windows::Foundation::Point>)
+            {
+                return (UiaPoint(lhs) == UiaPoint(rhs));
+            }
+            else
+            {
+                THROW_HR(E_UNEXPECTED);
+            }
+        }
     } // namespace impl
 
     template <class ItemWrapperType>
@@ -1208,7 +1236,7 @@ namespace UiaOperationAbstraction
 
             for (size_t i = 0; i < localVector->size(); ++i)
             {
-                if (localVector->at(i) != localRhsVector->at(i))
+                if (!impl::IsArrayElementEqual((*localVector)[i], (*localRhsVector)[i]))
                 {
                     return false;
                 }
