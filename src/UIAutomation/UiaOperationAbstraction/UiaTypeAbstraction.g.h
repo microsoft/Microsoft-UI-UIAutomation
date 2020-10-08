@@ -102,9 +102,9 @@
 
         UiaBool IsNull() const;
 
-        UiaArray<UiaElement> GetSelection(bool useCachedApi);
-        UiaBool GetCanSelectMultiple(bool useCachedApi);
-        UiaBool GetIsSelectionRequired(bool useCachedApi);
+        UiaArray<UiaElement> GetSelection(bool useCachedApi = false);
+        UiaBool GetCanSelectMultiple(bool useCachedApi = false);
+        UiaBool GetIsSelectionRequired(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -156,8 +156,8 @@
 
         UiaBool IsNull() const;
 
-        UiaString GetValue(bool useCachedApi);
-        UiaBool GetIsReadOnly(bool useCachedApi);
+        UiaString GetValue(bool useCachedApi = false);
+        UiaBool GetIsReadOnly(bool useCachedApi = false);
         void SetValue(UiaString val);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
@@ -210,12 +210,12 @@
 
         UiaBool IsNull() const;
 
-        UiaDouble GetValue(bool useCachedApi);
-        UiaBool GetIsReadOnly(bool useCachedApi);
-        UiaDouble GetMaximum(bool useCachedApi);
-        UiaDouble GetMinimum(bool useCachedApi);
-        UiaDouble GetLargeChange(bool useCachedApi);
-        UiaDouble GetSmallChange(bool useCachedApi);
+        UiaDouble GetValue(bool useCachedApi = false);
+        UiaBool GetIsReadOnly(bool useCachedApi = false);
+        UiaDouble GetMaximum(bool useCachedApi = false);
+        UiaDouble GetMinimum(bool useCachedApi = false);
+        UiaDouble GetLargeChange(bool useCachedApi = false);
+        UiaDouble GetSmallChange(bool useCachedApi = false);
         void SetValue(UiaDouble val);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
@@ -268,12 +268,12 @@
 
         UiaBool IsNull() const;
 
-        UiaDouble GetHorizontalScrollPercent(bool useCachedApi);
-        UiaDouble GetVerticalScrollPercent(bool useCachedApi);
-        UiaDouble GetHorizontalViewSize(bool useCachedApi);
-        UiaDouble GetVerticalViewSize(bool useCachedApi);
-        UiaBool GetHorizontallyScrollable(bool useCachedApi);
-        UiaBool GetVerticallyScrollable(bool useCachedApi);
+        UiaDouble GetHorizontalScrollPercent(bool useCachedApi = false);
+        UiaDouble GetVerticalScrollPercent(bool useCachedApi = false);
+        UiaDouble GetHorizontalViewSize(bool useCachedApi = false);
+        UiaDouble GetVerticalViewSize(bool useCachedApi = false);
+        UiaBool GetHorizontallyScrollable(bool useCachedApi = false);
+        UiaBool GetVerticallyScrollable(bool useCachedApi = false);
         void Scroll(UiaScrollAmount horizontalAmount, UiaScrollAmount verticalAmount);
         void SetScrollPercent(UiaDouble horizontalPercent, UiaDouble verticalPercent);
 
@@ -327,7 +327,7 @@
 
         UiaBool IsNull() const;
 
-        UiaExpandCollapseState GetExpandCollapseState(bool useCachedApi);
+        UiaExpandCollapseState GetExpandCollapseState(bool useCachedApi = false);
         void Expand();
         void Collapse();
 
@@ -381,8 +381,8 @@
 
         UiaBool IsNull() const;
 
-        UiaInt GetRowCount(bool useCachedApi);
-        UiaInt GetColumnCount(bool useCachedApi);
+        UiaInt GetRowCount(bool useCachedApi = false);
+        UiaInt GetColumnCount(bool useCachedApi = false);
         UiaElement GetItem(UiaInt row, UiaInt column);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
@@ -435,11 +435,11 @@
 
         UiaBool IsNull() const;
 
-        UiaElement GetContainingGrid(bool useCachedApi);
-        UiaInt GetRow(bool useCachedApi);
-        UiaInt GetColumn(bool useCachedApi);
-        UiaInt GetRowSpan(bool useCachedApi);
-        UiaInt GetColumnSpan(bool useCachedApi);
+        UiaElement GetContainingGrid(bool useCachedApi = false);
+        UiaInt GetRow(bool useCachedApi = false);
+        UiaInt GetColumn(bool useCachedApi = false);
+        UiaInt GetRowSpan(bool useCachedApi = false);
+        UiaInt GetColumnSpan(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -491,8 +491,8 @@
 
         UiaBool IsNull() const;
 
-        UiaInt GetCurrentView(bool useCachedApi);
-        UiaArray<UiaInt> GetSupportedViews(bool useCachedApi);
+        UiaInt GetCurrentView(bool useCachedApi = false);
+        UiaArray<UiaInt> GetSupportedViews(bool useCachedApi = false);
         UiaString GetViewName(UiaInt view);
         void SetCurrentView(UiaInt view);
 
@@ -546,12 +546,12 @@
 
         UiaBool IsNull() const;
 
-        UiaBool GetCanMaximize(bool useCachedApi);
-        UiaBool GetCanMinimize(bool useCachedApi);
-        UiaBool GetIsModal(bool useCachedApi);
-        UiaBool GetIsTopmost(bool useCachedApi);
-        UiaWindowVisualState GetWindowVisualState(bool useCachedApi);
-        UiaWindowInteractionState GetWindowInteractionState(bool useCachedApi);
+        UiaBool GetCanMaximize(bool useCachedApi = false);
+        UiaBool GetCanMinimize(bool useCachedApi = false);
+        UiaBool GetIsModal(bool useCachedApi = false);
+        UiaBool GetIsTopmost(bool useCachedApi = false);
+        UiaWindowVisualState GetWindowVisualState(bool useCachedApi = false);
+        UiaWindowInteractionState GetWindowInteractionState(bool useCachedApi = false);
         void Close();
         UiaBool WaitForInputIdle(UiaInt milliseconds);
         void SetWindowVisualState(UiaWindowVisualState state);
@@ -606,8 +606,8 @@
 
         UiaBool IsNull() const;
 
-        UiaBool GetIsSelected(bool useCachedApi);
-        UiaElement GetSelectionContainer(bool useCachedApi);
+        UiaBool GetIsSelected(bool useCachedApi = false);
+        UiaElement GetSelectionContainer(bool useCachedApi = false);
         void Select();
         void AddToSelection();
         void RemoveFromSelection();
@@ -662,7 +662,7 @@
 
         UiaBool IsNull() const;
 
-        UiaDockPosition GetDockPosition(bool useCachedApi);
+        UiaDockPosition GetDockPosition(bool useCachedApi = false);
         void SetDockPosition(UiaDockPosition dockPos);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
@@ -715,9 +715,9 @@
 
         UiaBool IsNull() const;
 
-        UiaArray<UiaElement> GetRowHeaders(bool useCachedApi);
-        UiaArray<UiaElement> GetColumnHeaders(bool useCachedApi);
-        UiaRowOrColumnMajor GetRowOrColumnMajor(bool useCachedApi);
+        UiaArray<UiaElement> GetRowHeaders(bool useCachedApi = false);
+        UiaArray<UiaElement> GetColumnHeaders(bool useCachedApi = false);
+        UiaRowOrColumnMajor GetRowOrColumnMajor(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -769,8 +769,8 @@
 
         UiaBool IsNull() const;
 
-        UiaArray<UiaElement> GetRowHeaderItems(bool useCachedApi);
-        UiaArray<UiaElement> GetColumnHeaderItems(bool useCachedApi);
+        UiaArray<UiaElement> GetRowHeaderItems(bool useCachedApi = false);
+        UiaArray<UiaElement> GetColumnHeaderItems(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -950,7 +950,7 @@
 
         UiaBool IsNull() const;
 
-        UiaToggleState GetToggleState(bool useCachedApi);
+        UiaToggleState GetToggleState(bool useCachedApi = false);
         void Toggle();
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
@@ -1003,9 +1003,9 @@
 
         UiaBool IsNull() const;
 
-        UiaBool GetCanMove(bool useCachedApi);
-        UiaBool GetCanResize(bool useCachedApi);
-        UiaBool GetCanRotate(bool useCachedApi);
+        UiaBool GetCanMove(bool useCachedApi = false);
+        UiaBool GetCanResize(bool useCachedApi = false);
+        UiaBool GetCanRotate(bool useCachedApi = false);
         void Move(UiaDouble x, UiaDouble y);
         void Resize(UiaDouble width, UiaDouble height);
         void Rotate(UiaDouble degrees);
@@ -1112,16 +1112,16 @@
 
         UiaBool IsNull() const;
 
-        UiaInt GetChildId(bool useCachedApi);
-        UiaString GetName(bool useCachedApi);
-        UiaString GetValue(bool useCachedApi);
-        UiaString GetDescription(bool useCachedApi);
-        UiaUint GetRole(bool useCachedApi);
-        UiaUint GetState(bool useCachedApi);
-        UiaString GetHelp(bool useCachedApi);
-        UiaString GetKeyboardShortcut(bool useCachedApi);
-        UiaArray<UiaElement> GetSelection(bool useCachedApi);
-        UiaString GetDefaultAction(bool useCachedApi);
+        UiaInt GetChildId(bool useCachedApi = false);
+        UiaString GetName(bool useCachedApi = false);
+        UiaString GetValue(bool useCachedApi = false);
+        UiaString GetDescription(bool useCachedApi = false);
+        UiaUint GetRole(bool useCachedApi = false);
+        UiaUint GetState(bool useCachedApi = false);
+        UiaString GetHelp(bool useCachedApi = false);
+        UiaString GetKeyboardShortcut(bool useCachedApi = false);
+        UiaArray<UiaElement> GetSelection(bool useCachedApi = false);
+        UiaString GetDefaultAction(bool useCachedApi = false);
         void Select(UiaInt flagsSelect);
         void DoDefaultAction();
         void SetValue(UiaString szValue);
@@ -1333,11 +1333,11 @@
 
         UiaBool IsNull() const;
 
-        UiaAnnotationType GetAnnotationTypeId(bool useCachedApi);
-        UiaString GetAnnotationTypeName(bool useCachedApi);
-        UiaString GetAuthor(bool useCachedApi);
-        UiaString GetDateTime(bool useCachedApi);
-        UiaElement GetTarget(bool useCachedApi);
+        UiaAnnotationType GetAnnotationTypeId(bool useCachedApi = false);
+        UiaString GetAnnotationTypeName(bool useCachedApi = false);
+        UiaString GetAuthor(bool useCachedApi = false);
+        UiaString GetDateTime(bool useCachedApi = false);
+        UiaElement GetTarget(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -1442,13 +1442,13 @@
 
         UiaBool IsNull() const;
 
-        UiaStyleId GetStyleId(bool useCachedApi);
-        UiaString GetStyleName(bool useCachedApi);
-        UiaInt GetFillColor(bool useCachedApi);
-        UiaString GetFillPatternStyle(bool useCachedApi);
-        UiaString GetShape(bool useCachedApi);
-        UiaInt GetFillPatternColor(bool useCachedApi);
-        UiaString GetExtendedProperties(bool useCachedApi);
+        UiaStyleId GetStyleId(bool useCachedApi = false);
+        UiaString GetStyleName(bool useCachedApi = false);
+        UiaInt GetFillColor(bool useCachedApi = false);
+        UiaString GetFillPatternStyle(bool useCachedApi = false);
+        UiaString GetShape(bool useCachedApi = false);
+        UiaInt GetFillPatternColor(bool useCachedApi = false);
+        UiaString GetExtendedProperties(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -1552,9 +1552,9 @@
 
         UiaBool IsNull() const;
 
-        UiaString GetFormula(bool useCachedApi);
-        UiaArray<UiaElement> GetAnnotationObjects(bool useCachedApi);
-        UiaArray<UiaAnnotationType> GetAnnotationTypes(bool useCachedApi);
+        UiaString GetFormula(bool useCachedApi = false);
+        UiaArray<UiaElement> GetAnnotationObjects(bool useCachedApi = false);
+        UiaArray<UiaAnnotationType> GetAnnotationTypes(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -1606,10 +1606,10 @@
 
         UiaBool IsNull() const;
 
-        UiaBool GetCanZoom(bool useCachedApi);
-        UiaDouble GetZoomLevel(bool useCachedApi);
-        UiaDouble GetZoomMinimum(bool useCachedApi);
-        UiaDouble GetZoomMaximum(bool useCachedApi);
+        UiaBool GetCanZoom(bool useCachedApi = false);
+        UiaDouble GetZoomLevel(bool useCachedApi = false);
+        UiaDouble GetZoomMinimum(bool useCachedApi = false);
+        UiaDouble GetZoomMaximum(bool useCachedApi = false);
         void Zoom(UiaDouble zoomValue);
         void ZoomByUnit(UiaZoomUnit ZoomUnit);
 
@@ -1716,10 +1716,10 @@
 
         UiaBool IsNull() const;
 
-        UiaBool GetIsGrabbed(bool useCachedApi);
-        UiaString GetDropEffect(bool useCachedApi);
-        UiaArray<UiaString> GetDropEffects(bool useCachedApi);
-        UiaArray<UiaElement> GetGrabbedItems(bool useCachedApi);
+        UiaBool GetIsGrabbed(bool useCachedApi = false);
+        UiaString GetDropEffect(bool useCachedApi = false);
+        UiaArray<UiaString> GetDropEffects(bool useCachedApi = false);
+        UiaArray<UiaElement> GetGrabbedItems(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -1771,8 +1771,8 @@
 
         UiaBool IsNull() const;
 
-        UiaString GetDropTargetEffect(bool useCachedApi);
-        UiaArray<UiaString> GetDropTargetEffects(bool useCachedApi);
+        UiaString GetDropTargetEffect(bool useCachedApi = false);
+        UiaArray<UiaString> GetDropTargetEffects(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -1929,10 +1929,10 @@
 
         UiaBool IsNull() const;
 
-        UiaElement GetFirstSelectedItem(bool useCachedApi);
-        UiaElement GetLastSelectedItem(bool useCachedApi);
-        UiaElement GetCurrentSelectedItem(bool useCachedApi);
-        UiaInt GetItemCount(bool useCachedApi);
+        UiaElement GetFirstSelectedItem(bool useCachedApi = false);
+        UiaElement GetLastSelectedItem(bool useCachedApi = false);
+        UiaElement GetCurrentSelectedItem(bool useCachedApi = false);
+        UiaInt GetItemCount(bool useCachedApi = false);
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
@@ -1986,87 +1986,87 @@
         UiaBool IsNull() const;
 
         UiaArray<UiaInt> GetRuntimeId();
-        UiaInt GetProcessId(bool useCachedApi);
-        UiaControlType GetControlType(bool useCachedApi);
-        UiaString GetLocalizedControlType(bool useCachedApi);
-        UiaString GetName(bool useCachedApi);
-        UiaString GetAcceleratorKey(bool useCachedApi);
-        UiaString GetAccessKey(bool useCachedApi);
-        UiaBool GetHasKeyboardFocus(bool useCachedApi);
-        UiaBool GetIsKeyboardFocusable(bool useCachedApi);
-        UiaBool GetIsEnabled(bool useCachedApi);
-        UiaString GetAutomationId(bool useCachedApi);
-        UiaString GetClassName(bool useCachedApi);
-        UiaString GetHelpText(bool useCachedApi);
-        UiaInt GetCulture(bool useCachedApi);
-        UiaBool GetIsControlElement(bool useCachedApi);
-        UiaBool GetIsContentElement(bool useCachedApi);
-        UiaBool GetIsPassword(bool useCachedApi);
-        UiaHwnd GetNativeWindowHandle(bool useCachedApi);
-        UiaString GetItemType(bool useCachedApi);
-        UiaBool GetIsOffscreen(bool useCachedApi);
-        UiaOrientationType GetOrientation(bool useCachedApi);
-        UiaString GetFrameworkId(bool useCachedApi);
-        UiaBool GetIsRequiredForForm(bool useCachedApi);
-        UiaString GetItemStatus(bool useCachedApi);
-        UiaRect GetBoundingRectangle(bool useCachedApi);
-        UiaElement GetLabeledBy(bool useCachedApi);
-        UiaString GetAriaRole(bool useCachedApi);
-        UiaString GetAriaProperties(bool useCachedApi);
-        UiaBool GetIsDataValidForForm(bool useCachedApi);
-        UiaArray<UiaElement> GetControllerFor(bool useCachedApi);
-        UiaArray<UiaElement> GetDescribedBy(bool useCachedApi);
-        UiaArray<UiaElement> GetFlowsTo(bool useCachedApi);
-        UiaString GetProviderDescription(bool useCachedApi);
-        UiaBool GetOptimizeForVisualContent(bool useCachedApi);
-        UiaLiveSetting GetLiveSetting(bool useCachedApi);
-        UiaArray<UiaElement> GetFlowsFrom(bool useCachedApi);
-        UiaBool GetIsPeripheral(bool useCachedApi);
-        UiaInt GetPositionInSet(bool useCachedApi);
-        UiaInt GetSizeOfSet(bool useCachedApi);
-        UiaInt GetLevel(bool useCachedApi);
-        UiaArray<UiaAnnotationType> GetAnnotationTypes(bool useCachedApi);
-        UiaArray<UiaElement> GetAnnotationObjects(bool useCachedApi);
-        UiaLandmarkType GetLandmarkType(bool useCachedApi);
-        UiaString GetLocalizedLandmarkType(bool useCachedApi);
-        UiaString GetFullDescription(bool useCachedApi);
-        UiaHeadingLevel GetHeadingLevel(bool useCachedApi);
-        UiaBool GetIsDialog(bool useCachedApi);
+        UiaInt GetProcessId(bool useCachedApi = false);
+        UiaControlType GetControlType(bool useCachedApi = false);
+        UiaString GetLocalizedControlType(bool useCachedApi = false);
+        UiaString GetName(bool useCachedApi = false);
+        UiaString GetAcceleratorKey(bool useCachedApi = false);
+        UiaString GetAccessKey(bool useCachedApi = false);
+        UiaBool GetHasKeyboardFocus(bool useCachedApi = false);
+        UiaBool GetIsKeyboardFocusable(bool useCachedApi = false);
+        UiaBool GetIsEnabled(bool useCachedApi = false);
+        UiaString GetAutomationId(bool useCachedApi = false);
+        UiaString GetClassName(bool useCachedApi = false);
+        UiaString GetHelpText(bool useCachedApi = false);
+        UiaInt GetCulture(bool useCachedApi = false);
+        UiaBool GetIsControlElement(bool useCachedApi = false);
+        UiaBool GetIsContentElement(bool useCachedApi = false);
+        UiaBool GetIsPassword(bool useCachedApi = false);
+        UiaHwnd GetNativeWindowHandle(bool useCachedApi = false);
+        UiaString GetItemType(bool useCachedApi = false);
+        UiaBool GetIsOffscreen(bool useCachedApi = false);
+        UiaOrientationType GetOrientation(bool useCachedApi = false);
+        UiaString GetFrameworkId(bool useCachedApi = false);
+        UiaBool GetIsRequiredForForm(bool useCachedApi = false);
+        UiaString GetItemStatus(bool useCachedApi = false);
+        UiaRect GetBoundingRectangle(bool useCachedApi = false);
+        UiaElement GetLabeledBy(bool useCachedApi = false);
+        UiaString GetAriaRole(bool useCachedApi = false);
+        UiaString GetAriaProperties(bool useCachedApi = false);
+        UiaBool GetIsDataValidForForm(bool useCachedApi = false);
+        UiaArray<UiaElement> GetControllerFor(bool useCachedApi = false);
+        UiaArray<UiaElement> GetDescribedBy(bool useCachedApi = false);
+        UiaArray<UiaElement> GetFlowsTo(bool useCachedApi = false);
+        UiaString GetProviderDescription(bool useCachedApi = false);
+        UiaBool GetOptimizeForVisualContent(bool useCachedApi = false);
+        UiaLiveSetting GetLiveSetting(bool useCachedApi = false);
+        UiaArray<UiaElement> GetFlowsFrom(bool useCachedApi = false);
+        UiaBool GetIsPeripheral(bool useCachedApi = false);
+        UiaInt GetPositionInSet(bool useCachedApi = false);
+        UiaInt GetSizeOfSet(bool useCachedApi = false);
+        UiaInt GetLevel(bool useCachedApi = false);
+        UiaArray<UiaAnnotationType> GetAnnotationTypes(bool useCachedApi = false);
+        UiaArray<UiaElement> GetAnnotationObjects(bool useCachedApi = false);
+        UiaLandmarkType GetLandmarkType(bool useCachedApi = false);
+        UiaString GetLocalizedLandmarkType(bool useCachedApi = false);
+        UiaString GetFullDescription(bool useCachedApi = false);
+        UiaHeadingLevel GetHeadingLevel(bool useCachedApi = false);
+        UiaBool GetIsDialog(bool useCachedApi = false);
 
-        UiaInvokePattern GetInvokePattern(bool useCachedApi);
-        UiaSelectionPattern GetSelectionPattern(bool useCachedApi);
-        UiaValuePattern GetValuePattern(bool useCachedApi);
-        UiaRangeValuePattern GetRangeValuePattern(bool useCachedApi);
-        UiaScrollPattern GetScrollPattern(bool useCachedApi);
-        UiaExpandCollapsePattern GetExpandCollapsePattern(bool useCachedApi);
-        UiaGridPattern GetGridPattern(bool useCachedApi);
-        UiaGridItemPattern GetGridItemPattern(bool useCachedApi);
-        UiaMultipleViewPattern GetMultipleViewPattern(bool useCachedApi);
-        UiaWindowPattern GetWindowPattern(bool useCachedApi);
-        UiaSelectionItemPattern GetSelectionItemPattern(bool useCachedApi);
-        UiaDockPattern GetDockPattern(bool useCachedApi);
-        UiaTablePattern GetTablePattern(bool useCachedApi);
-        UiaTableItemPattern GetTableItemPattern(bool useCachedApi);
-        UiaTextPattern GetTextPattern(bool useCachedApi);
-        UiaTogglePattern GetTogglePattern(bool useCachedApi);
-        UiaTransformPattern GetTransformPattern(bool useCachedApi);
-        UiaScrollItemPattern GetScrollItemPattern(bool useCachedApi);
-        UiaLegacyIAccessiblePattern GetLegacyIAccessiblePattern(bool useCachedApi);
-        UiaItemContainerPattern GetItemContainerPattern(bool useCachedApi);
-        UiaVirtualizedItemPattern GetVirtualizedItemPattern(bool useCachedApi);
-        UiaSynchronizedInputPattern GetSynchronizedInputPattern(bool useCachedApi);
-        UiaAnnotationPattern GetAnnotationPattern(bool useCachedApi);
-        UiaTextPattern2 GetTextPattern2(bool useCachedApi);
-        UiaStylesPattern GetStylesPattern(bool useCachedApi);
-        UiaSpreadsheetPattern GetSpreadsheetPattern(bool useCachedApi);
-        UiaSpreadsheetItemPattern GetSpreadsheetItemPattern(bool useCachedApi);
-        UiaTransformPattern2 GetTransformPattern2(bool useCachedApi);
-        UiaTextChildPattern GetTextChildPattern(bool useCachedApi);
-        UiaDragPattern GetDragPattern(bool useCachedApi);
-        UiaDropTargetPattern GetDropTargetPattern(bool useCachedApi);
-        UiaTextEditPattern GetTextEditPattern(bool useCachedApi);
-        UiaCustomNavigationPattern GetCustomNavigationPattern(bool useCachedApi);
-        UiaSelectionPattern2 GetSelectionPattern2(bool useCachedApi);
+        UiaInvokePattern GetInvokePattern(bool useCachedApi = false);
+        UiaSelectionPattern GetSelectionPattern(bool useCachedApi = false);
+        UiaValuePattern GetValuePattern(bool useCachedApi = false);
+        UiaRangeValuePattern GetRangeValuePattern(bool useCachedApi = false);
+        UiaScrollPattern GetScrollPattern(bool useCachedApi = false);
+        UiaExpandCollapsePattern GetExpandCollapsePattern(bool useCachedApi = false);
+        UiaGridPattern GetGridPattern(bool useCachedApi = false);
+        UiaGridItemPattern GetGridItemPattern(bool useCachedApi = false);
+        UiaMultipleViewPattern GetMultipleViewPattern(bool useCachedApi = false);
+        UiaWindowPattern GetWindowPattern(bool useCachedApi = false);
+        UiaSelectionItemPattern GetSelectionItemPattern(bool useCachedApi = false);
+        UiaDockPattern GetDockPattern(bool useCachedApi = false);
+        UiaTablePattern GetTablePattern(bool useCachedApi = false);
+        UiaTableItemPattern GetTableItemPattern(bool useCachedApi = false);
+        UiaTextPattern GetTextPattern(bool useCachedApi = false);
+        UiaTogglePattern GetTogglePattern(bool useCachedApi = false);
+        UiaTransformPattern GetTransformPattern(bool useCachedApi = false);
+        UiaScrollItemPattern GetScrollItemPattern(bool useCachedApi = false);
+        UiaLegacyIAccessiblePattern GetLegacyIAccessiblePattern(bool useCachedApi = false);
+        UiaItemContainerPattern GetItemContainerPattern(bool useCachedApi = false);
+        UiaVirtualizedItemPattern GetVirtualizedItemPattern(bool useCachedApi = false);
+        UiaSynchronizedInputPattern GetSynchronizedInputPattern(bool useCachedApi = false);
+        UiaAnnotationPattern GetAnnotationPattern(bool useCachedApi = false);
+        UiaTextPattern2 GetTextPattern2(bool useCachedApi = false);
+        UiaStylesPattern GetStylesPattern(bool useCachedApi = false);
+        UiaSpreadsheetPattern GetSpreadsheetPattern(bool useCachedApi = false);
+        UiaSpreadsheetItemPattern GetSpreadsheetItemPattern(bool useCachedApi = false);
+        UiaTransformPattern2 GetTransformPattern2(bool useCachedApi = false);
+        UiaTextChildPattern GetTextChildPattern(bool useCachedApi = false);
+        UiaDragPattern GetDragPattern(bool useCachedApi = false);
+        UiaDropTargetPattern GetDropTargetPattern(bool useCachedApi = false);
+        UiaTextEditPattern GetTextEditPattern(bool useCachedApi = false);
+        UiaCustomNavigationPattern GetCustomNavigationPattern(bool useCachedApi = false);
+        UiaSelectionPattern2 GetSelectionPattern2(bool useCachedApi = false);
 
         UiaElement GetUpdatedCacheElement(UiaCacheRequest cacheRequest);
 
