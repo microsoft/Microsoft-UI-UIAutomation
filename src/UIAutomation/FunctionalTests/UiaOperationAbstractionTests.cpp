@@ -479,5 +479,58 @@ namespace UiaOperationAbstractionTests
         {
             ArrayEqualityComparisonTest(true);
         }
+
+        void ForEachLoop(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the element to the remote operation to contextualize it.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create an array to iterate over and add a few values to it.
+                std::vector<int> values{ 1, 5, 8, 10, 7 };
+                UiaArray<UiaInt> valueArray{ std::move(values) };
+
+                // Now, iterate over the array and create a sum of found values but:
+                // 1. Skip 5's,
+                // 2. Break on 10's.
+                UiaInt valueSum{ 0 };
+                operationScope.ForEach(valueArray, [&](auto value)
+                {
+                    operationScope.ContinueIf(value == 5);
+                    operationScope.BreakIf(value == 10);
+                    valueSum += value;
+                });
+
+                // Resolve the sum.
+                operationScope.BindResult(valueSum);
+                operationScope.Resolve();
+
+                // Compare the calculated sum against the expectations.
+                Assert::AreEqual(9, static_cast<int>(valueSum));
+            }
+        }
+
+        TEST_METHOD(ForEachLoopLocal)
+        {
+            ForEachLoop(false /* useRemoteOperations */);
+        };
+
+        TEST_METHOD(ForEachLoopRemote)
+        {
+            ForEachLoop(true /* useRemoteOperations */);
+        };
     };
 }

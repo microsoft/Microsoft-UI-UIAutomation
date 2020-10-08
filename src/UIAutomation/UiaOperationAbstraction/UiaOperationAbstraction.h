@@ -1975,6 +1975,23 @@ namespace UiaOperationAbstraction
                 std::forward<ModificationBlock>(modification), std::forward<Body>(body));
         }
 
+        template<class ArrayType, class Body>
+        void ForEach(ArrayType array, Body body)
+        {
+            const auto arraySize = array.Size();
+            UiaUint index{ 0 };
+
+            For(
+                []() {} /* initialize */,
+                [&]() { return (index < arraySize); } /* condition */,
+                [&]() { index += 1; } /* modification */,
+                [&]() /* body */
+                {
+                    const auto element = array.GetAt(index);
+                    body(element);
+                });
+        }
+
         inline void Break()
         {
             GetCurrentDelegator()->Break();
@@ -1983,6 +2000,22 @@ namespace UiaOperationAbstraction
         inline void Continue()
         {
             GetCurrentDelegator()->Continue();
+        }
+
+        void BreakIf(UiaBool condition)
+        {
+            If(condition, [&]()
+            {
+                Break();
+            });
+        }
+
+        void ContinueIf(UiaBool condition)
+        {
+            If(condition, [&]()
+            {
+                Continue();
+            });
         }
 
         inline void AbortOperationWithHresult(HRESULT hr)
