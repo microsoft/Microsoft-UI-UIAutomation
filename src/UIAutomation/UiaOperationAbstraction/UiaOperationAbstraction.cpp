@@ -1448,6 +1448,10 @@ namespace UiaOperationAbstraction
         return localVal[index];
     }
 
+    UiaPoint::UiaPoint() : UiaPoint(winrt::Windows::Foundation::Point{ 0.0f /* X */, 0.0f /* Y */ })
+    {
+    }
+
     UiaPoint::UiaPoint(POINT point):
         UiaTypeBase(winrt::Windows::Foundation::Point(static_cast<float>(point.x), static_cast<float>(point.y)))
     {
@@ -1522,6 +1526,10 @@ namespace UiaOperationAbstraction
         auto rhsLocalPoint = std::get<winrt::Windows::Foundation::Point>(rhs.m_member);
 
         return (lhsLocalPoint.X != rhsLocalPoint.X) || (lhsLocalPoint.Y != rhsLocalPoint.Y);
+    }
+
+    UiaRect::UiaRect() : UiaRect(winrt::Windows::Foundation::Rect{ 0.0f /* X */, 0.0f /* Y */, 0.0f /* Width */, 0.0f /* Height */ })
+    {
     }
 
     UiaRect::UiaRect(RECT rect):

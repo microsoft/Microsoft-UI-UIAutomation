@@ -1007,6 +1007,7 @@ namespace UiaOperationAbstraction
         winrt::Microsoft::UI::UIAutomation::AutomationRemotePoint>
     {
     public:
+        UiaPoint();
         UiaPoint(POINT point);
         UiaPoint(winrt::Windows::Foundation::Point point);
         UiaPoint(winrt::Microsoft::UI::UIAutomation::AutomationRemotePoint remotePoint);
@@ -1028,6 +1029,7 @@ namespace UiaOperationAbstraction
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteRect>
     {
     public:
+        UiaRect();
         UiaRect(RECT rect);
         UiaRect(winrt::Windows::Foundation::Rect rect);
         UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteRect remoteRect);
