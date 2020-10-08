@@ -2068,6 +2068,8 @@
         UiaCustomNavigationPattern GetCustomNavigationPattern(bool useCachedApi);
         UiaSelectionPattern2 GetSelectionPattern2(bool useCachedApi);
 
+        UiaElement BuildUpdatedCache(UiaCacheRequest cacheRequest);
+
         UiaElement GetParentElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
         UiaElement GetFirstChildElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
         UiaElement GetLastChildElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);

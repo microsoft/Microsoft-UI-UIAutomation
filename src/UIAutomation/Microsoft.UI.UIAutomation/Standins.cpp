@@ -523,6 +523,14 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    winrt::AutomationRemoteElement AutomationRemoteElement::BuildUpdatedCache(const winrt::AutomationRemoteCacheRequest& cacheRequest)
+    {
+        auto result = m_parent->NewNull().AsElement();
+        result.Set(*this);
+        result.PopulateCache(cacheRequest);
+        return result;
+    }
+
     winrt::AutomationRemoteElement AutomationRemoteElement::Navigate(const winrt::AutomationRemoteInt& direction)
     {
         const auto resultId = m_parent->GetNextId();
