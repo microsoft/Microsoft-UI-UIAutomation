@@ -203,6 +203,8 @@ namespace Microsoft.UI.UIAutomation
         [default_overload] AutomationRemoteAnyObject GetPropertyValue(AutomationRemotePropertyId propertyId);
         AutomationRemoteAnyObject GetPropertyValue(AutomationRemotePropertyId propertyId, AutomationRemoteBool ignoreDefaultValue);
 
+        AutomationRemoteAnyObject GetMetadataValue(AutomationRemotePropertyId propertyId, AutomationRemoteMetadata metadata);
+
         AutomationRemoteElement GetParentElement();
         AutomationRemoteElement GetFirstChildElement();
         AutomationRemoteElement GetLastChildElement();
@@ -546,6 +548,18 @@ namespace Microsoft.UI.UIAutomation
         void Set(AutomationRemoteLiveSetting rhs);
         AutomationRemoteBool IsEqual(AutomationRemoteLiveSetting rhs);
         AutomationRemoteBool IsNotEqual(AutomationRemoteLiveSetting rhs);
+    };
+
+    enum AutomationMetadata
+    {
+        SayAsInterpretAs = 100000,
+    };
+
+    runtimeclass AutomationRemoteMetadata : AutomationRemoteObject
+    {
+        void Set(AutomationRemoteMetadata rhs);
+        AutomationRemoteBool IsEqual(AutomationRemoteMetadata rhs);
+        AutomationRemoteBool IsNotEqual(AutomationRemoteMetadata rhs);
     };
 
     enum AutomationNavigateDirection
@@ -1625,6 +1639,7 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteHorizontalTextAlignment AsHorizontalTextAlignment();
         AutomationRemoteLandmarkType AsLandmarkType();
         AutomationRemoteLiveSetting AsLiveSetting();
+        AutomationRemoteMetadata AsMetadata();
         AutomationRemoteNavigateDirection AsNavigateDirection();
         AutomationRemoteOrientationType AsOrientationType();
         AutomationRemoteOutlineStyles AsOutlineStyles();
@@ -1679,6 +1694,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteLandmarkType NewEnum(AutomationLandmarkType initialValue);
         [method_name("NewEnumWithLiveSetting")]
         AutomationRemoteLiveSetting NewEnum(AutomationLiveSetting initialValue);
+        [method_name("NewEnumWithMetadata")]
+        AutomationRemoteMetadata NewEnum(AutomationMetadata initialValue);
         [method_name("NewEnumWithNavigateDirection")]
         AutomationRemoteNavigateDirection NewEnum(AutomationNavigateDirection initialValue);
         [method_name("NewEnumWithOrientationType")]

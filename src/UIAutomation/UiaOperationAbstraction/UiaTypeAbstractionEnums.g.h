@@ -64,6 +64,10 @@
         LiveSetting,
         winrt::Microsoft::UI::UIAutomation::AutomationLiveSetting,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteLiveSetting>;
+    using UiaMetadata = UiaEnum<
+        METADATAID,
+        winrt::Microsoft::UI::UIAutomation::AutomationMetadata,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteMetadata>;
     using UiaNavigateDirection = UiaEnum<
         NavigateDirection,
         winrt::Microsoft::UI::UIAutomation::AutomationNavigateDirection,

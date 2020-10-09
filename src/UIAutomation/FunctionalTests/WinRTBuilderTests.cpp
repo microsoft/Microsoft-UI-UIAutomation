@@ -497,5 +497,28 @@ namespace WinRTBuilderTests
             Assert::AreEqual(false, winrt::unbox_value<bool>(results.GetResult(eq2Token)));
             Assert::AreEqual(true, winrt::unbox_value<bool>(results.GetResult(eq3Token)));
         }
+
+        // Tests that when the provider doesn't support GetMetadataValue we get the expected result.
+        TEST_METHOD(GetMetadataValueUnsupported)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            auto remoteElement = op.ImportElement(calc.as<winrt::AutomationElement>());
+
+            auto remoteMetadata = remoteElement.GetMetadataValue(op.NewEnum(winrt::AutomationPropertyId::Name), op.NewEnum(winrt::AutomationMetadata::SayAsInterpretAs));
+
+            auto remoteIsNull = remoteMetadata.IsNull();
+
+            auto metadataToken = op.RequestResponse(remoteMetadata);
+            auto isNullToken = op.RequestResponse(remoteIsNull);
+            auto results = op.Execute();
+
+            AssertSucceeded(results.OperationStatus());
+            Assert::AreEqual(true, winrt::unbox_value<bool>(results.GetResult(isNullToken)));
+            Assert::IsTrue(results.GetResult(metadataToken) == nullptr);
+        }
     };
 }
