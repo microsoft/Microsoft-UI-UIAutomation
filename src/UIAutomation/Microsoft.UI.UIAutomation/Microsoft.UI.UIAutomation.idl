@@ -19,6 +19,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteBool BoolNot();
         AutomationRemoteBool BoolAnd(AutomationRemoteBool rhs);
         AutomationRemoteBool BoolOr(AutomationRemoteBool rhs);
+
+        AutomationRemoteString Stringify();
     }
 
     runtimeclass AutomationRemoteInt : AutomationRemoteObject
@@ -35,6 +37,8 @@ namespace Microsoft.UI.UIAutomation
         void Subtract(AutomationRemoteInt rhs);
         void Multiply(AutomationRemoteInt rhs);
         void Divide(AutomationRemoteInt rhs);
+
+        AutomationRemoteString Stringify();
     }
 
     runtimeclass AutomationRemoteUint : AutomationRemoteObject
@@ -51,6 +55,8 @@ namespace Microsoft.UI.UIAutomation
         void Subtract(AutomationRemoteUint rhs);
         void Multiply(AutomationRemoteUint rhs);
         void Divide(AutomationRemoteUint rhs);
+
+        AutomationRemoteString Stringify();
     }
 
     runtimeclass AutomationRemoteDouble : AutomationRemoteObject
@@ -67,6 +73,8 @@ namespace Microsoft.UI.UIAutomation
         void Subtract(AutomationRemoteDouble rhs);
         void Multiply(AutomationRemoteDouble rhs);
         void Divide(AutomationRemoteDouble rhs);
+
+        AutomationRemoteString Stringify();
     }
 
     runtimeclass AutomationRemoteChar : AutomationRemoteObject
@@ -78,6 +86,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteBool IsLessThanOrEqual(AutomationRemoteChar rhs);
         AutomationRemoteBool IsGreaterThan(AutomationRemoteChar rhs);
         AutomationRemoteBool IsGreaterThanOrEqual(AutomationRemoteChar rhs);
+
+        AutomationRemoteString Stringify();
     }
 
     runtimeclass AutomationRemoteString : AutomationRemoteObject
@@ -91,6 +101,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteString Concat(AutomationRemoteString other);
 
         AutomationRemoteUint Size();
+
+        AutomationRemoteString Stringify();
     }
 
     runtimeclass AutomationRemotePoint : AutomationRemoteObject
@@ -101,6 +113,8 @@ namespace Microsoft.UI.UIAutomation
 
         AutomationRemoteDouble GetX();
         AutomationRemoteDouble GetY();
+
+        AutomationRemoteString Stringify();
     }
 
     runtimeclass AutomationRemoteRect : AutomationRemoteObject
@@ -113,6 +127,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteDouble GetWidth();
         AutomationRemoteDouble GetX();
         AutomationRemoteDouble GetY();
+
+        AutomationRemoteString Stringify();
     }
 
     runtimeclass AutomationRemoteGuid : AutomationRemoteObject
@@ -138,6 +154,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteAnyObject GetAt(AutomationRemoteUint index);
 
         AutomationRemoteUint Size();
+
+        AutomationRemoteString Stringify();
     }
 
     runtimeclass AutomationRemoteStringMap : AutomationRemoteObject

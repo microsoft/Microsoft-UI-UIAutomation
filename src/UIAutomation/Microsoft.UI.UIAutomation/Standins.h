@@ -176,6 +176,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteBool BoolNot();
         winrt::AutomationRemoteBool BoolAnd(Microsoft::UI::UIAutomation::AutomationRemoteBool const& rhs);
         winrt::AutomationRemoteBool BoolOr(Microsoft::UI::UIAutomation::AutomationRemoteBool const& rhs);
+
+        winrt::AutomationRemoteString Stringify();
     };
 
     class AutomationRemoteInt : public AutomationRemoteIntT<AutomationRemoteInt, AutomationRemoteObject>
@@ -237,6 +239,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         {
             AutomationRemoteObject::Divide<AutomationRemoteInt>(rhs);
         }
+
+        winrt::AutomationRemoteString Stringify();
     };
 
     class AutomationRemoteUint : public AutomationRemoteUintT<AutomationRemoteUint, AutomationRemoteObject>
@@ -298,6 +302,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         {
             AutomationRemoteObject::Divide<AutomationRemoteUint>(rhs);
         }
+
+        winrt::AutomationRemoteString Stringify();
     };
 
     class AutomationRemoteDouble : public AutomationRemoteDoubleT<AutomationRemoteDouble, AutomationRemoteObject>
@@ -359,6 +365,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         {
             AutomationRemoteObject::Divide<AutomationRemoteDouble>(rhs);
         }
+
+        winrt::AutomationRemoteString Stringify();
     };
 
     struct AutomationRemoteChar : AutomationRemoteCharT<AutomationRemoteChar, Microsoft::UI::UIAutomation::implementation::AutomationRemoteObject>
@@ -372,6 +380,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteBool IsLessThanOrEqual(winrt::AutomationRemoteChar const& rhs);
         winrt::AutomationRemoteBool IsGreaterThan(winrt::AutomationRemoteChar const& rhs);
         winrt::AutomationRemoteBool IsGreaterThanOrEqual(winrt::AutomationRemoteChar const& rhs);
+
+        winrt::AutomationRemoteString Stringify();
     };
 
     class AutomationRemoteString : public AutomationRemoteStringT<AutomationRemoteString, AutomationRemoteObject>
@@ -398,6 +408,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteString Substr(winrt::AutomationRemoteUint const& index, winrt::AutomationRemoteUint const& length);
         winrt::AutomationRemoteString Concat(winrt::AutomationRemoteString const& other);
         winrt::AutomationRemoteUint Size();
+
+        winrt::AutomationRemoteString Stringify();
     };
 
     class AutomationRemotePoint : public AutomationRemotePointT<AutomationRemotePoint, AutomationRemoteObject>
@@ -422,6 +434,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
 
         winrt::AutomationRemoteDouble GetX();
         winrt::AutomationRemoteDouble GetY();
+
+        winrt::AutomationRemoteString Stringify();
     };
 
     class AutomationRemoteRect : public AutomationRemoteRectT<AutomationRemoteRect, AutomationRemoteObject>
@@ -448,6 +462,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteDouble GetWidth();
         winrt::AutomationRemoteDouble GetX();
         winrt::AutomationRemoteDouble GetY();
+
+        winrt::AutomationRemoteString Stringify();
     };
 
     class AutomationRemoteGuid : public AutomationRemoteGuidT<AutomationRemoteGuid, AutomationRemoteObject>
@@ -501,6 +517,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteAnyObject GetAt(winrt::AutomationRemoteUint index);
 
         winrt::AutomationRemoteUint Size();
+
+        winrt::AutomationRemoteString Stringify();
     };
 
     struct AutomationRemoteStringMap : AutomationRemoteStringMapT<AutomationRemoteStringMap, Microsoft::UI::UIAutomation::implementation::AutomationRemoteObject>
