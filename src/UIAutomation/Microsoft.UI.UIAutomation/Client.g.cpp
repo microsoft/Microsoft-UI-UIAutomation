@@ -489,6 +489,37 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    AutomationRemoteMetadata::AutomationRemoteMetadata(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
+    {
+    }
+
+    void AutomationRemoteMetadata::Set(const AutomationRemoteMetadata::class_type& rhs)
+    {
+        AutomationRemoteObject::Set<AutomationRemoteMetadata>(rhs);
+    }
+
+    winrt::AutomationRemoteBool AutomationRemoteMetadata::IsEqual(const AutomationRemoteMetadata::class_type& rhs)
+    {
+        return AutomationRemoteObject::IsEqual<AutomationRemoteMetadata>(rhs);
+    }
+
+    winrt::AutomationRemoteBool AutomationRemoteMetadata::IsNotEqual(const AutomationRemoteMetadata::class_type& rhs)
+    {
+        return AutomationRemoteObject::IsNotEqual<AutomationRemoteMetadata>(rhs);
+    }
+
+    winrt::AutomationRemoteMetadata AutomationRemoteOperation::NewEnum(AutomationMetadata initialValue)
+    {
+        const auto resultId = GetNextId();
+        InsertInstruction(bytecode::NewInt{
+            resultId,
+            static_cast<int>(initialValue)
+            });
+        const auto result = make<AutomationRemoteMetadata>(resultId, *this);
+        return result;
+    }
+
     AutomationRemoteNavigateDirection::AutomationRemoteNavigateDirection(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
         : base_type(operandId, parent)
     {
@@ -3515,6 +3546,11 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteLiveSetting AutomationRemoteAnyObject::AsLiveSetting()
     {
         return As<AutomationRemoteLiveSetting>();
+    }
+
+    winrt::AutomationRemoteMetadata AutomationRemoteAnyObject::AsMetadata()
+    {
+        return As<AutomationRemoteMetadata>();
     }
 
     winrt::AutomationRemoteNavigateDirection AutomationRemoteAnyObject::AsNavigateDirection()

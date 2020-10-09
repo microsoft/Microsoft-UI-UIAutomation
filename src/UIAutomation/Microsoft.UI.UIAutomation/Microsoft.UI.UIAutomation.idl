@@ -548,6 +548,18 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteBool IsNotEqual(AutomationRemoteLiveSetting rhs);
     };
 
+    enum AutomationMetadata
+    {
+        SayAsInterpretAs = 100000,
+    };
+
+    runtimeclass AutomationRemoteMetadata : AutomationRemoteObject
+    {
+        void Set(AutomationRemoteMetadata rhs);
+        AutomationRemoteBool IsEqual(AutomationRemoteMetadata rhs);
+        AutomationRemoteBool IsNotEqual(AutomationRemoteMetadata rhs);
+    };
+
     enum AutomationNavigateDirection
     {
         Parent = 0,
@@ -1625,6 +1637,7 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteHorizontalTextAlignment AsHorizontalTextAlignment();
         AutomationRemoteLandmarkType AsLandmarkType();
         AutomationRemoteLiveSetting AsLiveSetting();
+        AutomationRemoteMetadata AsMetadata();
         AutomationRemoteNavigateDirection AsNavigateDirection();
         AutomationRemoteOrientationType AsOrientationType();
         AutomationRemoteOutlineStyles AsOutlineStyles();
@@ -1679,6 +1692,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteLandmarkType NewEnum(AutomationLandmarkType initialValue);
         [method_name("NewEnumWithLiveSetting")]
         AutomationRemoteLiveSetting NewEnum(AutomationLiveSetting initialValue);
+        [method_name("NewEnumWithMetadata")]
+        AutomationRemoteMetadata NewEnum(AutomationMetadata initialValue);
         [method_name("NewEnumWithNavigateDirection")]
         AutomationRemoteNavigateDirection NewEnum(AutomationNavigateDirection initialValue);
         [method_name("NewEnumWithOrientationType")]

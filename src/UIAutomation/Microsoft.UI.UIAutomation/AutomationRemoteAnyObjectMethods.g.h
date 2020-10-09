@@ -89,6 +89,7 @@
         winrt::AutomationRemoteHorizontalTextAlignment AsHorizontalTextAlignment();
         winrt::AutomationRemoteLandmarkType AsLandmarkType();
         winrt::AutomationRemoteLiveSetting AsLiveSetting();
+        winrt::AutomationRemoteMetadata AsMetadata();
         winrt::AutomationRemoteNavigateDirection AsNavigateDirection();
         winrt::AutomationRemoteOrientationType AsOrientationType();
         winrt::AutomationRemoteOutlineStyles AsOutlineStyles();
