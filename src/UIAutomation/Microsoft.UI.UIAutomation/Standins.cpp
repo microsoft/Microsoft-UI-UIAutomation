@@ -523,7 +523,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
-    winrt::AutomationRemoteElement AutomationRemoteElement::BuildUpdatedCache(const winrt::AutomationRemoteCacheRequest& cacheRequest)
+    winrt::AutomationRemoteElement AutomationRemoteElement::GetUpdatedCacheElement(const winrt::AutomationRemoteCacheRequest& cacheRequest)
     {
         auto result = m_parent->NewNull().AsElement();
         result.Set(*this);

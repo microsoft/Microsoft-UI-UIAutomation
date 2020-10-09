@@ -480,7 +480,7 @@ namespace UiaOperationAbstractionTests
             ArrayEqualityComparisonTest(true);
         }
 
-        void BuildUpdatedCache(bool useRemoteOperations)
+        void GetUpdatedCacheElement(bool useRemoteOperations)
         {
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -513,8 +513,8 @@ namespace UiaOperationAbstractionTests
                 cacheRequestWithControlType.AddProperty(UIA_ControlTypePropertyId);
 
                 // Rebuild the imported element with the filled cache requests.
-                auto remoteElementWithName = displayElement.BuildUpdatedCache(cacheRequestWithName);
-                auto remoteElementWithControlType = displayElement.BuildUpdatedCache(cacheRequestWithControlType);
+                auto remoteElementWithName = displayElement.GetUpdatedCacheElement(cacheRequestWithName);
+                auto remoteElementWithControlType = displayElement.GetUpdatedCacheElement(cacheRequestWithControlType);
                 operationScope.BindResult(remoteElementWithName);
                 operationScope.BindResult(remoteElementWithControlType);
                 operationScope.Resolve();
@@ -548,14 +548,14 @@ namespace UiaOperationAbstractionTests
             }
         }
 
-        TEST_METHOD(BuildUpdatedCacheLocal)
+        TEST_METHOD(GetUpdatedCacheElementLocal)
         {
-            BuildUpdatedCache(false /* useRemoteOperations */);
+            GetUpdatedCacheElement(false /* useRemoteOperations */);
         }
 
-        TEST_METHOD(BuildUpdatedCacheRemote)
+        TEST_METHOD(GetUpdatedCacheElementRemote)
         {
-            BuildUpdatedCache(true /* useRemoteOperations */);
+            GetUpdatedCacheElement(true /* useRemoteOperations */);
         }
     };
 }

@@ -6982,13 +6982,13 @@
         return localPattern;
     }
 
-    UiaElement UiaElement::BuildUpdatedCache(UiaCacheRequest cacheRequest)
+    UiaElement UiaElement::GetUpdatedCacheElement(UiaCacheRequest cacheRequest)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
         {
             ToRemote();
-            return std::get<AutomationRemoteElement>(m_member).BuildUpdatedCache(cacheRequest);
+            return std::get<AutomationRemoteElement>(m_member).GetUpdatedCacheElement(cacheRequest);
         }
 
         const auto& localElement = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);

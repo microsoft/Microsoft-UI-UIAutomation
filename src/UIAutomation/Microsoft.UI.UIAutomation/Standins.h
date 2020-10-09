@@ -545,7 +545,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
             const winrt::AutomationRemotePropertyId& propertyId,
             const winrt::AutomationRemoteBool& ignoreDefaultValue);
 
-        winrt::AutomationRemoteElement BuildUpdatedCache(const winrt::AutomationRemoteCacheRequest& cacheRequest);
+        winrt::AutomationRemoteElement GetUpdatedCacheElement(const winrt::AutomationRemoteCacheRequest& cacheRequest);
         winrt::AutomationRemoteElement GetParentElement();
         winrt::AutomationRemoteElement GetFirstChildElement();
         winrt::AutomationRemoteElement GetLastChildElement();
