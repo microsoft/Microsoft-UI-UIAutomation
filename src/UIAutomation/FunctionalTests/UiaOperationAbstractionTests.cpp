@@ -544,7 +544,7 @@ namespace UiaOperationAbstractionTests
                 // And compare them against expectations.
                 Assert::AreEqual(std::wstring(L"5"), intValueString.GetLocalWstring());
                 Assert::AreEqual(std::wstring(L"7"), uintValueString.GetLocalWstring());
-                Assert::AreEqual(std::wstring(L"10.0"), doubleValueString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"10.000000"), doubleValueString.GetLocalWstring());
             }
 
             // -> Character
@@ -593,8 +593,8 @@ namespace UiaOperationAbstractionTests
                 operationScope.Resolve();
 
                 // And compare them against expectations.
-                Assert::AreEqual(std::wstring(L"Point{ 5, 5 }"), pointValueString.GetLocalWstring());
-                Assert::AreEqual(std::wstring(L"Rect{ 5, 5, 5, 5 }"), rectValueString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"Point{ 5,5 }"), pointValueString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"Rect{ 5,5,10,10 }"), rectValueString.GetLocalWstring());
             }
 
             // -> Array of type
@@ -619,7 +619,7 @@ namespace UiaOperationAbstractionTests
 
                 // And compare them against expectations.
                 Assert::AreEqual(std::wstring(L"[5,6,7]"), intArrayString.GetLocalWstring());
-                Assert::AreEqual(std::wstring(L"[String1, String2]"), stringArrayString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"[String1,String2]"), stringArrayString.GetLocalWstring());
             }
         }
 
