@@ -7,6 +7,7 @@
 #include <memory>
 #include <optional>
 #include <functional>
+#include <sstream>
 
 #include <combaseapi.h>
 #include <UIAutomation.h>
