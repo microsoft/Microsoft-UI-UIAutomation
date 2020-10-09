@@ -56,7 +56,7 @@ namespace UiaOperationAbstraction
             return win32Rect;
         }
 
-        wil::unique_bstr SafeToUniqueBstr(const std::wstring& str)
+        wil::unique_bstr SafeToUniqueBstr(const std::wstring & str)
         {
             if (!str.empty())
             {
@@ -78,7 +78,7 @@ namespace UiaOperationAbstraction
             }
         }
 
-        wil::unique_variant CopyToUniqueVariant(const VARIANT& variant)
+        wil::unique_variant CopyToUniqueVariant(const VARIANT & variant)
         {
             wil::unique_variant result;
             winrt::check_hresult(VariantCopy(&result, &variant));
@@ -618,8 +618,8 @@ namespace UiaOperationAbstraction
     {
         using UiaCacheRequestBaseType =
             UiaTypeBase<
-            winrt::com_ptr<IUIAutomationCacheRequest>,
-            winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>;
+                winrt::com_ptr<IUIAutomationCacheRequest>,
+                winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>;
 
         static UiaCacheRequestBaseType CreateBaseClass()
         {
@@ -731,7 +731,7 @@ namespace UiaOperationAbstraction
             UiaUint size = elements.Size();
             UiaUint i{ 0 };
             delegator->For(
-                []() {} /* initialize */,
+                [](){} /* initialize */,
                 [&]() { return i < size; } /* condition */,
                 [&]() { i += 1; } /* modification */,
                 [&]() /* body */
@@ -759,7 +759,7 @@ namespace UiaOperationAbstraction
     {
     }
 
-    UiaOperationDelegator::UiaOperationDelegator(bool useRemoteApi) :
+    UiaOperationDelegator::UiaOperationDelegator(bool useRemoteApi) : 
         m_useRemoteApi(useRemoteApi)
     {
     }
@@ -972,24 +972,24 @@ namespace UiaOperationAbstraction
 
 
 
-    UiaBool::UiaBool(bool value) :
+    UiaBool::UiaBool(bool value):
         UiaTypeBase(value ? TRUE : FALSE)
     {
         ToRemote();
     }
 
-    UiaBool::UiaBool(BOOL value) :
+    UiaBool::UiaBool(BOOL value):
         UiaTypeBase(value)
     {
         ToRemote();
     }
 
-    UiaBool::UiaBool(winrt::Microsoft::UI::UIAutomation::AutomationRemoteBool remoteValue) :
+    UiaBool::UiaBool(winrt::Microsoft::UI::UIAutomation::AutomationRemoteBool remoteValue):
         UiaTypeBase(remoteValue)
     {
     }
 
-    UiaBool::UiaBool(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+    UiaBool::UiaBool(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsBool())
     {
     }
@@ -1063,18 +1063,18 @@ namespace UiaOperationAbstraction
         return std::get<BOOL>(m_member) ? L"true" : L"false";
     }
 
-    UiaInt::UiaInt(int value) :
+    UiaInt::UiaInt(int value):
         UiaTypeBase(value)
     {
         ToRemote();
     }
 
-    UiaInt::UiaInt(winrt::Microsoft::UI::UIAutomation::AutomationRemoteInt remoteValue) :
+    UiaInt::UiaInt(winrt::Microsoft::UI::UIAutomation::AutomationRemoteInt remoteValue):
         UiaTypeBase(remoteValue)
     {
     }
 
-    UiaInt::UiaInt(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+    UiaInt::UiaInt(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsInt())
     {
     }
@@ -1145,7 +1145,7 @@ namespace UiaOperationAbstraction
         return ArithmeticStringify<UiaInt>(m_member);
     }
 
-    UiaUint::UiaUint(unsigned int value) :
+    UiaUint::UiaUint(unsigned int value):
         UiaTypeBase(value)
     {
         ToRemote();
@@ -1163,12 +1163,12 @@ namespace UiaOperationAbstraction
         ToRemote();
     }
 
-    UiaUint::UiaUint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteUint remoteValue) :
+    UiaUint::UiaUint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteUint remoteValue):
         UiaTypeBase(remoteValue)
     {
     }
 
-    UiaUint::UiaUint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+    UiaUint::UiaUint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsUint())
     {
     }
@@ -1239,18 +1239,18 @@ namespace UiaOperationAbstraction
         return ArithmeticStringify<UiaUint>(m_member);
     }
 
-    UiaDouble::UiaDouble(double value) :
+    UiaDouble::UiaDouble(double value):
         UiaTypeBase(value)
     {
         ToRemote();
     }
 
-    UiaDouble::UiaDouble(winrt::Microsoft::UI::UIAutomation::AutomationRemoteDouble remoteValue) :
+    UiaDouble::UiaDouble(winrt::Microsoft::UI::UIAutomation::AutomationRemoteDouble remoteValue):
         UiaTypeBase(remoteValue)
     {
     }
 
-    UiaDouble::UiaDouble(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+    UiaDouble::UiaDouble(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsDouble())
     {
     }
@@ -1372,36 +1372,36 @@ namespace UiaOperationAbstraction
         return std::wstring(1 /* size n */, std::get<wchar_t>(m_member));
     }
 
-    UiaString::UiaString(std::wstring value) :
+    UiaString::UiaString(std::wstring value):
         UiaTypeBase(SafeToUniqueBstr(value))
     {
         ToRemote();
     }
 
-    UiaString::UiaString(const wchar_t* value) :
+    UiaString::UiaString(const wchar_t* value):
         UiaTypeBase(value ? wil::make_bstr(value) : nullptr)
     {
         ToRemote();
     }
 
-    UiaString::UiaString(wil::unique_bstr&& value) :
+    UiaString::UiaString(wil::unique_bstr&& value):
         UiaTypeBase(std::move(value))
     {
         ToRemote();
     }
 
-    UiaString::UiaString(const wil::shared_bstr& value) :
+    UiaString::UiaString(const wil::shared_bstr& value):
         UiaTypeBase(value)
     {
         ToRemote();
     }
 
-    UiaString::UiaString(winrt::Microsoft::UI::UIAutomation::AutomationRemoteString remoteValue) :
+    UiaString::UiaString(winrt::Microsoft::UI::UIAutomation::AutomationRemoteString remoteValue):
         UiaTypeBase(remoteValue)
     {
     }
 
-    UiaString::UiaString(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+    UiaString::UiaString(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsString())
     {
     }
@@ -1525,24 +1525,24 @@ namespace UiaOperationAbstraction
     {
     }
 
-    UiaPoint::UiaPoint(POINT point) :
+    UiaPoint::UiaPoint(POINT point):
         UiaTypeBase(winrt::Windows::Foundation::Point(static_cast<float>(point.x), static_cast<float>(point.y)))
     {
         ToRemote();
     }
 
-    UiaPoint::UiaPoint(winrt::Windows::Foundation::Point point) :
+    UiaPoint::UiaPoint(winrt::Windows::Foundation::Point point):
         UiaTypeBase(point)
     {
         ToRemote();
     }
 
-    UiaPoint::UiaPoint(winrt::Microsoft::UI::UIAutomation::AutomationRemotePoint remotePoint) :
+    UiaPoint::UiaPoint(winrt::Microsoft::UI::UIAutomation::AutomationRemotePoint remotePoint):
         UiaTypeBase(remotePoint)
     {
     }
 
-    UiaPoint::UiaPoint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+    UiaPoint::UiaPoint(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsPoint())
     {
     }
@@ -1555,7 +1555,7 @@ namespace UiaOperationAbstraction
     UiaPoint::operator POINT() const
     {
         auto internalPoint = std::get<winrt::Windows::Foundation::Point>(m_member);
-        return POINT{ static_cast<LONG>(internalPoint.X), static_cast<LONG>(internalPoint.Y) };
+        return POINT{static_cast<LONG>(internalPoint.X), static_cast<LONG>(internalPoint.Y)};
     }
 
     UiaPoint& UiaPoint::operator=(const UiaPoint& other)
@@ -1622,24 +1622,24 @@ namespace UiaOperationAbstraction
     {
     }
 
-    UiaRect::UiaRect(RECT rect) :
+    UiaRect::UiaRect(RECT rect):
         UiaTypeBase(ConvertRect(rect))
     {
         ToRemote();
     }
 
-    UiaRect::UiaRect(winrt::Windows::Foundation::Rect rect) :
+    UiaRect::UiaRect(winrt::Windows::Foundation::Rect rect):
         UiaTypeBase(rect)
     {
         ToRemote();
     }
 
-    UiaRect::UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteRect remoteRect) :
+    UiaRect::UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteRect remoteRect):
         UiaTypeBase(remoteRect)
     {
     }
 
-    UiaRect::UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+    UiaRect::UiaRect(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsRect())
     {
     }
@@ -1705,7 +1705,7 @@ namespace UiaOperationAbstraction
             (lhsLocalRect.X != rhsLocalRect.X) ||
             (lhsLocalRect.Y != rhsLocalRect.Y);
     }
-
+    
     UiaDouble UiaRect::GetHeight() const
     {
         if (ShouldUseRemoteApi())
@@ -1780,18 +1780,18 @@ namespace UiaOperationAbstraction
         return ss.str();
     }
 
-    UiaHwnd::UiaHwnd(UIA_HWND hwnd) :
+    UiaHwnd::UiaHwnd(UIA_HWND hwnd):
         UiaTypeBase(hwnd)
     {
         ToRemote();
     }
 
-    UiaHwnd::UiaHwnd(winrt::Microsoft::UI::UIAutomation::AutomationRemoteInt remoteHwnd) :
+    UiaHwnd::UiaHwnd(winrt::Microsoft::UI::UIAutomation::AutomationRemoteInt remoteHwnd):
         UiaTypeBase(remoteHwnd)
     {
     }
 
-    UiaHwnd::UiaHwnd(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+    UiaHwnd::UiaHwnd(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
         UiaTypeBase(remoteValue.AsInt())
     {
     }
@@ -1811,7 +1811,7 @@ namespace UiaOperationAbstraction
         return BinaryOperator<UiaHwnd, NotEqual>(this->m_member, rhs.m_member);
     }
 
-    UiaVariant::UiaVariant(const VARIANT& variant) :
+    UiaVariant::UiaVariant(const VARIANT& variant):
         UiaTypeBase(std::make_shared<wil::unique_variant>(CopyToUniqueVariant(variant)))
     {
         ToRemote();
@@ -1987,7 +1987,7 @@ namespace UiaOperationAbstraction
         case VT_BSTR:
             return (lhsLocal->bstrVal == nullptr && rhsLocal->bstrVal == nullptr) ||
                 ((lhsLocal->bstrVal != nullptr && rhsLocal->bstrVal != nullptr) &&
-                    (wcscmp(lhsLocal->bstrVal, rhsLocal->bstrVal) == 0));
+                (wcscmp(lhsLocal->bstrVal, rhsLocal->bstrVal) == 0));
         default:
             // The above are the only types currently supported by the UiaVariant wrapper
             throw winrt::hresult_not_implemented();
@@ -2107,12 +2107,12 @@ namespace UiaOperationAbstraction
 
     UiaOperationAbstraction::FlsStorage<UiaScopeContextManager> UiaOperationScope::s_scopeContextManager;
 
-    UiaOperationScope::UiaOperationScope(bool ownContext) :
+    UiaOperationScope::UiaOperationScope(bool ownContext):
         m_ownContext(ownContext)
     {
     }
 
-    UiaOperationScope::UiaOperationScope(UiaOperationScope&& other) :
+    UiaOperationScope::UiaOperationScope(UiaOperationScope&& other):
         m_ownContext(other.m_ownContext)
     {
         other.m_ownContext = false;
@@ -2154,7 +2154,7 @@ namespace UiaOperationAbstraction
         return operationResult;
     }
     CATCH_RETURN();
-
+  
     void UiaOperationScope::ResolveHrInternal(HRESULT& operationResult)
     {
         operationResult = S_OK;
@@ -2186,7 +2186,7 @@ namespace UiaOperationAbstraction
             s_scopeContextManager.Get().PopContext();
             m_ownContext = false;
         }
-    }
+    }   
 
     UiaOperationScope UiaOperationScope::StartNew()
     {
