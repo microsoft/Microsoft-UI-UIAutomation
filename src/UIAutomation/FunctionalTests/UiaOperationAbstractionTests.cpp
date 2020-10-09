@@ -763,5 +763,58 @@ namespace UiaOperationAbstractionTests
         {
             ForEachLoop(true /* useRemoteOperations */);
         }
+
+        void UseCachedApiTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Ensure that the focused element has no Name cached for it (as otherwise we would not be
+            // able to distinguish between asks for Cached and Current.
+            {
+                wil::unique_variant name;
+                const HRESULT nameHr = focusedElement->GetCachedPropertyValueEx(UIA_NamePropertyId, TRUE /* ignoreDefaultValue */, &name);
+                Assert::AreEqual(E_INVALIDARG, nameHr);
+            }
+
+            // Test that providing no `useCachedApi` has the same effect as providing `false`.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the element to query information for.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Ensure that `useCachedApi` defaults to `false` and therefore we should get the current
+                // name in both cases.
+                UiaString explicitlyCurrentName = displayElement.GetName(false /* useCachedApi */);
+                UiaString implicitlyCurrentName = displayElement.GetName();
+
+                // Resolve the sum.
+                operationScope.BindResult(explicitlyCurrentName);
+                operationScope.BindResult(implicitlyCurrentName);
+                operationScope.Resolve();
+
+                // Compare the names to ensure they are the same.
+                Assert::AreEqual(explicitlyCurrentName.GetLocalWstring(), implicitlyCurrentName.GetLocalWstring());
+            }
+        }
+
+        TEST_METHOD(UseCachedApiLocal)
+        {
+            UseCachedApiTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UseCachedApiRemote)
+        {
+            UseCachedApiTest(true /* useRemoteOperations */);
+        }
     };
 }
