@@ -563,6 +563,10 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
             const winrt::AutomationRemotePropertyId& propertyId,
             const winrt::AutomationRemoteBool& ignoreDefaultValue);
 
+        winrt::AutomationRemoteAnyObject GetMetadataValue(
+            const winrt::AutomationRemotePropertyId& propertyId,
+            const winrt::AutomationRemoteMetadata& metadata);
+
         winrt::AutomationRemoteElement GetParentElement();
         winrt::AutomationRemoteElement GetFirstChildElement();
         winrt::AutomationRemoteElement GetLastChildElement();

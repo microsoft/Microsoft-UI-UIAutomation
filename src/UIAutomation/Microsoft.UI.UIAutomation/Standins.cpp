@@ -622,6 +622,21 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    winrt::AutomationRemoteAnyObject AutomationRemoteElement::GetMetadataValue(
+        const winrt::AutomationRemotePropertyId& propertyId,
+        const winrt::AutomationRemoteMetadata& metadata)
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::GetMetadataValue{
+            resultId,
+            m_operandId,
+            GetOperandId<AutomationRemotePropertyId>(propertyId),
+            GetOperandId<AutomationRemoteMetadata>(metadata),
+        });
+        const auto result = Make<AutomationRemoteAnyObject>(resultId);
+        return result;
+    }
+
     winrt::AutomationRemoteElement AutomationRemoteElement::Navigate(const winrt::AutomationRemoteInt& direction)
     {
         const auto resultId = m_parent->GetNextId();
