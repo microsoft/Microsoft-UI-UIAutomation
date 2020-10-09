@@ -19,6 +19,7 @@
 #include "AutomationRemoteHorizontalTextAlignment.g.h"
 #include "AutomationRemoteLandmarkType.g.h"
 #include "AutomationRemoteLiveSetting.g.h"
+#include "AutomationRemoteMetadata.g.h"
 #include "AutomationRemoteNavigateDirection.g.h"
 #include "AutomationRemoteOrientationType.g.h"
 #include "AutomationRemoteOutlineStyles.g.h"
@@ -212,6 +213,15 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     {
     public:
         AutomationRemoteLiveSetting(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
+        void Set(const class_type& rhs);
+        winrt::AutomationRemoteBool IsEqual(const class_type& rhs);
+        winrt::AutomationRemoteBool IsNotEqual(const class_type& rhs);
+    };
+
+    class AutomationRemoteMetadata : public AutomationRemoteMetadataT<AutomationRemoteMetadata, AutomationRemoteObject>
+    {
+    public:
+        AutomationRemoteMetadata(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
         void Set(const class_type& rhs);
         winrt::AutomationRemoteBool IsEqual(const class_type& rhs);
         winrt::AutomationRemoteBool IsNotEqual(const class_type& rhs);

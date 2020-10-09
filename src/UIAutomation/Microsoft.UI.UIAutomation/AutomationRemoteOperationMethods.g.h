@@ -19,6 +19,7 @@
         winrt::AutomationRemoteHorizontalTextAlignment NewEnum(AutomationHorizontalTextAlignment initialValue);
         winrt::AutomationRemoteLandmarkType NewEnum(AutomationLandmarkType initialValue);
         winrt::AutomationRemoteLiveSetting NewEnum(AutomationLiveSetting initialValue);
+        winrt::AutomationRemoteMetadata NewEnum(AutomationMetadata initialValue);
         winrt::AutomationRemoteNavigateDirection NewEnum(AutomationNavigateDirection initialValue);
         winrt::AutomationRemoteOrientationType NewEnum(AutomationOrientationType initialValue);
         winrt::AutomationRemoteOutlineStyles NewEnum(AutomationOutlineStyles initialValue);

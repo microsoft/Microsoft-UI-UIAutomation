@@ -6982,6 +6982,23 @@
         return localPattern;
     }
 
+    UiaElement UiaElement::GetUpdatedCacheElement(UiaCacheRequest cacheRequest)
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            ToRemote();
+            return std::get<AutomationRemoteElement>(m_member).GetUpdatedCacheElement(cacheRequest);
+        }
+
+        const auto& localElement = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);
+        winrt::com_ptr<IUIAutomationElement> localResult;
+        winrt::check_hresult(localElement->BuildUpdatedCache(
+            (*cacheRequest).get(),
+            localResult.put()));
+        return localResult;
+    }
+
     UiaElement UiaElement::GetParentElement(std::optional<UiaCacheRequest> cacheRequest /* = std::nullopt */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();

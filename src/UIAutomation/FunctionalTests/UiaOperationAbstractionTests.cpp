@@ -633,6 +633,84 @@ namespace UiaOperationAbstractionTests
             StringifyTest(true /* useRemoteOperations */);
         }
 
+        void GetUpdatedCacheElement(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Rebuild the cache of the focused element using two different cache requests with distinct
+            // properties in them to test that the rebuilt elements are different and contain requested
+            // and expected properties in their cache.
+            winrt::com_ptr<IUIAutomationElement> elementWithName;
+            winrt::com_ptr<IUIAutomationElement> elementWithControlType;
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the element to the remote operation.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create two distinct cache requests to return two objects representing the same element
+                // but with different cached properties.
+                UiaOperationAbstraction::UiaCacheRequest cacheRequestWithName;
+                cacheRequestWithName.AddProperty(UIA_NamePropertyId);
+
+                UiaOperationAbstraction::UiaCacheRequest cacheRequestWithControlType;
+                cacheRequestWithControlType.AddProperty(UIA_ControlTypePropertyId);
+
+                // Rebuild the imported element with the filled cache requests.
+                auto remoteElementWithName = displayElement.GetUpdatedCacheElement(cacheRequestWithName);
+                auto remoteElementWithControlType = displayElement.GetUpdatedCacheElement(cacheRequestWithControlType);
+                operationScope.BindResult(remoteElementWithName);
+                operationScope.BindResult(remoteElementWithControlType);
+                operationScope.Resolve();
+
+                elementWithName = remoteElementWithName;
+                elementWithControlType = remoteElementWithControlType;
+            }
+
+            // Test the first element to make sure its cached property values contain `Name` but not `ControlType`.
+            {
+                wil::unique_variant name;
+                const HRESULT nameHr = elementWithName->GetCachedPropertyValueEx(UIA_NamePropertyId, TRUE /* ignoreDefaultValue */, &name);
+
+                wil::unique_variant controlType;
+                const HRESULT controlTypeHr = elementWithName->GetCachedPropertyValueEx(UIA_ControlTypePropertyId, TRUE /* ignoreDefaultValue */, &controlType);
+
+                Assert::AreEqual(S_OK, nameHr);
+                Assert::AreEqual(E_INVALIDARG, controlTypeHr);
+            }
+
+            // Test the second element whose cache should contain `ControlType` but not `Name`.
+            {
+                wil::unique_variant name;
+                const HRESULT nameHr = elementWithControlType->GetCachedPropertyValueEx(UIA_NamePropertyId, TRUE /* ignoreDefaultValue */, &name);
+
+                wil::unique_variant controlType;
+                const HRESULT controlTypeHr = elementWithControlType->GetCachedPropertyValueEx(UIA_ControlTypePropertyId, TRUE /* ignoreDefaultValue */, &controlType);
+
+                Assert::AreEqual(E_INVALIDARG, nameHr);
+                Assert::AreEqual(S_OK, controlTypeHr);
+            }
+        }
+
+        TEST_METHOD(GetUpdatedCacheElementLocal)
+        {
+            GetUpdatedCacheElement(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(GetUpdatedCacheElementRemote)
+        {
+            GetUpdatedCacheElement(true /* useRemoteOperations */);
+        }
+
         void ForEachLoop(bool useRemoteOperations)
         {
             // Initialize the test application.

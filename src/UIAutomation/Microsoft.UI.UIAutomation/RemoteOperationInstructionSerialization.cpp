@@ -451,6 +451,14 @@ void RemoteOperationInstructionSerializer::Write(const bytecode::PopulateCache& 
     Write(instruction.cacheRequestId);
 }
 
+void RemoteOperationInstructionSerializer::Write(const bytecode::GetMetadataValue& instruction)
+{
+    Write(instruction.resultId);
+    Write(instruction.targetId);
+    Write(instruction.propertyId);
+    Write(instruction.metadataId);
+}
+
 void RemoteOperationInstructionSerializer::Write(const bytecode::LookupId& instruction)
 {
     Write(instruction.resultId);
