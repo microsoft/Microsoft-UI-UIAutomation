@@ -515,7 +515,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         InsertInstruction(bytecode::NewInt{
             resultId,
             static_cast<int>(initialValue)
-            });
+        });
         const auto result = make<AutomationRemoteMetadata>(resultId, *this);
         return result;
     }
