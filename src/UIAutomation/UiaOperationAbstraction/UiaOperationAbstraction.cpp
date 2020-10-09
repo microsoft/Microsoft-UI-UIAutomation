@@ -563,6 +563,21 @@ namespace UiaOperationAbstraction
         m_member = static_cast<wchar_t>(winrt::unbox_value<uint16_t>(result));
     }
 
+    UiaString UiaString::Stringify()
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->Stringify();
+            }
+        }
+
+        const auto bstr = get();
+        return (bstr ? bstr : L"");
+    }
+
     void UiaString::FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
     {
         if (result)

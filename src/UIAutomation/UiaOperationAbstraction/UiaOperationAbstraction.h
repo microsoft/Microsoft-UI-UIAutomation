@@ -867,6 +867,8 @@ namespace UiaOperationAbstraction
         UiaUint Length() const;
         UiaChar At(UiaUint index);
 
+        UiaString Stringify();
+
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 
