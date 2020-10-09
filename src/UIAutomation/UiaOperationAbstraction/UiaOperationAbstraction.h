@@ -7,6 +7,7 @@
 #include <memory>
 #include <optional>
 #include <functional>
+#include <sstream>
 
 #include <combaseapi.h>
 #include <UIAutomation.h>
@@ -549,6 +550,8 @@ namespace UiaOperationAbstraction
         VariantType m_member;
     };
 
+    class UiaString;
+
     class UiaBool : public UiaTypeBase<BOOL, winrt::Microsoft::UI::UIAutomation::AutomationRemoteBool>
     {
     public:
@@ -593,6 +596,8 @@ namespace UiaOperationAbstraction
         {
             return *this || UiaBool(rhs);
         }
+
+        UiaString Stringify();
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
@@ -650,6 +655,8 @@ namespace UiaOperationAbstraction
         void operator-=(UiaInt rhs);
         void operator*=(UiaInt rhs);
         void operator/=(UiaInt rhs);
+
+        UiaString Stringify();
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
@@ -735,6 +742,8 @@ namespace UiaOperationAbstraction
         void operator*=(UiaUint rhs);
         void operator/=(UiaUint rhs);
 
+        UiaString Stringify();
+
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 
@@ -792,6 +801,8 @@ namespace UiaOperationAbstraction
         void operator*=(UiaDouble rhs);
         void operator/=(UiaDouble rhs);
 
+        UiaString Stringify();
+
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 
@@ -814,6 +825,8 @@ namespace UiaOperationAbstraction
 
         UiaBool operator==(const UiaChar& rhs) const;
         UiaBool operator!=(const UiaChar& rhs) const;
+
+        UiaString Stringify();
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
@@ -853,6 +866,8 @@ namespace UiaOperationAbstraction
 
         UiaUint Length() const;
         UiaChar At(UiaUint index);
+
+        UiaString Stringify();
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
@@ -1021,6 +1036,8 @@ namespace UiaOperationAbstraction
 
         UiaBool operator==(const UiaPoint& rhs) const;
         UiaBool operator!=(const UiaPoint& rhs) const;
+
+        UiaString Stringify();
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 
@@ -1049,6 +1066,7 @@ namespace UiaOperationAbstraction
         UiaDouble GetX() const;
         UiaDouble GetY() const;
 
+        UiaString Stringify();
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 
@@ -1351,6 +1369,38 @@ namespace UiaOperationAbstraction
                 wrappedLocal.FromRemoteResult(operationResults.GetAt(index));
                 localValue->emplace_back(static_cast<ItemLocalType>(wrappedLocal));
             }
+        }
+
+        UiaString Stringify()
+        {
+            if (ShouldUseRemoteApi())
+            {
+                auto remoteValue = std::get_if<RemoteType>(&m_member);
+                if (remoteValue)
+                {
+                    return remoteValue->Stringify();
+                }
+            }
+
+            auto localVec = std::get<LocalType>(m_member);
+            std::wostringstream ss;
+            ss << "[";
+
+            const auto size = localVec->size();
+            for (size_t i = 0; i < size; ++i)
+            {
+                if (i != 0)
+                {
+                    ss << L",";
+                }
+
+                ItemWrapperType element = localVec->at(i);
+                ss << element.Stringify().GetLocalWstring();
+            }
+
+            ss << "]";
+
+            return ss.str();
         }
     };
 

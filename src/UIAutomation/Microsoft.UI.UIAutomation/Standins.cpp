@@ -143,11 +143,33 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    winrt::AutomationRemoteString AutomationRemoteBool::Stringify()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::Stringify{
+            resultId,
+            m_operandId,
+        });
+        const auto result = Make<AutomationRemoteString>(resultId);
+        return result;
+    }
+
     // AutomationRemoteInt
 
     AutomationRemoteInt::AutomationRemoteInt(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
         : base_type(operandId, parent)
     {
+    }
+
+    winrt::AutomationRemoteString AutomationRemoteInt::Stringify()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::Stringify{
+            resultId,
+            m_operandId,
+        });
+        const auto result = Make<AutomationRemoteString>(resultId);
+        return result;
     }
 
     // AutomationRemoteUint
@@ -157,11 +179,33 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     {
     }
 
+    winrt::AutomationRemoteString AutomationRemoteUint::Stringify()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::Stringify{
+            resultId,
+            m_operandId,
+        });
+        const auto result = Make<AutomationRemoteString>(resultId);
+        return result;
+    }
+
     // AutomationRemoteDouble
 
     AutomationRemoteDouble::AutomationRemoteDouble(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
         : base_type(operandId, parent)
     {
+    }
+
+    winrt::AutomationRemoteString AutomationRemoteDouble::Stringify()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::Stringify{
+            resultId,
+            m_operandId,
+        });
+        const auto result = Make<AutomationRemoteString>(resultId);
+        return result;
     }
 
     // AutomationRemoteChar
@@ -204,6 +248,17 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteBool AutomationRemoteChar::IsGreaterThanOrEqual(winrt::AutomationRemoteChar const& rhs)
     {
         return AutomationRemoteObject::IsGreaterThanOrEqual<AutomationRemoteChar>(rhs);
+    }
+
+    winrt::AutomationRemoteString AutomationRemoteChar::Stringify()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::Stringify{
+            resultId,
+            m_operandId,
+        });
+        const auto result = Make<AutomationRemoteString>(resultId);
+        return result;
     }
 
     // AutomationRemoteString
@@ -261,6 +316,17 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    winrt::AutomationRemoteString AutomationRemoteString::Stringify()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::Stringify{
+            resultId,
+            m_operandId,
+        });
+        const auto result = Make<AutomationRemoteString>(resultId);
+        return result;
+    }
+
     // AutomationRemotePoint
 
     AutomationRemotePoint::AutomationRemotePoint(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
@@ -281,6 +347,17 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         const auto resultId = m_parent->GetNextId();
         m_parent->InsertInstruction(bytecode::GetPointProperty::GetY(resultId, m_operandId));
         const auto result = Make<AutomationRemoteDouble>(resultId);
+        return result;
+    }
+
+    winrt::AutomationRemoteString AutomationRemotePoint::Stringify()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::Stringify{
+            resultId,
+            m_operandId,
+        });
+        const auto result = Make<AutomationRemoteString>(resultId);
         return result;
     }
 
@@ -320,6 +397,17 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         const auto resultId = m_parent->GetNextId();
         m_parent->InsertInstruction(bytecode::GetRectProperty::GetY(resultId, m_operandId));
         const auto result = Make<AutomationRemoteDouble>(resultId);
+        return result;
+    }
+
+    winrt::AutomationRemoteString AutomationRemoteRect::Stringify()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::Stringify{
+            resultId,
+            m_operandId,
+        });
+        const auto result = Make<AutomationRemoteString>(resultId);
         return result;
     }
 
@@ -408,6 +496,17 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
             m_operandId,
         });
         const auto result = Make<AutomationRemoteUint>(resultId);
+        return result;
+    }
+
+    winrt::AutomationRemoteString AutomationRemoteArray::Stringify()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::Stringify{
+            resultId,
+            m_operandId,
+        });
+        const auto result = Make<AutomationRemoteString>(resultId);
         return result;
     }
 

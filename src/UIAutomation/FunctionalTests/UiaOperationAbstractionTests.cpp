@@ -479,5 +479,158 @@ namespace UiaOperationAbstractionTests
         {
             ArrayEqualityComparisonTest(true);
         }
+
+        void StringifyTest(const bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Test all types that are convertible to strings:
+            // -> Boolean
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the focused element to contextualize the operation to execute.
+                UiaElement displayElement{ focusedElement  };
+                operationScope.BindInput(displayElement);
+
+                // Create values to convert to strings and covert them.
+                UiaBool falseBool{ false };
+                UiaBool trueBool{ true };
+
+                auto falseBoolString = falseBool.Stringify();
+                auto trueBoolString = trueBool.Stringify();
+
+                // Resolve the values.
+                operationScope.BindResult(falseBoolString);
+                operationScope.BindResult(trueBoolString);
+                operationScope.Resolve();
+
+                // And compare them against expectations.
+                Assert::AreEqual(std::wstring(L"false"), falseBoolString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"true"), trueBoolString.GetLocalWstring());
+            }
+
+            // -> Numeric
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the focused element to contextualize the operation to execute.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create values to convert to strings and covert them.
+                UiaInt intValue{ 5 };
+                UiaUint uintValue{ 7 };
+                UiaDouble doubleValue{ 10.0 };
+
+                auto intValueString = intValue.Stringify();
+                auto uintValueString = uintValue.Stringify();
+                auto doubleValueString = doubleValue.Stringify();
+
+                // Resolve the values.
+                operationScope.BindResult(intValueString);
+                operationScope.BindResult(uintValueString);
+                operationScope.BindResult(doubleValueString);
+                operationScope.Resolve();
+
+                // And compare them against expectations.
+                Assert::AreEqual(std::wstring(L"5"), intValueString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"7"), uintValueString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"10.000000"), doubleValueString.GetLocalWstring());
+            }
+
+            // -> Character
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the focused element to contextualize the operation to execute.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create values to convert to strings and covert them.
+                UiaString stringValue{ L"MyString" };
+                UiaChar charValue{ L'M' };
+
+                auto stringValueString = stringValue.Stringify();
+                auto charValueString = charValue.Stringify();
+
+                // Resolve the values.
+                operationScope.BindResult(stringValueString);
+                operationScope.BindResult(charValueString);
+                operationScope.Resolve();
+
+                // And compare them against expectations.
+                Assert::AreEqual(std::wstring(L"MyString"), stringValueString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"M"), charValueString.GetLocalWstring());
+            }
+
+            // -> Point and Rectangle
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the focused element to contextualize the operation to execute.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create values to convert to strings and covert them.
+                UiaOperationAbstraction::UiaPoint pointValue{ POINT{ 5 /* X */, 5 /* Y */ } };
+                UiaOperationAbstraction::UiaRect rectValue{ winrt::Windows::Foundation::Rect{ 5.0f /* X */, 5.0f /* Y */, 10.0f /* Width */, 10.0f /* Height */ } };
+
+                auto pointValueString = pointValue.Stringify();
+                auto rectValueString = rectValue.Stringify();
+
+                // Resolve the values.
+                operationScope.BindResult(pointValueString);
+                operationScope.BindResult(rectValueString);
+                operationScope.Resolve();
+
+                // And compare them against expectations.
+                Assert::AreEqual(std::wstring(L"Point{ 5,5 }"), pointValueString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"Rect{ 5,5,10,10 }"), rectValueString.GetLocalWstring());
+            }
+
+            // -> Array of type
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Import the focused element to contextualize the operation to execute.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create values to convert to strings and covert them.
+                UiaArray<UiaInt> intArray{ std::vector<int>{ 5, 6, 7 } };
+                UiaArray<UiaString> stringArray{ std::vector<wil::shared_bstr>{ wil::make_bstr(L"String1"), wil::make_bstr(L"String2") } };
+
+                auto intArrayString = intArray.Stringify();
+                auto stringArrayString = stringArray.Stringify();
+
+                // Resolve the values.
+                operationScope.BindResult(intArrayString);
+                operationScope.BindResult(stringArrayString);
+                operationScope.Resolve();
+
+                // And compare them against expectations.
+                Assert::AreEqual(std::wstring(L"[5,6,7]"), intArrayString.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"[String1,String2]"), stringArrayString.GetLocalWstring());
+            }
+        }
+
+        TEST_METHOD(StringifyTestLocal)
+        {
+            StringifyTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(StringifyTestRemote)
+        {
+            StringifyTest(true /* useRemoteOperations */);
+        }
     };
 }
