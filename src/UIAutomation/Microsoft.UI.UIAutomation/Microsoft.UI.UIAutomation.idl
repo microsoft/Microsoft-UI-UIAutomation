@@ -205,6 +205,7 @@ namespace Microsoft.UI.UIAutomation
 
         AutomationRemoteAnyObject GetMetadataValue(AutomationRemotePropertyId propertyId, AutomationRemoteMetadata metadata);
 
+        AutomationRemoteElement GetUpdatedCacheElement(AutomationRemoteCacheRequest cacheRequest);
         AutomationRemoteElement GetParentElement();
         AutomationRemoteElement GetFirstChildElement();
         AutomationRemoteElement GetLastChildElement();
