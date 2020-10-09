@@ -150,6 +150,7 @@ enum class InstructionType
     PopulateCache = 0x50,
 
     Stringify = 0x51,
+    GetMetadataValue = 0x52,
 
     // UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValues.g.h"
@@ -240,6 +241,7 @@ constexpr std::array c_supportedInstructions =
     InstructionType::CacheRequestAddPattern,
     InstructionType::PopulateCache,
     InstructionType::Stringify,
+    InstructionType::GetMetadataValue,
 
     // Auto-generated UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValuesArray.g.h"
@@ -921,6 +923,16 @@ struct Stringify
     OperandId targetId;
 };
 
+struct GetMetadataValue
+{
+    constexpr static InstructionType type = InstructionType::GetMetadataValue;
+
+    OperandId resultId;
+    OperandId targetId;
+    OperandId propertyId;
+    OperandId metadataId;
+};
+
 #include "RemoteOperationInstructions.g.h"
 
 using Instruction = std::variant<
@@ -1011,6 +1023,7 @@ using Instruction = std::variant<
     GetPropertyValue,
     Navigate,
     PopulateCache,
+    GetMetadataValue,
 
     // GUID instructions
     LookupId,
