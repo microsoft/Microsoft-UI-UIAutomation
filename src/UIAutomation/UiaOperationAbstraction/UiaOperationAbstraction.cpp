@@ -520,6 +520,21 @@ namespace UiaOperationAbstraction
 
             return result;
         }
+
+        template <typename UiaWrapperType>
+        UiaString ArithmeticStringify(typename UiaWrapperType::VariantType& number)
+        {
+            if (ShouldUseRemoteApi())
+            {
+                auto remoteValue = std::get_if<typename UiaWrapperType::RemoteType>(&number);
+                if (remoteValue)
+                {
+                    return remoteValue->Stringify();
+                }
+            }
+
+            return std::to_wstring(std::get<typename UiaWrapperType::LocalType>(number));
+        }
     } // anonymous namespace
 
     void UiaBool::FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
@@ -1019,6 +1034,20 @@ namespace UiaOperationAbstraction
         return BinaryOperator<UiaBool, NotEqual>(this->m_member, rhs.m_member);
     }
 
+    UiaString UiaBool::Stringify()
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->Stringify();
+            }
+        }
+
+        return std::get<BOOL>(m_member) ? L"true" : L"false";
+    }
+
     UiaInt::UiaInt(int value):
         UiaTypeBase(value)
     {
@@ -1094,6 +1123,11 @@ namespace UiaOperationAbstraction
     void UiaInt::operator/=(UiaInt rhs)
     {
         InPlaceArithmetic<UiaInt, Divide>(this->m_member, rhs.m_member);
+    }
+
+    UiaString UiaInt::Stringify()
+    {
+        return ArithmeticStringify<UiaInt>(m_member);
     }
 
     UiaUint::UiaUint(unsigned int value):
@@ -1185,6 +1219,11 @@ namespace UiaOperationAbstraction
         InPlaceArithmetic<UiaUint, Divide>(this->m_member, rhs.m_member);
     }
 
+    UiaString UiaUint::Stringify()
+    {
+        return ArithmeticStringify<UiaUint>(m_member);
+    }
+
     UiaDouble::UiaDouble(double value):
         UiaTypeBase(value)
     {
@@ -1262,6 +1301,11 @@ namespace UiaOperationAbstraction
         InPlaceArithmetic<UiaDouble, Divide>(this->m_member, rhs.m_member);
     }
 
+    UiaString UiaDouble::Stringify()
+    {
+        return ArithmeticStringify<UiaDouble>(m_member);
+    }
+
     UiaChar::UiaChar(wchar_t value) :
         UiaTypeBase(value)
     {
@@ -1297,6 +1341,20 @@ namespace UiaOperationAbstraction
     UiaBool UiaChar::operator!=(const UiaChar& rhs) const
     {
         return BinaryOperator<UiaChar, NotEqual>(this->m_member, rhs.m_member);
+    }
+
+    UiaString UiaChar::Stringify()
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->Stringify();
+            }
+        }
+
+        return std::wstring(1 /* size n */, std::get<wchar_t>(m_member));
     }
 
     UiaString::UiaString(std::wstring value):
@@ -1524,6 +1582,23 @@ namespace UiaOperationAbstraction
         return (lhsLocalPoint.X != rhsLocalPoint.X) || (lhsLocalPoint.Y != rhsLocalPoint.Y);
     }
 
+    UiaString UiaPoint::Stringify()
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->Stringify();
+            }
+        }
+
+        auto localPoint = std::get<winrt::Windows::Foundation::Point>(m_member);
+        std::wostringstream ss;
+        ss << L"Point{ " << localPoint.X << L"," << localPoint.Y << " }";
+        return ss.str();
+    }
+
     UiaRect::UiaRect(RECT rect):
         UiaTypeBase(ConvertRect(rect))
     {
@@ -1662,6 +1737,24 @@ namespace UiaOperationAbstraction
         }
 
         return static_cast<double>(std::get<LocalType>(m_member).Y);
+    }
+
+    UiaString UiaRect::Stringify()
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->Stringify();
+            }
+        }
+
+        const auto rect = std::get<winrt::Windows::Foundation::Rect>(m_member);
+        std::wostringstream ss;
+        ss << L"Rect{ " << rect.X << L"," << rect.Y << L"," << rect.Width << L"," << rect.Height << L" }";
+
+        return ss.str();
     }
 
     UiaHwnd::UiaHwnd(UIA_HWND hwnd):
