@@ -477,6 +477,12 @@ void RemoteOperationInstructionSerializer::Write(const bytecode::CacheRequestAdd
     Write(instruction.patternIdId);
 }
 
+void RemoteOperationInstructionSerializer::Write(const bytecode::Stringify& instruction)
+{
+    Write(instruction.resultId);
+    Write(instruction.targetId);
+}
+
 void RemoteOperationInstructionSerializer::Write(const GetterBase& instruction)
 {
     Write(instruction.resultId);

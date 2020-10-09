@@ -149,6 +149,8 @@ enum class InstructionType
     CacheRequestAddPattern = 0x4f,
     PopulateCache = 0x50,
 
+    Stringify = 0x51,
+
     // UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValues.g.h"
 };
@@ -237,6 +239,7 @@ constexpr std::array c_supportedInstructions =
     InstructionType::CacheRequestAddProperty,
     InstructionType::CacheRequestAddPattern,
     InstructionType::PopulateCache,
+    InstructionType::Stringify,
 
     // Auto-generated UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValuesArray.g.h"
@@ -910,6 +913,14 @@ struct PopulateCache
     OperandId cacheRequestId;
 };
 
+struct Stringify
+{
+    constexpr static InstructionType type = InstructionType::Stringify;
+
+    OperandId resultId;
+    OperandId targetId;
+};
+
 #include "RemoteOperationInstructions.g.h"
 
 using Instruction = std::variant<
@@ -1025,7 +1036,9 @@ using Instruction = std::variant<
     IsStringMap,
     IsElement,
     IsGuid,
-    IsCacheRequest
+    IsCacheRequest,
+
+    Stringify
 
 #include "RemoteOperationInstructionsVariantParams.g.h"
     >;
