@@ -40,7 +40,7 @@ namespace UiaOperationAbstraction
 
         winrt::Windows::Foundation::Rect ConvertRect(RECT rect)
         {
-            winrt::Windows::Foundation::Rect winrtRect(0 /* Height */, 0 /* Width */, static_cast<float>(rect.left), static_cast<float>(rect.top));
+            winrt::Windows::Foundation::Rect winrtRect(static_cast<float>(rect.left), static_cast<float>(rect.top), 0 /* Height */, 0 /* Width */);
             winrtRect.Height = static_cast<float>(rect.bottom - rect.top);
             winrtRect.Width = static_cast<float>(rect.right - rect.left);
 
@@ -1521,6 +1521,10 @@ namespace UiaOperationAbstraction
         return localVal[index];
     }
 
+    UiaPoint::UiaPoint() : UiaPoint(winrt::Windows::Foundation::Point{ 0.0f /* X */, 0.0f /* Y */ })
+    {
+    }
+
     UiaPoint::UiaPoint(POINT point):
         UiaTypeBase(winrt::Windows::Foundation::Point(static_cast<float>(point.x), static_cast<float>(point.y)))
     {
@@ -1612,6 +1616,10 @@ namespace UiaOperationAbstraction
         std::wostringstream ss;
         ss << L"Point{ " << localPoint.X << L"," << localPoint.Y << " }";
         return ss.str();
+    }
+
+    UiaRect::UiaRect() : UiaRect(winrt::Windows::Foundation::Rect{ 0.0f /* X */, 0.0f /* Y */, 0.0f /* Width */, 0.0f /* Height */ })
+    {
     }
 
     UiaRect::UiaRect(RECT rect):
