@@ -894,15 +894,6 @@ namespace UiaOperationAbstraction
 
         UiaEnum(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>&) = default;
 
-        void ToRemote()
-        {
-            auto delegator = UiaOperationScope::GetCurrentDelegator();
-            if (delegator)
-            {
-                delegator->ConvertVariantDataToRemote<ComEnumT, WinRTEnumT, StandinT>(m_member);
-            }
-        }
-
         operator ComEnumT() const
         {
             return std::get<ComEnumT>(m_member);
@@ -979,6 +970,15 @@ namespace UiaOperationAbstraction
         {
             int intValueOfEnum = winrt::unbox_value<int>(result);
             m_member = static_cast<ComEnumT>(intValueOfEnum);
+        }
+
+        void ToRemote()
+        {
+            auto delegator = UiaOperationScope::GetCurrentDelegator();
+            if (delegator)
+            {
+                delegator->ConvertVariantDataToRemote<ComEnumT, WinRTEnumT, StandinT>(m_member);
+            }
         }
     };
 
