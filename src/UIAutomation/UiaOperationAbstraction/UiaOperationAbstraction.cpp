@@ -40,7 +40,7 @@ namespace UiaOperationAbstraction
 
         winrt::Windows::Foundation::Rect ConvertRect(RECT rect)
         {
-            winrt::Windows::Foundation::Rect winrtRect(0 /* Height */, 0 /* Width */, static_cast<float>(rect.left), static_cast<float>(rect.top));
+            winrt::Windows::Foundation::Rect winrtRect(static_cast<float>(rect.left), static_cast<float>(rect.top), 0 /* Height */, 0 /* Width */);
             winrtRect.Height = static_cast<float>(rect.bottom - rect.top);
             winrtRect.Width = static_cast<float>(rect.right - rect.left);
 

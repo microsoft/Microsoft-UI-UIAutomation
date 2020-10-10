@@ -760,5 +760,49 @@ namespace UiaOperationAbstractionTests
         {
             ForEachLoop(true /* useRemoteOperations */);
         }
+
+        void ConvertRectTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Create rectangles using 2 different input types and check that they are the same when returned
+            // back to the caller.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                UiaOperationAbstraction::UiaRect win32Rect{ RECT{ 5 /* left */, 5 /* top */, 10 /* right */, 10 /* bottom */} };
+                UiaOperationAbstraction::UiaRect winrtRect{ winrt::Windows::Foundation::Rect{ 5 /* X */, 5 /* Y */, 5 /* Width */, 5 /* Height */} };
+                UiaBool areRectsEqual = (win32Rect == winrtRect);
+
+                // Return the result.
+                operationScope.BindResult(areRectsEqual);
+                operationScope.Resolve();
+
+                // Ensure the two rectangles are equal.
+                Assert::IsTrue(static_cast<bool>(areRectsEqual));
+            }
+        }
+
+        TEST_METHOD(ConvertRectLocal)
+        {
+            ConvertRectTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(ConvertRectRemote)
+        {
+            ConvertRectTest(true /* useRemoteOperations */);
+        }
     };
 }
