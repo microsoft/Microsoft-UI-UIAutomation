@@ -1911,8 +1911,14 @@ namespace UiaOperationAbstraction
         // to remote mode as soon as the remote scope begins, to avoid conditional conversion inside
         // a condition or loop. To abstract this from client code and provide symmetry with BindResult,
         // we provide a BindInput method to do this.
+        template<class... Args>
+        void BindInput(Args&... args)
+        {
+            (BindSingleInput(args), ...);
+        }
+
         template <class WrapperType>
-        void BindInput(WrapperType& value)
+        void BindSingleInput(WrapperType& value)
         {
             // ToRemote will have no effect in a local scope, so we don't need to explicitly check that here.
             value.ToRemote();
@@ -1924,8 +1930,14 @@ namespace UiaOperationAbstraction
         // If the remote operation is NOT local in scope, BindResult will do nothing. If you want to bind
         // a result that is not local in scope, and you're not sure whether your remote operation is local
         // in scope, use BindNonlocalResult.
+        template<class... Args>
+        void BindResult(Args&... args)
+        {
+            (BindSingleResult(args), ...);
+        }
+
         template <class WrapperType>
-        void BindResult(WrapperType& value)
+        void BindSingleResult(WrapperType& value)
         {
             // The remote case only has to do something when resolution would result in executing the
             // remote operation - if this is a continuation of an existing operation, the value remains
@@ -1944,7 +1956,7 @@ namespace UiaOperationAbstraction
                 );
             }
             // In all other cases (strictly local operation, nested remote operation) bind is a no-op.
-        }      
+        }
 
         // BindNonlocalResult is used to bind results that are not local in scope. The binding will be
         // deferred until just before the outermost remote operation is executed, and will execute as a

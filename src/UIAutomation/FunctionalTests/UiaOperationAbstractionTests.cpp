@@ -401,10 +401,7 @@ namespace UiaOperationAbstractionTests
                 auto boundingRectangleHeight = boundingRectangle.GetHeight();
 
                 // Return the field values.
-                operationScope.BindResult(boundingRectangleX);
-                operationScope.BindResult(boundingRectangleY);
-                operationScope.BindResult(boundingRectangleWidth);
-                operationScope.BindResult(boundingRectangleHeight);
+                operationScope.BindResult(boundingRectangleX, boundingRectangleY, boundingRectangleWidth, boundingRectangleHeight);
                 operationScope.Resolve();
 
                 // Convert abstraction types to local types.
