@@ -870,8 +870,11 @@ namespace UiaOperationAbstractionTests
             // Initialize the UIA Remote Operation abstraction.
             const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
-            // Create rectangles using 2 different input types and check that they are the same when returned
-            // back to the caller.
+            // Create an operation that fetches a `UiaEnum`-based property value for a UIA element and compare the
+            // value against different values types that can be used to construct that property-specific `UiaEnum`
+            // type.
+            //
+            // This ensures that common ways of comparing `UiaEnum`-based properties work.
             {
                 auto operationScope = UiaOperationScope::StartNew();
 
