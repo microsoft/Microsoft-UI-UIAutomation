@@ -136,7 +136,7 @@
         return !get();
     }
 
-    UiaArray<UiaElement> UiaSelectionPattern::GetSelection(bool useCachedApi)
+    UiaArray<UiaElement> UiaSelectionPattern::GetSelection(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -158,7 +158,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaSelectionPattern::GetCanSelectMultiple(bool useCachedApi)
+    UiaBool UiaSelectionPattern::GetCanSelectMultiple(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -180,7 +180,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaSelectionPattern::GetIsSelectionRequired(bool useCachedApi)
+    UiaBool UiaSelectionPattern::GetIsSelectionRequired(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -263,7 +263,7 @@
         return !get();
     }
 
-    UiaString UiaValuePattern::GetValue(bool useCachedApi)
+    UiaString UiaValuePattern::GetValue(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -285,7 +285,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaValuePattern::GetIsReadOnly(bool useCachedApi)
+    UiaBool UiaValuePattern::GetIsReadOnly(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -383,7 +383,7 @@
         return !get();
     }
 
-    UiaDouble UiaRangeValuePattern::GetValue(bool useCachedApi)
+    UiaDouble UiaRangeValuePattern::GetValue(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -405,7 +405,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaRangeValuePattern::GetIsReadOnly(bool useCachedApi)
+    UiaBool UiaRangeValuePattern::GetIsReadOnly(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -427,7 +427,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaRangeValuePattern::GetMaximum(bool useCachedApi)
+    UiaDouble UiaRangeValuePattern::GetMaximum(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -449,7 +449,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaRangeValuePattern::GetMinimum(bool useCachedApi)
+    UiaDouble UiaRangeValuePattern::GetMinimum(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -471,7 +471,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaRangeValuePattern::GetLargeChange(bool useCachedApi)
+    UiaDouble UiaRangeValuePattern::GetLargeChange(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -493,7 +493,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaRangeValuePattern::GetSmallChange(bool useCachedApi)
+    UiaDouble UiaRangeValuePattern::GetSmallChange(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -591,7 +591,7 @@
         return !get();
     }
 
-    UiaDouble UiaScrollPattern::GetHorizontalScrollPercent(bool useCachedApi)
+    UiaDouble UiaScrollPattern::GetHorizontalScrollPercent(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -613,7 +613,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaScrollPattern::GetVerticalScrollPercent(bool useCachedApi)
+    UiaDouble UiaScrollPattern::GetVerticalScrollPercent(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -635,7 +635,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaScrollPattern::GetHorizontalViewSize(bool useCachedApi)
+    UiaDouble UiaScrollPattern::GetHorizontalViewSize(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -657,7 +657,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaScrollPattern::GetVerticalViewSize(bool useCachedApi)
+    UiaDouble UiaScrollPattern::GetVerticalViewSize(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -679,7 +679,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaScrollPattern::GetHorizontallyScrollable(bool useCachedApi)
+    UiaBool UiaScrollPattern::GetHorizontallyScrollable(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -701,7 +701,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaScrollPattern::GetVerticallyScrollable(bool useCachedApi)
+    UiaBool UiaScrollPattern::GetVerticallyScrollable(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -820,7 +820,7 @@
         return !get();
     }
 
-    UiaExpandCollapseState UiaExpandCollapsePattern::GetExpandCollapseState(bool useCachedApi)
+    UiaExpandCollapseState UiaExpandCollapsePattern::GetExpandCollapseState(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -927,7 +927,7 @@
         return !get();
     }
 
-    UiaInt UiaGridPattern::GetRowCount(bool useCachedApi)
+    UiaInt UiaGridPattern::GetRowCount(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -949,7 +949,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaGridPattern::GetColumnCount(bool useCachedApi)
+    UiaInt UiaGridPattern::GetColumnCount(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1052,7 +1052,7 @@
         return !get();
     }
 
-    UiaElement UiaGridItemPattern::GetContainingGrid(bool useCachedApi)
+    UiaElement UiaGridItemPattern::GetContainingGrid(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1074,7 +1074,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaGridItemPattern::GetRow(bool useCachedApi)
+    UiaInt UiaGridItemPattern::GetRow(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1096,7 +1096,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaGridItemPattern::GetColumn(bool useCachedApi)
+    UiaInt UiaGridItemPattern::GetColumn(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1118,7 +1118,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaGridItemPattern::GetRowSpan(bool useCachedApi)
+    UiaInt UiaGridItemPattern::GetRowSpan(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1140,7 +1140,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaGridItemPattern::GetColumnSpan(bool useCachedApi)
+    UiaInt UiaGridItemPattern::GetColumnSpan(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1223,7 +1223,7 @@
         return !get();
     }
 
-    UiaInt UiaMultipleViewPattern::GetCurrentView(bool useCachedApi)
+    UiaInt UiaMultipleViewPattern::GetCurrentView(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1245,7 +1245,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaInt> UiaMultipleViewPattern::GetSupportedViews(bool useCachedApi)
+    UiaArray<UiaInt> UiaMultipleViewPattern::GetSupportedViews(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1360,7 +1360,7 @@
         return !get();
     }
 
-    UiaBool UiaWindowPattern::GetCanMaximize(bool useCachedApi)
+    UiaBool UiaWindowPattern::GetCanMaximize(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1382,7 +1382,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaWindowPattern::GetCanMinimize(bool useCachedApi)
+    UiaBool UiaWindowPattern::GetCanMinimize(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1404,7 +1404,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaWindowPattern::GetIsModal(bool useCachedApi)
+    UiaBool UiaWindowPattern::GetIsModal(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1426,7 +1426,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaWindowPattern::GetIsTopmost(bool useCachedApi)
+    UiaBool UiaWindowPattern::GetIsTopmost(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1448,7 +1448,7 @@
         return localPropertyValue;
     }
 
-    UiaWindowVisualState UiaWindowPattern::GetWindowVisualState(bool useCachedApi)
+    UiaWindowVisualState UiaWindowPattern::GetWindowVisualState(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1470,7 +1470,7 @@
         return localPropertyValue;
     }
 
-    UiaWindowInteractionState UiaWindowPattern::GetWindowInteractionState(bool useCachedApi)
+    UiaWindowInteractionState UiaWindowPattern::GetWindowInteractionState(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1597,7 +1597,7 @@
         return !get();
     }
 
-    UiaBool UiaSelectionItemPattern::GetIsSelected(bool useCachedApi)
+    UiaBool UiaSelectionItemPattern::GetIsSelected(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1619,7 +1619,7 @@
         return localPropertyValue;
     }
 
-    UiaElement UiaSelectionItemPattern::GetSelectionContainer(bool useCachedApi)
+    UiaElement UiaSelectionItemPattern::GetSelectionContainer(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1738,7 +1738,7 @@
         return !get();
     }
 
-    UiaDockPosition UiaDockPattern::GetDockPosition(bool useCachedApi)
+    UiaDockPosition UiaDockPattern::GetDockPosition(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1836,7 +1836,7 @@
         return !get();
     }
 
-    UiaArray<UiaElement> UiaTablePattern::GetRowHeaders(bool useCachedApi)
+    UiaArray<UiaElement> UiaTablePattern::GetRowHeaders(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1858,7 +1858,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaTablePattern::GetColumnHeaders(bool useCachedApi)
+    UiaArray<UiaElement> UiaTablePattern::GetColumnHeaders(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1880,7 +1880,7 @@
         return localPropertyValue;
     }
 
-    UiaRowOrColumnMajor UiaTablePattern::GetRowOrColumnMajor(bool useCachedApi)
+    UiaRowOrColumnMajor UiaTablePattern::GetRowOrColumnMajor(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1963,7 +1963,7 @@
         return !get();
     }
 
-    UiaArray<UiaElement> UiaTableItemPattern::GetRowHeaderItems(bool useCachedApi)
+    UiaArray<UiaElement> UiaTableItemPattern::GetRowHeaderItems(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -1985,7 +1985,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaTableItemPattern::GetColumnHeaderItems(bool useCachedApi)
+    UiaArray<UiaElement> UiaTableItemPattern::GetColumnHeaderItems(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -2653,7 +2653,7 @@
         return !get();
     }
 
-    UiaToggleState UiaTogglePattern::GetToggleState(bool useCachedApi)
+    UiaToggleState UiaTogglePattern::GetToggleState(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -2748,7 +2748,7 @@
         return !get();
     }
 
-    UiaBool UiaTransformPattern::GetCanMove(bool useCachedApi)
+    UiaBool UiaTransformPattern::GetCanMove(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -2770,7 +2770,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaTransformPattern::GetCanResize(bool useCachedApi)
+    UiaBool UiaTransformPattern::GetCanResize(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -2792,7 +2792,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaTransformPattern::GetCanRotate(bool useCachedApi)
+    UiaBool UiaTransformPattern::GetCanRotate(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -2999,7 +2999,7 @@
         return !get();
     }
 
-    UiaInt UiaLegacyIAccessiblePattern::GetChildId(bool useCachedApi)
+    UiaInt UiaLegacyIAccessiblePattern::GetChildId(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3021,7 +3021,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaLegacyIAccessiblePattern::GetName(bool useCachedApi)
+    UiaString UiaLegacyIAccessiblePattern::GetName(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3043,7 +3043,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaLegacyIAccessiblePattern::GetValue(bool useCachedApi)
+    UiaString UiaLegacyIAccessiblePattern::GetValue(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3065,7 +3065,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaLegacyIAccessiblePattern::GetDescription(bool useCachedApi)
+    UiaString UiaLegacyIAccessiblePattern::GetDescription(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3087,7 +3087,7 @@
         return localPropertyValue;
     }
 
-    UiaUint UiaLegacyIAccessiblePattern::GetRole(bool useCachedApi)
+    UiaUint UiaLegacyIAccessiblePattern::GetRole(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3109,7 +3109,7 @@
         return localPropertyValue;
     }
 
-    UiaUint UiaLegacyIAccessiblePattern::GetState(bool useCachedApi)
+    UiaUint UiaLegacyIAccessiblePattern::GetState(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3131,7 +3131,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaLegacyIAccessiblePattern::GetHelp(bool useCachedApi)
+    UiaString UiaLegacyIAccessiblePattern::GetHelp(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3153,7 +3153,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaLegacyIAccessiblePattern::GetKeyboardShortcut(bool useCachedApi)
+    UiaString UiaLegacyIAccessiblePattern::GetKeyboardShortcut(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3175,7 +3175,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaLegacyIAccessiblePattern::GetSelection(bool useCachedApi)
+    UiaArray<UiaElement> UiaLegacyIAccessiblePattern::GetSelection(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3197,7 +3197,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaLegacyIAccessiblePattern::GetDefaultAction(bool useCachedApi)
+    UiaString UiaLegacyIAccessiblePattern::GetDefaultAction(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3567,7 +3567,7 @@
         return !get();
     }
 
-    UiaAnnotationType UiaAnnotationPattern::GetAnnotationTypeId(bool useCachedApi)
+    UiaAnnotationType UiaAnnotationPattern::GetAnnotationTypeId(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3589,7 +3589,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaAnnotationPattern::GetAnnotationTypeName(bool useCachedApi)
+    UiaString UiaAnnotationPattern::GetAnnotationTypeName(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3611,7 +3611,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaAnnotationPattern::GetAuthor(bool useCachedApi)
+    UiaString UiaAnnotationPattern::GetAuthor(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3633,7 +3633,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaAnnotationPattern::GetDateTime(bool useCachedApi)
+    UiaString UiaAnnotationPattern::GetDateTime(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3655,7 +3655,7 @@
         return localPropertyValue;
     }
 
-    UiaElement UiaAnnotationPattern::GetTarget(bool useCachedApi)
+    UiaElement UiaAnnotationPattern::GetTarget(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3833,7 +3833,7 @@
         return !get();
     }
 
-    UiaStyleId UiaStylesPattern::GetStyleId(bool useCachedApi)
+    UiaStyleId UiaStylesPattern::GetStyleId(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3855,7 +3855,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaStylesPattern::GetStyleName(bool useCachedApi)
+    UiaString UiaStylesPattern::GetStyleName(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3877,7 +3877,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaStylesPattern::GetFillColor(bool useCachedApi)
+    UiaInt UiaStylesPattern::GetFillColor(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3899,7 +3899,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaStylesPattern::GetFillPatternStyle(bool useCachedApi)
+    UiaString UiaStylesPattern::GetFillPatternStyle(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3921,7 +3921,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaStylesPattern::GetShape(bool useCachedApi)
+    UiaString UiaStylesPattern::GetShape(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3943,7 +3943,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaStylesPattern::GetFillPatternColor(bool useCachedApi)
+    UiaInt UiaStylesPattern::GetFillPatternColor(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -3965,7 +3965,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaStylesPattern::GetExtendedProperties(bool useCachedApi)
+    UiaString UiaStylesPattern::GetExtendedProperties(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4126,7 +4126,7 @@
         return !get();
     }
 
-    UiaString UiaSpreadsheetItemPattern::GetFormula(bool useCachedApi)
+    UiaString UiaSpreadsheetItemPattern::GetFormula(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4148,7 +4148,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaSpreadsheetItemPattern::GetAnnotationObjects(bool useCachedApi)
+    UiaArray<UiaElement> UiaSpreadsheetItemPattern::GetAnnotationObjects(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4170,7 +4170,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaAnnotationType> UiaSpreadsheetItemPattern::GetAnnotationTypes(bool useCachedApi)
+    UiaArray<UiaAnnotationType> UiaSpreadsheetItemPattern::GetAnnotationTypes(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4253,7 +4253,7 @@
         return !get();
     }
 
-    UiaBool UiaTransformPattern2::GetCanZoom(bool useCachedApi)
+    UiaBool UiaTransformPattern2::GetCanZoom(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4275,7 +4275,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaTransformPattern2::GetZoomLevel(bool useCachedApi)
+    UiaDouble UiaTransformPattern2::GetZoomLevel(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4297,7 +4297,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaTransformPattern2::GetZoomMinimum(bool useCachedApi)
+    UiaDouble UiaTransformPattern2::GetZoomMinimum(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4319,7 +4319,7 @@
         return localPropertyValue;
     }
 
-    UiaDouble UiaTransformPattern2::GetZoomMaximum(bool useCachedApi)
+    UiaDouble UiaTransformPattern2::GetZoomMaximum(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4521,7 +4521,7 @@
         return !get();
     }
 
-    UiaBool UiaDragPattern::GetIsGrabbed(bool useCachedApi)
+    UiaBool UiaDragPattern::GetIsGrabbed(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4543,7 +4543,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaDragPattern::GetDropEffect(bool useCachedApi)
+    UiaString UiaDragPattern::GetDropEffect(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4565,7 +4565,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaString> UiaDragPattern::GetDropEffects(bool useCachedApi)
+    UiaArray<UiaString> UiaDragPattern::GetDropEffects(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4587,7 +4587,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaDragPattern::GetGrabbedItems(bool useCachedApi)
+    UiaArray<UiaElement> UiaDragPattern::GetGrabbedItems(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4670,7 +4670,7 @@
         return !get();
     }
 
-    UiaString UiaDropTargetPattern::GetDropTargetEffect(bool useCachedApi)
+    UiaString UiaDropTargetPattern::GetDropTargetEffect(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4692,7 +4692,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaString> UiaDropTargetPattern::GetDropTargetEffects(bool useCachedApi)
+    UiaArray<UiaString> UiaDropTargetPattern::GetDropTargetEffects(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4942,7 +4942,7 @@
         return !get();
     }
 
-    UiaElement UiaSelectionPattern2::GetFirstSelectedItem(bool useCachedApi)
+    UiaElement UiaSelectionPattern2::GetFirstSelectedItem(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4964,7 +4964,7 @@
         return localPropertyValue;
     }
 
-    UiaElement UiaSelectionPattern2::GetLastSelectedItem(bool useCachedApi)
+    UiaElement UiaSelectionPattern2::GetLastSelectedItem(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -4986,7 +4986,7 @@
         return localPropertyValue;
     }
 
-    UiaElement UiaSelectionPattern2::GetCurrentSelectedItem(bool useCachedApi)
+    UiaElement UiaSelectionPattern2::GetCurrentSelectedItem(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5008,7 +5008,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaSelectionPattern2::GetItemCount(bool useCachedApi)
+    UiaInt UiaSelectionPattern2::GetItemCount(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5114,7 +5114,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaElement::GetProcessId(bool useCachedApi)
+    UiaInt UiaElement::GetProcessId(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5137,7 +5137,7 @@
         return localPropertyValue;
     }
 
-    UiaControlType UiaElement::GetControlType(bool useCachedApi)
+    UiaControlType UiaElement::GetControlType(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5160,7 +5160,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetLocalizedControlType(bool useCachedApi)
+    UiaString UiaElement::GetLocalizedControlType(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5183,7 +5183,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetName(bool useCachedApi)
+    UiaString UiaElement::GetName(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5206,7 +5206,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetAcceleratorKey(bool useCachedApi)
+    UiaString UiaElement::GetAcceleratorKey(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5229,7 +5229,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetAccessKey(bool useCachedApi)
+    UiaString UiaElement::GetAccessKey(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5252,7 +5252,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetHasKeyboardFocus(bool useCachedApi)
+    UiaBool UiaElement::GetHasKeyboardFocus(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5275,7 +5275,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsKeyboardFocusable(bool useCachedApi)
+    UiaBool UiaElement::GetIsKeyboardFocusable(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5298,7 +5298,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsEnabled(bool useCachedApi)
+    UiaBool UiaElement::GetIsEnabled(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5321,7 +5321,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetAutomationId(bool useCachedApi)
+    UiaString UiaElement::GetAutomationId(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5344,7 +5344,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetClassName(bool useCachedApi)
+    UiaString UiaElement::GetClassName(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5367,7 +5367,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetHelpText(bool useCachedApi)
+    UiaString UiaElement::GetHelpText(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5390,7 +5390,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaElement::GetCulture(bool useCachedApi)
+    UiaInt UiaElement::GetCulture(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5413,7 +5413,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsControlElement(bool useCachedApi)
+    UiaBool UiaElement::GetIsControlElement(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5436,7 +5436,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsContentElement(bool useCachedApi)
+    UiaBool UiaElement::GetIsContentElement(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5459,7 +5459,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsPassword(bool useCachedApi)
+    UiaBool UiaElement::GetIsPassword(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5482,7 +5482,7 @@
         return localPropertyValue;
     }
 
-    UiaHwnd UiaElement::GetNativeWindowHandle(bool useCachedApi)
+    UiaHwnd UiaElement::GetNativeWindowHandle(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5505,7 +5505,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetItemType(bool useCachedApi)
+    UiaString UiaElement::GetItemType(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5528,7 +5528,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsOffscreen(bool useCachedApi)
+    UiaBool UiaElement::GetIsOffscreen(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5551,7 +5551,7 @@
         return localPropertyValue;
     }
 
-    UiaOrientationType UiaElement::GetOrientation(bool useCachedApi)
+    UiaOrientationType UiaElement::GetOrientation(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5574,7 +5574,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetFrameworkId(bool useCachedApi)
+    UiaString UiaElement::GetFrameworkId(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5597,7 +5597,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsRequiredForForm(bool useCachedApi)
+    UiaBool UiaElement::GetIsRequiredForForm(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5620,7 +5620,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetItemStatus(bool useCachedApi)
+    UiaString UiaElement::GetItemStatus(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5643,7 +5643,7 @@
         return localPropertyValue;
     }
 
-    UiaRect UiaElement::GetBoundingRectangle(bool useCachedApi)
+    UiaRect UiaElement::GetBoundingRectangle(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5666,7 +5666,7 @@
         return localPropertyValue;
     }
 
-    UiaElement UiaElement::GetLabeledBy(bool useCachedApi)
+    UiaElement UiaElement::GetLabeledBy(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5689,7 +5689,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetAriaRole(bool useCachedApi)
+    UiaString UiaElement::GetAriaRole(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5712,7 +5712,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetAriaProperties(bool useCachedApi)
+    UiaString UiaElement::GetAriaProperties(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5735,7 +5735,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsDataValidForForm(bool useCachedApi)
+    UiaBool UiaElement::GetIsDataValidForForm(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5758,7 +5758,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaElement::GetControllerFor(bool useCachedApi)
+    UiaArray<UiaElement> UiaElement::GetControllerFor(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5781,7 +5781,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaElement::GetDescribedBy(bool useCachedApi)
+    UiaArray<UiaElement> UiaElement::GetDescribedBy(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5804,7 +5804,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaElement::GetFlowsTo(bool useCachedApi)
+    UiaArray<UiaElement> UiaElement::GetFlowsTo(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5827,7 +5827,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetProviderDescription(bool useCachedApi)
+    UiaString UiaElement::GetProviderDescription(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5850,7 +5850,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetOptimizeForVisualContent(bool useCachedApi)
+    UiaBool UiaElement::GetOptimizeForVisualContent(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5875,7 +5875,7 @@
         return localPropertyValue;
     }
 
-    UiaLiveSetting UiaElement::GetLiveSetting(bool useCachedApi)
+    UiaLiveSetting UiaElement::GetLiveSetting(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5900,7 +5900,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaElement::GetFlowsFrom(bool useCachedApi)
+    UiaArray<UiaElement> UiaElement::GetFlowsFrom(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5925,7 +5925,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsPeripheral(bool useCachedApi)
+    UiaBool UiaElement::GetIsPeripheral(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5950,7 +5950,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaElement::GetPositionInSet(bool useCachedApi)
+    UiaInt UiaElement::GetPositionInSet(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -5975,7 +5975,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaElement::GetSizeOfSet(bool useCachedApi)
+    UiaInt UiaElement::GetSizeOfSet(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6000,7 +6000,7 @@
         return localPropertyValue;
     }
 
-    UiaInt UiaElement::GetLevel(bool useCachedApi)
+    UiaInt UiaElement::GetLevel(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6025,7 +6025,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaAnnotationType> UiaElement::GetAnnotationTypes(bool useCachedApi)
+    UiaArray<UiaAnnotationType> UiaElement::GetAnnotationTypes(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6050,7 +6050,7 @@
         return localPropertyValue;
     }
 
-    UiaArray<UiaElement> UiaElement::GetAnnotationObjects(bool useCachedApi)
+    UiaArray<UiaElement> UiaElement::GetAnnotationObjects(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6075,7 +6075,7 @@
         return localPropertyValue;
     }
 
-    UiaLandmarkType UiaElement::GetLandmarkType(bool useCachedApi)
+    UiaLandmarkType UiaElement::GetLandmarkType(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6100,7 +6100,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetLocalizedLandmarkType(bool useCachedApi)
+    UiaString UiaElement::GetLocalizedLandmarkType(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6125,7 +6125,7 @@
         return localPropertyValue;
     }
 
-    UiaString UiaElement::GetFullDescription(bool useCachedApi)
+    UiaString UiaElement::GetFullDescription(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6150,7 +6150,7 @@
         return localPropertyValue;
     }
 
-    UiaHeadingLevel UiaElement::GetHeadingLevel(bool useCachedApi)
+    UiaHeadingLevel UiaElement::GetHeadingLevel(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6175,7 +6175,7 @@
         return localPropertyValue;
     }
 
-    UiaBool UiaElement::GetIsDialog(bool useCachedApi)
+    UiaBool UiaElement::GetIsDialog(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6200,7 +6200,7 @@
         return localPropertyValue;
     }
 
-    UiaInvokePattern UiaElement::GetInvokePattern(bool useCachedApi)
+    UiaInvokePattern UiaElement::GetInvokePattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6223,7 +6223,7 @@
         return localPattern;
     }
 
-    UiaSelectionPattern UiaElement::GetSelectionPattern(bool useCachedApi)
+    UiaSelectionPattern UiaElement::GetSelectionPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6246,7 +6246,7 @@
         return localPattern;
     }
 
-    UiaValuePattern UiaElement::GetValuePattern(bool useCachedApi)
+    UiaValuePattern UiaElement::GetValuePattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6269,7 +6269,7 @@
         return localPattern;
     }
 
-    UiaRangeValuePattern UiaElement::GetRangeValuePattern(bool useCachedApi)
+    UiaRangeValuePattern UiaElement::GetRangeValuePattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6292,7 +6292,7 @@
         return localPattern;
     }
 
-    UiaScrollPattern UiaElement::GetScrollPattern(bool useCachedApi)
+    UiaScrollPattern UiaElement::GetScrollPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6315,7 +6315,7 @@
         return localPattern;
     }
 
-    UiaExpandCollapsePattern UiaElement::GetExpandCollapsePattern(bool useCachedApi)
+    UiaExpandCollapsePattern UiaElement::GetExpandCollapsePattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6338,7 +6338,7 @@
         return localPattern;
     }
 
-    UiaGridPattern UiaElement::GetGridPattern(bool useCachedApi)
+    UiaGridPattern UiaElement::GetGridPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6361,7 +6361,7 @@
         return localPattern;
     }
 
-    UiaGridItemPattern UiaElement::GetGridItemPattern(bool useCachedApi)
+    UiaGridItemPattern UiaElement::GetGridItemPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6384,7 +6384,7 @@
         return localPattern;
     }
 
-    UiaMultipleViewPattern UiaElement::GetMultipleViewPattern(bool useCachedApi)
+    UiaMultipleViewPattern UiaElement::GetMultipleViewPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6407,7 +6407,7 @@
         return localPattern;
     }
 
-    UiaWindowPattern UiaElement::GetWindowPattern(bool useCachedApi)
+    UiaWindowPattern UiaElement::GetWindowPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6430,7 +6430,7 @@
         return localPattern;
     }
 
-    UiaSelectionItemPattern UiaElement::GetSelectionItemPattern(bool useCachedApi)
+    UiaSelectionItemPattern UiaElement::GetSelectionItemPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6453,7 +6453,7 @@
         return localPattern;
     }
 
-    UiaDockPattern UiaElement::GetDockPattern(bool useCachedApi)
+    UiaDockPattern UiaElement::GetDockPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6476,7 +6476,7 @@
         return localPattern;
     }
 
-    UiaTablePattern UiaElement::GetTablePattern(bool useCachedApi)
+    UiaTablePattern UiaElement::GetTablePattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6499,7 +6499,7 @@
         return localPattern;
     }
 
-    UiaTableItemPattern UiaElement::GetTableItemPattern(bool useCachedApi)
+    UiaTableItemPattern UiaElement::GetTableItemPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6522,7 +6522,7 @@
         return localPattern;
     }
 
-    UiaTextPattern UiaElement::GetTextPattern(bool useCachedApi)
+    UiaTextPattern UiaElement::GetTextPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6545,7 +6545,7 @@
         return localPattern;
     }
 
-    UiaTogglePattern UiaElement::GetTogglePattern(bool useCachedApi)
+    UiaTogglePattern UiaElement::GetTogglePattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6568,7 +6568,7 @@
         return localPattern;
     }
 
-    UiaTransformPattern UiaElement::GetTransformPattern(bool useCachedApi)
+    UiaTransformPattern UiaElement::GetTransformPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6591,7 +6591,7 @@
         return localPattern;
     }
 
-    UiaScrollItemPattern UiaElement::GetScrollItemPattern(bool useCachedApi)
+    UiaScrollItemPattern UiaElement::GetScrollItemPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6614,7 +6614,7 @@
         return localPattern;
     }
 
-    UiaLegacyIAccessiblePattern UiaElement::GetLegacyIAccessiblePattern(bool useCachedApi)
+    UiaLegacyIAccessiblePattern UiaElement::GetLegacyIAccessiblePattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6637,7 +6637,7 @@
         return localPattern;
     }
 
-    UiaItemContainerPattern UiaElement::GetItemContainerPattern(bool useCachedApi)
+    UiaItemContainerPattern UiaElement::GetItemContainerPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6660,7 +6660,7 @@
         return localPattern;
     }
 
-    UiaVirtualizedItemPattern UiaElement::GetVirtualizedItemPattern(bool useCachedApi)
+    UiaVirtualizedItemPattern UiaElement::GetVirtualizedItemPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6683,7 +6683,7 @@
         return localPattern;
     }
 
-    UiaSynchronizedInputPattern UiaElement::GetSynchronizedInputPattern(bool useCachedApi)
+    UiaSynchronizedInputPattern UiaElement::GetSynchronizedInputPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6706,7 +6706,7 @@
         return localPattern;
     }
 
-    UiaAnnotationPattern UiaElement::GetAnnotationPattern(bool useCachedApi)
+    UiaAnnotationPattern UiaElement::GetAnnotationPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6729,7 +6729,7 @@
         return localPattern;
     }
 
-    UiaTextPattern2 UiaElement::GetTextPattern2(bool useCachedApi)
+    UiaTextPattern2 UiaElement::GetTextPattern2(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6752,7 +6752,7 @@
         return localPattern;
     }
 
-    UiaStylesPattern UiaElement::GetStylesPattern(bool useCachedApi)
+    UiaStylesPattern UiaElement::GetStylesPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6775,7 +6775,7 @@
         return localPattern;
     }
 
-    UiaSpreadsheetPattern UiaElement::GetSpreadsheetPattern(bool useCachedApi)
+    UiaSpreadsheetPattern UiaElement::GetSpreadsheetPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6798,7 +6798,7 @@
         return localPattern;
     }
 
-    UiaSpreadsheetItemPattern UiaElement::GetSpreadsheetItemPattern(bool useCachedApi)
+    UiaSpreadsheetItemPattern UiaElement::GetSpreadsheetItemPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6821,7 +6821,7 @@
         return localPattern;
     }
 
-    UiaTransformPattern2 UiaElement::GetTransformPattern2(bool useCachedApi)
+    UiaTransformPattern2 UiaElement::GetTransformPattern2(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6844,7 +6844,7 @@
         return localPattern;
     }
 
-    UiaTextChildPattern UiaElement::GetTextChildPattern(bool useCachedApi)
+    UiaTextChildPattern UiaElement::GetTextChildPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6867,7 +6867,7 @@
         return localPattern;
     }
 
-    UiaDragPattern UiaElement::GetDragPattern(bool useCachedApi)
+    UiaDragPattern UiaElement::GetDragPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6890,7 +6890,7 @@
         return localPattern;
     }
 
-    UiaDropTargetPattern UiaElement::GetDropTargetPattern(bool useCachedApi)
+    UiaDropTargetPattern UiaElement::GetDropTargetPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6913,7 +6913,7 @@
         return localPattern;
     }
 
-    UiaTextEditPattern UiaElement::GetTextEditPattern(bool useCachedApi)
+    UiaTextEditPattern UiaElement::GetTextEditPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6936,7 +6936,7 @@
         return localPattern;
     }
 
-    UiaCustomNavigationPattern UiaElement::GetCustomNavigationPattern(bool useCachedApi)
+    UiaCustomNavigationPattern UiaElement::GetCustomNavigationPattern(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
@@ -6959,7 +6959,7 @@
         return localPattern;
     }
 
-    UiaSelectionPattern2 UiaElement::GetSelectionPattern2(bool useCachedApi)
+    UiaSelectionPattern2 UiaElement::GetSelectionPattern2(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
