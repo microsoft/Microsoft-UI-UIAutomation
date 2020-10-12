@@ -857,5 +857,65 @@ namespace UiaOperationAbstractionTests
         {
             UseCachedApiTest(true /* useRemoteOperations */);
         }
+
+        void CompareEnumTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Create an operation that fetches a `UiaEnum`-based property value for a UIA element and compare the
+            // value against different values types that can be used to construct that property-specific `UiaEnum`
+            // type.
+            //
+            // This ensures that common ways of comparing `UiaEnum`-based properties work.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Ask for the control type of the imported element (which is returned as a `UiaEnum`).
+                auto controlType = displayElement.GetControlType(false /* useCachedApi */);
+
+                // Compare the retrieved `UiaEnum` against different control type value representations.
+                auto equalToAbstractionValue = (controlType == controlType);
+                auto equalToComEnum = (controlType == UIA_TextControlTypeId);
+                auto equalToWinRtEnum = (controlType == winrt::Microsoft::UI::UIAutomation::AutomationControlType::Text);
+
+                auto notEqualToAbstractionValue = (controlType != controlType);
+                auto notEqualToComEnum = (controlType != UIA_TextControlTypeId);
+                auto notEqualToWinRtEnum = (controlType != winrt::Microsoft::UI::UIAutomation::AutomationControlType::Text);
+
+                // Return the results of the comparisons.
+                operationScope.BindResult(equalToAbstractionValue, equalToComEnum, equalToWinRtEnum, notEqualToAbstractionValue, notEqualToComEnum, notEqualToWinRtEnum);
+                operationScope.Resolve();
+
+                // Ensure the correct results have been returned.
+                Assert::IsTrue(static_cast<bool>(equalToAbstractionValue));
+                Assert::IsTrue(static_cast<bool>(equalToComEnum));
+                Assert::IsTrue(static_cast<bool>(equalToWinRtEnum));
+                Assert::IsFalse(static_cast<bool>(notEqualToAbstractionValue));
+                Assert::IsFalse(static_cast<bool>(notEqualToComEnum));
+                Assert::IsFalse(static_cast<bool>(notEqualToWinRtEnum));
+            }
+        }
+
+        TEST_METHOD(CompareEnumLocal)
+        {
+            CompareEnumTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(CompareEnumRemote)
+        {
+            CompareEnumTest(true /* useRemoteOperations */);
+        }
     };
 }

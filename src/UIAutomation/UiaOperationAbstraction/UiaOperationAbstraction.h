@@ -878,58 +878,21 @@ namespace UiaOperationAbstraction
     public:
         static constexpr VARTYPE c_comVariantType = VT_I4;
 
-        UiaEnum(ComEnumT value): UiaTypeBase(value)
+        UiaEnum(ComEnumT value) : UiaTypeBase(value)
         {
             ToRemote();
         }
 
-        UiaEnum(WinRTEnumT value): UiaTypeBase(static_cast<ComEnumT>(value))
+        UiaEnum(WinRTEnumT value) : UiaTypeBase(static_cast<ComEnumT>(value))
         {
             ToRemote();
         }
 
-        UiaEnum(StandinT remoteValue): UiaTypeBase(remoteValue)
+        UiaEnum(StandinT remoteValue) : UiaTypeBase(remoteValue)
         {
         }
 
         UiaEnum(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>&) = default;
-
-        void ToRemote()
-        {
-            auto delegator = UiaOperationScope::GetCurrentDelegator();
-            if (delegator)
-            {
-                delegator->ConvertVariantDataToRemote<ComEnumT, WinRTEnumT, StandinT>(m_member);
-            }
-        }
-
-        UiaBool operator==(ComEnumT&& rhs)
-        {
-            if (ShouldUseRemoteApi())
-            {
-                UiaEnum<ComEnumT, WinRTEnumT, StandinT> rhsRemote(rhs);
-                rhsRemote.ToRemote();
-                this->ToRemote();
-
-                return std::get<StandinT>(m_member).IsEqual(std::get<StandinT>(rhsRemote.m_member));
-            }
-
-            return std::get<ComEnumT>(m_member) == rhs;
-        }
-
-        UiaBool operator!=(ComEnumT&& rhs)
-        {
-            if (ShouldUseRemoteApi())
-            {
-                UiaEnum<ComEnumT, WinRTEnumT, StandinT> rhsRemote(rhs);
-                rhsRemote.ToRemote();
-                this->ToRemote();
-
-                return std::get<StandinT>(m_member).IsNotEqual(std::get<StandinT>(rhsRemote.m_member));
-            }
-
-            return std::get<ComEnumT>(m_member) != rhs;
-        }
 
         operator ComEnumT() const
         {
@@ -959,6 +922,7 @@ namespace UiaOperationAbstraction
             {
                 m_member = std::get<ComEnumT>(other.m_member);
             }
+
             return *this;
         }
 
@@ -973,7 +937,7 @@ namespace UiaOperationAbstraction
                 return std::get<StandinT>(mutableThis.m_member).IsEqual(std::get<StandinT>(mutableRhs.m_member));
             }
 
-            return std::get<ComEnumT>(m_member) == rhs;
+            return std::get<ComEnumT>(m_member) == std::get<ComEnumT>(rhs.m_member);
         }
 
         UiaBool operator!=(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>& rhs) const
@@ -987,31 +951,34 @@ namespace UiaOperationAbstraction
                 return std::get<StandinT>(mutableThis.m_member).IsNotEqual(std::get<StandinT>(mutableRhs.m_member));
             }
 
-            return std::get<ComEnumT>(m_member) != rhs;
+            return std::get<ComEnumT>(m_member) != std::get<ComEnumT>(rhs.m_member);
         }
 
-        UiaBool operator==(WinRTEnumT rhs)
+        template<class T>
+        UiaBool operator==(T rhs) const
         {
-            return *this == UiaEnum<ComEnumT, WinRTEnumT, StandinT>(rhs);
+            return (*this == UiaEnum<ComEnumT, WinRTEnumT, StandinT>(rhs));
         }
 
-        UiaBool operator!=(WinRTEnumT rhs)
+        template<class T>
+        UiaBool operator!=(T rhs) const
         {
-            return *this != UiaEnum<ComEnumT, WinRTEnumT, StandinT>(rhs);
+            return (*this != UiaEnum<ComEnumT, WinRTEnumT, StandinT>(rhs));
         }
 
-        UiaBool operator==(ComEnumT rhs) const
-        {
-            return *this == UiaEnum<ComEnumT, WinRTEnumT, StandinT>(rhs);
-        }
-        UiaBool operator!=(ComEnumT rhs) const
-        {
-            return *this != UiaEnum<ComEnumT, WinRTEnumT, StandinT>(rhs);
-        }
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
             int intValueOfEnum = winrt::unbox_value<int>(result);
             m_member = static_cast<ComEnumT>(intValueOfEnum);
+        }
+
+        void ToRemote()
+        {
+            auto delegator = UiaOperationScope::GetCurrentDelegator();
+            if (delegator)
+            {
+                delegator->ConvertVariantDataToRemote<ComEnumT, WinRTEnumT, StandinT>(m_member);
+            }
         }
     };
 
