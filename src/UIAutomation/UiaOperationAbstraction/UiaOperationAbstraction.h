@@ -937,7 +937,7 @@ namespace UiaOperationAbstraction
                 return std::get<StandinT>(mutableThis.m_member).IsEqual(std::get<StandinT>(mutableRhs.m_member));
             }
 
-            return std::get<ComEnumT>(m_member) == static_cast<ComEnumT>(rhs);
+            return std::get<ComEnumT>(m_member) == std::get<ComEnumT>(rhs.m_member);
         }
 
         UiaBool operator!=(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>& rhs) const
@@ -951,7 +951,7 @@ namespace UiaOperationAbstraction
                 return std::get<StandinT>(mutableThis.m_member).IsNotEqual(std::get<StandinT>(mutableRhs.m_member));
             }
 
-            return std::get<ComEnumT>(m_member) != static_cast<ComEnumT>(rhs);
+            return std::get<ComEnumT>(m_member) != std::get<ComEnumT>(rhs.m_member);
         }
 
         template<class T>
