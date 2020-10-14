@@ -89,7 +89,7 @@ namespace UiaOperationAbstraction
             }
             else
             {
-                static_cast<bool>(conditionBool) ? onTrue() : onFalse(); 
+                static_cast<bool>(conditionBool) ? onTrue() : onFalse();
             }
         }
 
@@ -335,6 +335,23 @@ namespace UiaOperationAbstraction
             }
         }
 
+        template <class... ItemWrapperType>
+        void ConvertVariantDataToRemote(std::variant<
+            std::shared_ptr<std::tuple<typename ItemWrapperType::LocalType...>>,
+            winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray>& localTupleVariant) const
+        {
+            if (m_useRemoteApi && m_remoteOperation)
+            {
+                using TupleLocalType = std::tuple<typename ItemWrapperType::LocalType...>;
+                if (auto localTuple = std::get_if<std::shared_ptr<TupleLocalType>>(&localTupleVariant))
+                {
+                    auto remoteArray = m_remoteOperation.NewArray();
+                    impl::LocalTupleToRemoteArray<0, ItemWrapperType...>(**localTuple, remoteArray);
+                    localTupleVariant = std::move(remoteArray);
+                }
+            }
+        }
+
         template <class ItemWrapperType>
         void ConvertVariantDataToRemote(std::variant<
             std::shared_ptr<std::map<std::wstring, typename ItemWrapperType::LocalType>>,
@@ -381,7 +398,7 @@ namespace UiaOperationAbstraction
             return result;
         }
 
-        template<class T> struct always_false : std::false_type {}; 
+        template<class T> struct always_false : std::false_type {};
 
         template<class T>
         constexpr VARTYPE GetVtForType()
@@ -1037,7 +1054,7 @@ namespace UiaOperationAbstraction
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 
-    class UiaHwnd: public UiaTypeBase<
+    class UiaHwnd : public UiaTypeBase<
         UIA_HWND,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteInt>
     {
@@ -1129,10 +1146,72 @@ namespace UiaOperationAbstraction
                 static_assert(always_false<T>::value, "Unexpected array element comparison type.");
             }
         }
+
+        template <typename ItemWrapperType, typename... ItemWrapperTypes>
+        inline void WrapperItemsToRemoteArray(
+            ItemWrapperType wrapperItem,
+            ItemWrapperTypes... wrapperItems,
+            winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& remoteArray)
+        {
+            WrapperItemsToRemoteArray(wrapperItem, remoteArray);
+            WrapperItemsToRemoteArray(wrapperItems..., remoteArray);
+        }
+
+        template <typename ItemWrapperType>
+        inline void WrapperItemsToRemoteArray(ItemWrapperType wrapperItem, winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& remoteArray)
+        {
+            wrapperItem.ToRemote();
+            remoteArray.Append(wrapperItem);
+        }
+
+        template <std::size_t I, typename... ItemWrapperType>
+        inline void LocalTupleToRemoteArray(
+            const std::tuple<typename ItemWrapperType::LocalType...>& localTuple,
+            winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& remoteArray)
+        {
+            if constexpr (I < sizeof...(ItemWrapperType))
+            {
+                using TupleItemWrapperType = typename UiaTuple<ItemWrapperType...>::GetItemWrapperType<I>;
+
+                TupleItemWrapperType wrapper{ std::get<I>(localTuple) };
+                wrapper.ToRemote();
+                remoteArray.Append(wrapper);
+
+                LocalTupleToRemoteArray<I + 1, ItemWrapperType...>(localTuple, remoteArray);
+            }
+            else
+            {
+                UNREFERENCED_PARAMETER(localTuple);
+                UNREFERENCED_PARAMETER(remoteArray);
+            }
+        }
+
+        template <std::size_t I, typename... ItemWrapperType>
+        inline void RemoteArrayToLocalTuple(
+            const winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Foundation::IInspectable>& remoteArray,
+            std::tuple<typename ItemWrapperType::LocalType...>& localTuple)
+        {
+            if constexpr (I < sizeof...(ItemWrapperType))
+            {
+                using TupleItemWrapperType = typename UiaTuple<ItemWrapperType...>::GetItemWrapperType<I>;
+                using ItemLocalType = typename TupleItemWrapperType::LocalType;
+
+                TupleItemWrapperType wrappedLocal = ItemLocalType();
+                wrappedLocal.FromRemoteResult(remoteArray.GetAt(I));
+                std::get<I>(localTuple) = static_cast<ItemLocalType>(wrappedLocal);
+
+                RemoteArrayToLocalTuple<I + 1, ItemWrapperType...>(remoteArray, localTuple);
+            }
+            else
+            {
+                UNREFERENCED_PARAMETER(remoteArray);
+                UNREFERENCED_PARAMETER(localTuple);
+            }
+        }
     } // namespace impl
 
     template <class ItemWrapperType>
-    class UiaArray: public UiaTypeBase<
+    class UiaArray : public UiaTypeBase<
         std::shared_ptr<std::vector<typename ItemWrapperType::LocalType>>,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray>
     {
@@ -1372,7 +1451,7 @@ namespace UiaOperationAbstraction
     };
 
     template <class ItemWrapperType>
-    class UiaStringMap: public UiaTypeBase<
+    class UiaStringMap : public UiaTypeBase<
         std::shared_ptr<std::map<std::wstring, typename ItemWrapperType::LocalType>>,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteStringMap>
     {
@@ -1526,7 +1605,7 @@ namespace UiaOperationAbstraction
         }
     };
 
-    class UiaVariant: public UiaTypeBase<
+    class UiaVariant : public UiaTypeBase<
         std::shared_ptr<wil::unique_variant>,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject>
     {
@@ -1536,7 +1615,7 @@ namespace UiaOperationAbstraction
             return static_cast<winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject>(*any);
         };
 
-        UiaVariant(const VARIANT& variant); 
+        UiaVariant(const VARIANT& variant);
         UiaVariant(wil::unique_variant&& variant);
         UiaVariant(std::shared_ptr<wil::unique_variant>&& variant) : UiaTypeBase(std::move(variant))
         {
@@ -1682,7 +1761,175 @@ namespace UiaOperationAbstraction
         }
     }
 
-    class UiaCacheRequest: public UiaTypeBase<
+    template <class... ItemWrapperType>
+    class UiaTuple : public UiaTypeBase<
+        std::shared_ptr<std::tuple<typename ItemWrapperType::LocalType...>>,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray>
+    {
+    public:
+        using TupleLocalType = std::tuple<typename ItemWrapperType::LocalType...>;
+
+        template<std::size_t I>
+        using GetItemWrapperType = typename std::tuple_element<I, std::tuple<ItemWrapperType...>>::type;
+
+        UiaTuple() : UiaTuple(TupleLocalType{})
+        {
+        }
+
+        UiaTuple(TupleLocalType tuple) :
+            UiaTypeBase(std::make_shared<TupleLocalType>(std::move(tuple)))
+        {
+            ToRemote();
+        }
+
+        UiaTuple(typename ItemWrapperType::LocalType... args) : UiaTuple(TupleLocalType{ std::move(args)... })
+        {
+        }
+
+        UiaTuple(ItemWrapperType... args) : UiaTuple()
+        {
+            SetWrapperItems<0 /* I */>(args...);
+        }
+
+        // TODO:
+        template<std::size_t I, class ItemWrapperType, class... ItemWrapperTypes>
+        void SetWrapperItems(ItemWrapperType item, ItemWrapperTypes... items)
+        {
+            SetAt<I>(item);
+            SetWrapperItems<I + 1>(items...);
+        }
+
+        template<std::size_t I>
+        void SetWrapperItems()
+        {
+        }
+
+        UiaTuple(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray array) :
+            UiaTypeBase(array)
+        {
+        }
+
+        explicit UiaTuple(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+            UiaTypeBase(remoteValue.AsArray())
+        {
+        }
+
+        UiaTuple(const UiaTuple&) = default;
+
+        UiaBool IsNull() const
+        {
+            if (ShouldUseRemoteApi())
+            {
+                auto remoteValue = std::get_if<RemoteType>(&m_member);
+                if (remoteValue)
+                {
+                    return remoteValue->IsNull();
+                }
+            }
+
+            // The local version of a UiaTuple can never be null.
+            return false;
+        }
+
+        UiaBool operator!() const { return IsNull(); }
+        operator UiaBool() const { return !IsNull(); }
+
+        TupleLocalType& operator*()
+        {
+            return *std::get<LocalType>(m_member);
+        }
+
+        const TupleLocalType& operator*() const
+        {
+            return *std::get<LocalType>(m_member);
+        }
+
+        UiaBool operator==(const UiaTuple& rhs) const
+        {
+            if (ShouldUseRemoteApi())
+            {
+                auto mutableThis = *this;
+                mutableThis.ToRemote();
+
+                auto mutableRhs = rhs;
+                mutableRhs.ToRemote();
+                return std::get<RemoteType>(mutableThis.m_member).IsEqual(std::get<RemoteType>(mutableRhs.m_member));
+            }
+
+            auto localTuple = std::get<LocalType>(m_member);
+            auto localRhsTuple = std::get<LocalType>(rhs.m_member);
+
+            return *localTuple == *localRhsTuple;
+        }
+
+        UiaBool operator!=(const UiaTuple& rhs) const
+        {
+            return !(*this == rhs);
+        }
+
+        void ToRemote()
+        {
+            auto delegator = UiaOperationScope::GetCurrentDelegator();
+            if (delegator)
+            {
+                delegator->ConvertVariantDataToRemote<ItemWrapperType...>(m_member);
+            }
+        }
+
+        template <unsigned int I>
+        void SetAt(GetItemWrapperType<I> item)
+        {
+            if (ShouldUseRemoteApi())
+            {
+                UiaUint index{ I };
+                ToRemote();
+                index.ToRemote();
+                item.ToRemote();
+                std::get<RemoteType>(m_member).SetAt(index, item);
+                return;
+            }
+
+            std::get<I>(*std::get<LocalType>(m_member)) = item;
+        }
+
+        template <unsigned int I>
+        GetItemWrapperType<I> GetAt()
+        {
+            if (ShouldUseRemoteApi())
+            {
+                UiaUint index{ I };
+                ToRemote();
+                index.ToRemote();
+                return GetItemWrapperType<I> { std::get<RemoteType>(m_member).GetAt(index) };
+            }
+
+            return std::get<I>(*std::get<LocalType>(m_member));
+        }
+
+        UiaUint Size() const
+        {
+            if (ShouldUseRemoteApi())
+            {
+                auto remoteValue = std::get_if<RemoteType>(&m_member);
+                if (remoteValue)
+                {
+                    return remoteValue->Size();
+                }
+            }
+
+            return static_cast<unsigned int>(std::tuple_size<TupleLocalType>::value);
+        }
+
+        void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
+        {
+            auto operationResults = result.as<winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Foundation::IInspectable>>();
+            m_member = std::make_shared<TupleLocalType>();
+            auto& localValue = std::get<LocalType>(m_member);
+            impl::RemoteArrayToLocalTuple<0, ItemWrapperType...>(operationResults, *localValue);
+        }
+    };
+
+    class UiaCacheRequest : public UiaTypeBase<
         winrt::com_ptr<IUIAutomationCacheRequest>,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteCacheRequest>
     {
@@ -1821,7 +2068,7 @@ namespace UiaOperationAbstraction
         using Binding = std::function<void(_In_ UiaOperationScope*)>;
 
         using Bindings = std::vector<Binding>;
-            
+
         Bindings& GetCurrentBindings()
         {
             FAIL_FAST_IF(m_contextStack.empty());
@@ -1844,7 +2091,7 @@ namespace UiaOperationAbstraction
         {
             FAIL_FAST_IF(m_contextStack.empty());
             m_contextStack.pop_back();
-        }  
+        }
 
     private:
         struct UiaScopeContext
