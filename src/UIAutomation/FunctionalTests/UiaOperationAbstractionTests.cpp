@@ -15,11 +15,8 @@ using namespace UiaOperationAbstraction;
 // `Assert` test functions.
 namespace Microsoft::VisualStudio::CppUnitTestFramework
 {
-#pragma warning(push)
-#pragma warning(disable: 4505)
     template<>
     std::wstring ToString(const std::vector<int>& vec)
-#pragma warning(pop)
     {
         std::wstringstream ss;
         ss << L"[";
@@ -38,11 +35,8 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
         return ss.str();
     }
 
-#pragma warning(push)
-#pragma warning(disable: 4505)
     template<>
     std::wstring ToString(const std::map<std::wstring, int>& map)
-#pragma warning(pop)
     {
         std::wstringstream ss;
         ss << L"{";
@@ -61,22 +55,16 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
         return ss.str();
     }
 
-#pragma warning(push)
-#pragma warning(disable: 4505)
     template<>
     std::wstring ToString(const std::tuple<int>& tuple)
-#pragma warning(pop)
     {
         std::wstringstream ss;
         ss << L"<" << std::get<0>(tuple) << L">";
         return ss.str();
     }
 
-#pragma warning(push)
-#pragma warning(disable: 4505)
     template<>
     std::wstring ToString(const std::tuple<std::wstring, int>& tuple)
-#pragma warning(pop)
     {
         std::wstringstream ss;
         ss << L"<" << std::get<0>(tuple) << L", " << std::get<1>(tuple) << L">";
