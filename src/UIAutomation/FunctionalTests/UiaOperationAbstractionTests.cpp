@@ -1231,13 +1231,13 @@ namespace UiaOperationAbstractionTests
                     // Note: Assumes `tuple` contains local values only.
                     static LocalTupleResult FromResult(UiaTuple<UiaElement, UiaInt, UiaBool, UiaString>& tuple)
                     {
-                        auto element = tuple.GetAt<0>();
+                        auto element = tuple.Get<0>();
                         return LocalTupleResult
                         {
                             (!element.IsNull() ? element.GetName().GetLocalWstring() : L"") /* name */,
-                            tuple.GetAt<1>() /* numericValue */,
-                            tuple.GetAt<2>() /* booleanValue */,
-                            tuple.GetAt<3>().GetLocalWstring() /* stringValue */
+                            tuple.Get<1>() /* numericValue */,
+                            tuple.Get<2>() /* booleanValue */,
+                            tuple.Get<3>().GetLocalWstring() /* stringValue */
                         };
                     }
 
@@ -1319,7 +1319,7 @@ namespace UiaOperationAbstractionTests
                 operationScope.Resolve();
 
                 // Ensure the tuple is equal to the default numeric tuple.
-                Assert::AreEqual(std::tuple<int>(0), *tuple.GetAt<0>());
+                Assert::AreEqual(std::tuple<int>(0), *tuple.Get<0>());
             }
         }
 
@@ -1360,7 +1360,7 @@ namespace UiaOperationAbstractionTests
                 UiaTuple<UiaVariant, UiaVariant> tuple{ UiaVariant{ variantValue }, UiaVariant{} };
 
                 // Get the variant and try to get basic information about it.
-                auto variant = tuple.GetAt<0>();
+                auto variant = tuple.Get<0>();
                 auto isVariantString = variant.IsString();
 
                 UiaString variantString{ L"" };
@@ -1370,7 +1370,7 @@ namespace UiaOperationAbstractionTests
                 });
 
                 // Also, get the empty variant information.
-                auto emptyVariant = tuple.GetAt<1>();
+                auto emptyVariant = tuple.Get<1>();
                 auto isEmptyVariantString = emptyVariant.IsString();
 
                 // Return the tuple for the operation and also information about the two variants.
@@ -1387,11 +1387,11 @@ namespace UiaOperationAbstractionTests
 
                 // Finally, ensure the variants in the returned `UiaTuple` instance matches the two just-checked
                 // variants.
-                auto variantWrapper = tuple.GetAt<0>();
+                auto variantWrapper = tuple.Get<0>();
                 Assert::IsTrue(static_cast<bool>(variantWrapper.IsString()));
                 Assert::AreEqual(variantValue, variantWrapper.AsString().GetLocalWstring());
 
-                auto emptyVariantWrapper = tuple.GetAt<1>();
+                auto emptyVariantWrapper = tuple.Get<1>();
                 Assert::IsFalse(static_cast<bool>(emptyVariantWrapper.IsString()));
                 Assert::AreEqual(static_cast<int>(VT_EMPTY), static_cast<int>(emptyVariantWrapper.get().vt));
             }
@@ -1444,8 +1444,8 @@ namespace UiaOperationAbstractionTests
                 operationScope.Resolve();
 
                 // Ensure the tuple contains the two collections.
-                Assert::AreEqual(baseValueArray, *tuple.GetAt<0>());
-                Assert::AreEqual(baseValueMap, *tuple.GetAt<1>());
+                Assert::AreEqual(baseValueArray, *tuple.Get<0>());
+                Assert::AreEqual(baseValueMap, *tuple.Get<1>());
             }
         }
 
@@ -1487,7 +1487,7 @@ namespace UiaOperationAbstractionTests
 
                 // Modify the string values and tuple fields.
                 modifiedStringValue = L"ModifiedString";
-                tuple.SetAt<3>(wil::make_bstr(L"OwnedModifiedString"));
+                tuple.Set<3>(wil::make_bstr(L"OwnedModifiedString"));
 
                 // Return the results of the comparisons.
                 operationScope.BindResult(immutableStringValue, modifiedStringValue, tuple);
@@ -1498,10 +1498,10 @@ namespace UiaOperationAbstractionTests
                 Assert::AreEqual(std::wstring(L"ImmutableString"), immutableStringValue.GetLocalWstring());
                 Assert::AreEqual(std::wstring(L"ModifiedString"), modifiedStringValue.GetLocalWstring());
 
-                Assert::AreEqual(std::wstring(L"ImmutableString"), tuple.GetAt<0>().GetLocalWstring());
-                Assert::AreEqual(std::wstring(L"UnmodifiedString"), tuple.GetAt<1>().GetLocalWstring());
-                Assert::AreEqual(std::wstring(L"OwnedImmutableString"), tuple.GetAt<2>().GetLocalWstring());
-                Assert::AreEqual(std::wstring(L"OwnedModifiedString"), tuple.GetAt<3>().GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"ImmutableString"), tuple.Get<0>().GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"UnmodifiedString"), tuple.Get<1>().GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"OwnedImmutableString"), tuple.Get<2>().GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"OwnedModifiedString"), tuple.Get<3>().GetLocalWstring());
             }
         }
 
@@ -1540,14 +1540,14 @@ namespace UiaOperationAbstractionTests
                 UiaTuple<UiaString, UiaInt> tuple2{ L"tuple2.string", 2 };
 
                 // Modify `tuple1` by replacing its numeric value with `tuple2`'s.
-                auto tuple1PreviousInt = tuple1.GetAt<1>();
-                auto tuple2Int = tuple2.GetAt<1>();
-                tuple1.SetAt<1>(tuple2Int);
+                auto tuple1PreviousInt = tuple1.Get<1>();
+                auto tuple2Int = tuple2.Get<1>();
+                tuple1.Set<1>(tuple2Int);
 
                 // Use the string field of `tuple1` to modify the string field of `tuple2`.
-                auto tuple2PreviousString = tuple2.GetAt<0>();
-                auto tuple1String = tuple1.GetAt<0>();
-                tuple2.SetAt<0>(tuple1String);
+                auto tuple2PreviousString = tuple2.Get<0>();
+                auto tuple1String = tuple1.Get<0>();
+                tuple2.Set<0>(tuple1String);
 
                 // Return the tuples and the previous values, too.
                 operationScope.BindResult(tuple1, tuple2, tuple1PreviousInt, tuple2PreviousString);
@@ -1556,7 +1556,7 @@ namespace UiaOperationAbstractionTests
                 // Ensure the returned comparison results are correct.
                 const auto toLocalTupleResult = [](auto& tuple)
                 {
-                    return std::tuple<std::wstring, int>{ tuple.GetAt<0>().GetLocalWstring(), tuple.GetAt<1>() };
+                    return std::tuple<std::wstring, int>{ tuple.Get<0>().GetLocalWstring(), tuple.Get<1>() };
                 };
 
                 Assert::AreEqual(1, static_cast<int>(tuple1PreviousInt));
@@ -1671,8 +1671,8 @@ namespace UiaOperationAbstractionTests
                     auto tuple = tupleArray.GetAt(i);
 
                     const auto tupleKeyPrefix = tupleKey + L".";
-                    Assert::AreEqual(tupleKeyPrefix + L"string1", tuple.GetAt<0>().GetLocalWstring());
-                    Assert::AreEqual(tupleKeyPrefix + L"string2", tuple.GetAt<1>().GetLocalWstring());
+                    Assert::AreEqual(tupleKeyPrefix + L"string1", tuple.Get<0>().GetLocalWstring());
+                    Assert::AreEqual(tupleKeyPrefix + L"string2", tuple.Get<1>().GetLocalWstring());
                 }
             }
 
@@ -1707,8 +1707,8 @@ namespace UiaOperationAbstractionTests
 
                     auto tuple = tupleMap.Lookup(tupleKey);
                     const auto tupleKeyPrefix = tupleKey + L".";
-                    Assert::AreEqual(tupleKeyPrefix + L"string1", tuple.GetAt<0>().GetLocalWstring());
-                    Assert::AreEqual(tupleKeyPrefix + L"string2", tuple.GetAt<1>().GetLocalWstring());
+                    Assert::AreEqual(tupleKeyPrefix + L"string1", tuple.Get<0>().GetLocalWstring());
+                    Assert::AreEqual(tupleKeyPrefix + L"string2", tuple.Get<1>().GetLocalWstring());
                 }
             }
         }

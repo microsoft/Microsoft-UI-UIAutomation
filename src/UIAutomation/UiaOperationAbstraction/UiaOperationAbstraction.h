@@ -1903,7 +1903,7 @@ namespace UiaOperationAbstraction
         }
 
         template <unsigned int I>
-        void SetAt(TupleItemWrapperType<I> item)
+        void Set(TupleItemWrapperType<I> item)
         {
             if (ShouldUseRemoteApi())
             {
@@ -1919,7 +1919,7 @@ namespace UiaOperationAbstraction
         }
 
         template <unsigned int I>
-        TupleItemWrapperType<I> GetAt()
+        TupleItemWrapperType<I> Get()
         {
             if (ShouldUseRemoteApi())
             {
@@ -1945,7 +1945,7 @@ namespace UiaOperationAbstraction
         template<std::size_t I, class ItemWrapperType, class... ItemWrapperTypes>
         void SetTupleWrapperItems(ItemWrapperType&& item, ItemWrapperTypes&&... items)
         {
-            SetAt<I>(std::forward<ItemWrapperType>(item));
+            Set<I>(std::forward<ItemWrapperType>(item));
             SetTupleWrapperItems<I + 1>(std::forward<ItemWrapperTypes>(items)...);
         }
 
