@@ -1139,6 +1139,9 @@ namespace UiaOperationAbstraction
     public:
         using ItemLocalType = typename ItemWrapperType::LocalType;
 
+        static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsArray;
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsArray;
+
         UiaArray():
             UiaArray(std::vector<ItemLocalType>())
         {
@@ -1146,6 +1149,11 @@ namespace UiaOperationAbstraction
 
         UiaArray(std::vector<ItemLocalType> vector):
             UiaTypeBase(std::make_shared<std::vector<ItemLocalType>>(std::move(vector)))
+        {
+            ToRemote();
+        }
+
+        UiaArray(const std::shared_ptr<std::vector<ItemLocalType>>& value) : UiaTypeBase(value)
         {
             ToRemote();
         }
@@ -1190,6 +1198,11 @@ namespace UiaOperationAbstraction
 
         UiaBool operator!() const { return IsNull(); }
         operator UiaBool() const { return !IsNull(); }
+
+        operator std::shared_ptr<std::vector<ItemLocalType>>() const
+        {
+            return std::get<std::shared_ptr<std::vector<ItemLocalType>>>(m_member);
+        }
 
         std::vector<ItemLocalType>& operator*()
         {
@@ -1379,6 +1392,9 @@ namespace UiaOperationAbstraction
     public:
         using ItemLocalType = typename ItemWrapperType::LocalType;
 
+        static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsStringMap;
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsStringMap;
+
         UiaStringMap():
             UiaStringMap(std::map<std::wstring, ItemLocalType>())
         {
@@ -1386,6 +1402,11 @@ namespace UiaOperationAbstraction
 
         UiaStringMap(std::map<std::wstring, ItemLocalType> map):
             UiaTypeBase(std::make_shared<std::map<std::wstring, ItemLocalType>>(std::move(map)))
+        {
+            ToRemote();
+        }
+
+        UiaStringMap(const std::shared_ptr<std::map<std::wstring, ItemLocalType>>& value) : UiaTypeBase(value)
         {
             ToRemote();
         }
@@ -1419,6 +1440,11 @@ namespace UiaOperationAbstraction
 
         UiaBool operator!() const { return IsNull(); }
         operator UiaBool() const { return !IsNull(); }
+
+        operator std::shared_ptr<std::map<std::wstring, ItemLocalType>>() const
+        {
+            return std::get<std::shared_ptr<std::map<std::wstring, ItemLocalType>>>(m_member);
+        }
 
         std::map<std::wstring, ItemLocalType>& operator*()
         {
