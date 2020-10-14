@@ -357,7 +357,27 @@ namespace UiaOperationAbstraction
             std::shared_ptr<std::map<std::wstring, typename ItemWrapperType::LocalType>>,
             winrt::Microsoft::UI::UIAutomation::AutomationRemoteStringMap>& localMapVariant) const;
 
+        template<class... ItemWrapperTypes>
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray ToRemoteArray(ItemWrapperTypes&&... items)
+        {
+            auto remoteArray = m_remoteOperation.NewArray();
+            AppendItemsToRemoteArray(remoteArray, std::forward<ItemWrapperTypes>(items)...);
+            return remoteArray;
+        }
+
     private:
+        template<class ItemWrapperType, class... ItemWrapperTypes>
+        void AppendItemsToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& array, ItemWrapperType&& item, ItemWrapperTypes&&... items)
+        {
+            item.ToRemote();
+            array.Append(std::move(item));
+            AppendItemsToRemoteArray(array, std::forward<ItemWrapperTypes>(items)...);
+        }
+
+        void AppendItemsToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& /* array */)
+        {
+        }
+
         bool m_useRemoteApi;
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation m_remoteOperation;
 
@@ -1823,7 +1843,7 @@ namespace UiaOperationAbstraction
 
         UiaTuple(ItemWrapperType... args) : UiaTuple()
         {
-            SetTupleWrapperItems<0 /* I */>(args...);
+            SetTupleWrapperItems(args...);
         }
 
         UiaTuple(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray array) :
@@ -1942,6 +1962,32 @@ namespace UiaOperationAbstraction
         }
 
     private:
+        template<class... ItemWrapperTypes>
+        void SetTupleWrapperItems(ItemWrapperTypes&&... items)
+        {
+            // For remote contexts, construct the remote array by appending provided items to it.
+            //
+            // This tries to avoid:
+            // 1. Creating a remote array out of the local tuple (by appending values of the tuple to
+            //    the array),
+            // 2. Changing that remote array by overwriting its elements with the provided values.
+            //
+            // Which would result in more complex and less efficient operation to execute.
+            if (ShouldUseRemoteApi())
+            {
+                // If `ShouldUseRemoteApi` returns `true`, `delegator` has to be non-null.
+                auto delegator = UiaOperationScope::GetCurrentDelegator();
+                FAIL_FAST_IF(!delegator);
+
+                m_member = delegator->ToRemoteArray(std::forward<ItemWrapperTypes>(items)...);
+            }
+            else
+            {
+                // For local contexts, just set the values of the underlying `std::tuple`.
+                SetTupleWrapperItems<0>(std::forward<ItemWrapperTypes>(items)...);
+            }
+        }
+
         template<std::size_t I, class ItemWrapperType, class... ItemWrapperTypes>
         void SetTupleWrapperItems(ItemWrapperType&& item, ItemWrapperTypes&&... items)
         {

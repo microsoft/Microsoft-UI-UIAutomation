@@ -1319,7 +1319,7 @@ namespace UiaOperationAbstractionTests
                 operationScope.Resolve();
 
                 // Ensure the tuple is equal to the default numeric tuple.
-                Assert::AreEqual(std::tuple<int>(0), *tuple.Get<0>());
+                Assert::AreEqual(std::tuple<int>{ 0 }, *tuple.Get<0>());
             }
         }
 
