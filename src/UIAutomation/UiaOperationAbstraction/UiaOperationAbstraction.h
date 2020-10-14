@@ -357,6 +357,7 @@ namespace UiaOperationAbstraction
             std::shared_ptr<std::map<std::wstring, typename ItemWrapperType::LocalType>>,
             winrt::Microsoft::UI::UIAutomation::AutomationRemoteStringMap>& localMapVariant) const;
 
+        // Creates a `AutomationRemoteArray` object out of the provided items (converting them to remote).
         template<class... ItemWrapperTypes>
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray ToRemoteArray(ItemWrapperTypes&&... items)
         {
@@ -366,16 +367,20 @@ namespace UiaOperationAbstraction
         }
 
     private:
-        template<class ItemWrapperType, class... ItemWrapperTypes>
-        void AppendItemsToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& array, ItemWrapperType&& item, ItemWrapperTypes&&... items)
+        template<class... ItemWrapperTypes>
+        void AppendItemsToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& array, ItemWrapperTypes&&... items)
         {
-            item.ToRemote();
-            array.Append(std::move(item));
-            AppendItemsToRemoteArray(array, std::forward<ItemWrapperTypes>(items)...);
+            (AppendItemToRemoteArray(array, std::forward<ItemWrapperTypes>(items)), ...);
         }
 
-        void AppendItemsToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& /* array */)
+        template<class ItemWrapperType>
+        void AppendItemToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& array, ItemWrapperType&& item)
         {
+            // If the conversion cannot be made due to not executing this in a remote context, the function will
+            // fail on attempting to append to the array due to making an attempt to get a remote object when the
+            // underlying representation is local.
+            item.ToRemote();
+            array.Append(item);
         }
 
         bool m_useRemoteApi;
