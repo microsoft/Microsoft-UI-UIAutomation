@@ -60,6 +60,17 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
         ss << L"}";
         return ss.str();
     }
+
+#pragma warning(push)
+#pragma warning(disable: 4505)
+    template<>
+    std::wstring ToString(const std::tuple<int>& tuple)
+#pragma warning(pop)
+    {
+        std::wstringstream ss;
+        ss << L"<" << std::get<0>(tuple) << L">";
+        return ss.str();
+    }
 }
 
 namespace UiaOperationAbstractionTests
@@ -1061,6 +1072,54 @@ namespace UiaOperationAbstractionTests
                     const auto actualResult = LocalTupleResult::FromResult(wrapperConstructedTuple);
                     LocalTupleResult::TestEqual(expectedResult, actualResult);
                 }
+            }
+
+            // In addition, create a test where tuples are nested in other tuples.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create a default numeric tuple.
+                const std::tuple<int> baseValueTuple{ 0 };
+                UiaTuple<UiaTuple<UiaInt>> tuple;
+
+                // Return the tuple from the operation
+                operationScope.BindResult(tuple);
+                operationScope.Resolve();
+
+                // Ensure the tuple is equal to the default numeric tuple.
+                Assert::AreEqual(std::tuple<int>(0), *tuple.GetAt<0>());
+            }
+
+            // Also, make sure that `UiaTuple` instances can hold collections.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create collections to put in the tuple.
+                const std::vector<int> baseValueArray{ 1, 2 };
+                const std::map<std::wstring, int> baseValueMap{ { L"Value", 1 } };
+                const std::tuple<int> baseValueTuple{ 0 };
+
+                UiaArray<UiaInt> baseArray{ baseValueArray };
+                UiaStringMap<UiaInt> baseMap{ baseValueMap };
+
+                // Create a tuple out of the collections.
+                UiaTuple<UiaArray<UiaInt>, UiaStringMap<UiaInt>> tuple{ baseArray, baseMap };
+
+                // Return the collections of tuple.
+                operationScope.BindResult(tuple);
+                operationScope.Resolve();
+
+                // Ensure the tuple contains the two collections.
+                Assert::AreEqual(baseValueArray, *tuple.GetAt<0>());
+                Assert::AreEqual(baseValueMap, *tuple.GetAt<1>());
             }
         }
 

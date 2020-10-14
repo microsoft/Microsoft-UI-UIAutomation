@@ -510,6 +510,12 @@ namespace UiaOperationAbstraction
 
             return result;
         }
+
+        template<class T>
+        std::shared_ptr<T> ReturnOrMakeSharedPtr(const std::shared_ptr<T>& ptr)
+        {
+            return (ptr ? ptr : std::make_shared<T>());
+        }
     } // details
 
     template<typename LocalT, class RemoteT>
@@ -1215,7 +1221,7 @@ namespace UiaOperationAbstraction
             ToRemote();
         }
 
-        UiaArray(const std::shared_ptr<std::vector<ItemLocalType>>& value) : UiaTypeBase(value)
+        UiaArray(const std::shared_ptr<std::vector<ItemLocalType>>& value) : UiaTypeBase(details::ReturnOrMakeSharedPtr(value))
         {
             ToRemote();
         }
@@ -1468,7 +1474,7 @@ namespace UiaOperationAbstraction
             ToRemote();
         }
 
-        UiaStringMap(const std::shared_ptr<std::map<std::wstring, ItemLocalType>>& value) : UiaTypeBase(value)
+        UiaStringMap(const std::shared_ptr<std::map<std::wstring, ItemLocalType>>& value) : UiaTypeBase(details::ReturnOrMakeSharedPtr(value))
         {
             ToRemote();
         }
@@ -1794,7 +1800,7 @@ namespace UiaOperationAbstraction
             ToRemote();
         }
 
-        UiaTuple(const std::shared_ptr<TupleLocalType>& value) : UiaTypeBase(value)
+        UiaTuple(const std::shared_ptr<TupleLocalType>& value) : UiaTypeBase(details::ReturnOrMakeSharedPtr(value))
         {
             ToRemote();
         }
@@ -1803,6 +1809,21 @@ namespace UiaOperationAbstraction
         {
         }
 
+        // TODO:
+        // UiaTuple() cannot be called directly here as that would lead to:
+        // 1. `make_shared` of the `tuple`,
+        // 2. Default-constructing all `tuple` fields.
+        // 3. Calling `ToRemote` to resolve the `tuple` to a remote representation.
+        //
+        // However, if the `tuple` contains local types whose default construction does not result in creating
+        // valid local managed objects, resolving those to remote types using `ToRemote` will fail.
+        //
+        // An example of that could be:
+        // 1. Abstraction: `UiaTuple<UiaArray<UiaInt>>`,
+        // 2. Local: `std::shared_ptr<  std::tuple<  std::shared_ptr<  std::vector<int>>>>`
+        //
+        // The inner `std::shared_ptr` of `UiaArray` is not created by default and therefore cannot be resolved
+        // to a remote type.
         UiaTuple(ItemWrapperType... args) : UiaTuple()
         {
             SetTupleWrapperItems<0 /* I */>(args...);
