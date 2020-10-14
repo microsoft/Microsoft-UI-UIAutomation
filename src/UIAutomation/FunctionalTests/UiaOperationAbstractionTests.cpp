@@ -11,6 +11,57 @@
 
 using namespace UiaOperationAbstraction;
 
+// Test framework extensions used for comparing and printing different types via the
+// `Assert` test functions.
+namespace Microsoft::VisualStudio::CppUnitTestFramework
+{
+#pragma warning(push)
+#pragma warning(disable: 4505)
+    template<>
+    std::wstring ToString(const std::vector<int>& vec)
+#pragma warning(pop)
+    {
+        std::wstringstream ss;
+        ss << L"[";
+
+        for (size_t i = 0; i < vec.size(); ++i)
+        {
+            if (i != 0)
+            {
+                ss << L", ";
+            }
+
+            ss << vec[i];
+        }
+
+        ss << L"]";
+        return ss.str();
+    }
+
+#pragma warning(push)
+#pragma warning(disable: 4505)
+    template<>
+    std::wstring ToString(const std::map<std::wstring, int>& map)
+#pragma warning(pop)
+    {
+        std::wstringstream ss;
+        ss << L"{";
+
+        for (const auto& mapEntry : map)
+        {
+            ss << L"\n    <" << mapEntry.first << L", " << mapEntry.second << "L>,";
+        }
+
+        if (!map.empty())
+        {
+            ss << L"\n";
+        }
+
+        ss << L"}";
+        return ss.str();
+    }
+}
+
 namespace UiaOperationAbstractionTests
 {
     // Detect whether a type can be returned from a remote operation. A user
@@ -952,7 +1003,7 @@ namespace UiaOperationAbstractionTests
             std::wstring stringValue;
         };
 
-        void CreateUiaTupleTest(bool useRemoteOperations)
+        void UiaTupleCreateTest(bool useRemoteOperations)
         {
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -976,13 +1027,13 @@ namespace UiaOperationAbstractionTests
                 // Construct `UiaTuple` instances in a few different ways to confirm they can be constructed and
                 // worked with.
                 UiaTuple<UiaElement, UiaInt, UiaBool, UiaString> defaultConstructedTuple;
-                UiaTuple<UiaElement, UiaInt, UiaBool, UiaString> localConstructedTuple{ focusedElement /* elementValue */, 1 /* intValue */, true /* booleanValue */, wil::make_bstr(L"LocalConstructed") /* stringValue */ };
+                UiaTuple<UiaElement, UiaInt, UiaBool, UiaString> localConstructedTuple{ focusedElement /* elementValue */, 1 /* intValue */, true /* booleanValue */, L"LocalConstructed" /* stringValue */ };
                 UiaTuple<UiaElement, UiaInt, UiaBool, UiaString> wrapperConstructedTuple
                 {
                     UiaElement{ focusedElement.get() } /* elementValue */,
                     UiaInt{ 2 } /* intValue */,
                     UiaBool{ true } /* booleanValue */,
-                    UiaString{ wil::make_bstr(L"WrapperConstructed") } /* stringValue */
+                    UiaString{ L"WrapperConstructed" } /* stringValue */
                 };
 
                 // Return the results of the comparisons.
@@ -1013,17 +1064,17 @@ namespace UiaOperationAbstractionTests
             }
         }
 
-        TEST_METHOD(CreateUiaTupleLocal)
+        TEST_METHOD(UiaTupleCreateLocal)
         {
-            CreateUiaTupleTest(false /* useRemoteOperations */);
+            UiaTupleCreateTest(false /* useRemoteOperations */);
         }
 
-        TEST_METHOD(CreateUiaTupleRemote)
+        TEST_METHOD(UiaTupleCreateRemote)
         {
-            CreateUiaTupleTest(true /* useRemoteOperations */);
+            UiaTupleCreateTest(true /* useRemoteOperations */);
         }
 
-        void ModifyUiaTupleTest(bool useRemoteOperations)
+        void UiaTupleModifyTest(bool useRemoteOperations)
         {
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -1035,7 +1086,7 @@ namespace UiaOperationAbstractionTests
             // Initialize the UIA Remote Operation abstraction.
             const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
-            // This test creates an `UiaTuple` instance out of values, modifies both the tuple and the sources
+            // This test creates a `UiaTuple` instance out of values, modifies both the tuple and the sources
             // of the values and ensures their results are correct.
             {
                 auto operationScope = UiaOperationScope::StartNew();
@@ -1045,11 +1096,11 @@ namespace UiaOperationAbstractionTests
                 operationScope.BindInput(displayElement);
 
                 // Construct fields/values, create a `UiaTuple` out of them to initialize the tuple.
-                UiaString immutableStringValue{ wil::make_bstr(L"ImmutableString") };
-                UiaString modifiedStringValue{ wil::make_bstr(L"UnmodifiedString") };
-                UiaTuple<UiaString, UiaString, UiaString, UiaString> tuple{ immutableStringValue, modifiedStringValue, wil::make_bstr(L"OwnedImmutableString"), wil::make_bstr(L"OwnedUnmodifiedString") };
+                UiaString immutableStringValue{ L"ImmutableString" };
+                UiaString modifiedStringValue{ L"UnmodifiedString" };
+                UiaTuple<UiaString, UiaString, UiaString, UiaString> tuple{ immutableStringValue, modifiedStringValue, L"OwnedImmutableString", L"OwnedUnmodifiedString" };
 
-                // Modify the string value/field and return the value.
+                // Modify the string values and tuple fields.
                 modifiedStringValue = L"ModifiedString";
                 tuple.SetAt<3>(wil::make_bstr(L"OwnedModifiedString"));
 
@@ -1069,14 +1120,292 @@ namespace UiaOperationAbstractionTests
             }
         }
 
-        TEST_METHOD(ModifyUiaTupleLocal)
+        TEST_METHOD(UiaTupleModifyLocal)
         {
-            ModifyUiaTupleTest(false /* useRemoteOperations */);
+            UiaTupleCreateTest(false /* useRemoteOperations */);
         }
 
-        TEST_METHOD(ModifyUiaTupleRemote)
+        TEST_METHOD(UiaTupleModifyRemote)
         {
-            ModifyUiaTupleTest(true /* useRemoteOperations */);
+            UiaTupleCreateTest(true /* useRemoteOperations */);
+        }
+
+        void UiaTupleWithCollectionsTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // This test creates an `UiaTuple` instances and builds an array collection out of them to return them
+            // back to the caller.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct a few tuples and create collections out of them.
+                UiaTuple<UiaString, UiaString> tuple1{ UiaString{ L"tuple1.string1" }, UiaString{ L"tuple1.string2" } };
+                UiaTuple<UiaString, UiaString> tuple2{ UiaString{ L"tuple2.string1" }, UiaString{ L"tuple2.string2" } };
+
+                UiaArray<UiaTuple<UiaString, UiaString>> tupleArray;
+                tupleArray.Append(tuple1);
+                tupleArray.Append(tuple2);
+
+                // Return the collection of tuples.
+                operationScope.BindResult(tupleArray);
+                operationScope.Resolve();
+
+                // Ensure the array is of the expected shape.
+                Assert::AreEqual(static_cast<size_t>(2), static_cast<size_t>(tupleArray.Size()));
+
+                const std::array<std::wstring, 2> tupleKeys{ L"tuple1", L"tuple2" };
+                for (unsigned int i = 0; i < tupleKeys.size(); ++i)
+                {
+                    const auto& tupleKey = tupleKeys[i];
+                    auto tuple = tupleArray.GetAt(i);
+
+                    const auto tupleKeyPrefix = tupleKey + L".";
+                    Assert::AreEqual(tupleKeyPrefix + L"string1", tuple.GetAt<0>().GetLocalWstring());
+                    Assert::AreEqual(tupleKeyPrefix + L"string2", tuple.GetAt<1>().GetLocalWstring());
+                }
+            }
+
+            // Perform the same test but with `UiaStringMap`.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct a few tuples and a map of out of them.
+                UiaTuple<UiaString, UiaString> tuple1{ UiaString{ L"tuple1.string1" }, UiaString{ L"tuple1.string2" } };
+                UiaTuple<UiaString, UiaString> tuple2{ UiaString{ L"tuple2.string1" }, UiaString{ L"tuple2.string2" } };
+
+                UiaStringMap<UiaTuple<UiaString, UiaString>> tupleMap;
+                tupleMap.Insert(UiaString{ L"tuple1" }, tuple1);
+                tupleMap.Insert(UiaString{ L"tuple2" }, tuple2);
+
+                // Return the collection.
+                operationScope.BindResult(tupleMap);
+                operationScope.Resolve();
+
+                // Now, make sure the collection contains the expected values.
+                Assert::AreEqual(static_cast<size_t>(2), static_cast<size_t>(tupleMap.Size()));
+
+                const std::array<std::wstring, 2> tupleKeys{ L"tuple1", L"tuple2" };
+                for (unsigned int i = 0; i < tupleKeys.size(); ++i)
+                {
+                    const auto& tupleKey = tupleKeys[i];
+                    Assert::IsTrue(tupleMap.HasKey(tupleKey));
+
+                    auto tuple = tupleMap.Lookup(tupleKey);
+                    const auto tupleKeyPrefix = tupleKey + L".";
+                    Assert::AreEqual(tupleKeyPrefix + L"string1", tuple.GetAt<0>().GetLocalWstring());
+                    Assert::AreEqual(tupleKeyPrefix + L"string2", tuple.GetAt<1>().GetLocalWstring());
+                }
+            }
+        }
+
+        TEST_METHOD(UiaTupleWithCollectionsTestLocal)
+        {
+            UiaTupleWithCollectionsTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleWithCollectionsTestRemote)
+        {
+            UiaTupleWithCollectionsTest(true /* useRemoteOperations */);
+        }
+
+        void UiaArrayWithCollectionsTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // This test creates `UiaArray` instances, builds an array out of them. The returned array
+            // of arrays is tested against the expectations.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct a few arrays and create a collection out of them.
+                const std::vector<int> baseValueArray{ 1, 2 };
+                UiaArray<UiaInt> array1{ baseValueArray };
+                UiaArray<UiaInt> array2{ baseValueArray };
+
+                UiaArray<UiaArray<UiaInt>> arrays;
+                arrays.Append(array1);
+                arrays.Append(array2);
+
+                // Return the collection of arrays.
+                operationScope.BindResult(arrays);
+                operationScope.Resolve();
+
+                // Ensure the array is of the expected shape.
+                const auto arraysSize = static_cast<unsigned int>(arrays.Size());
+                Assert::AreEqual(static_cast<unsigned int>(2), arraysSize);
+
+                for (unsigned int i = 0; i < arraysSize; ++i)
+                {
+                    const auto array = arrays.GetAt(i);
+                    const auto& localArray = *array;
+                    Assert::AreEqual(baseValueArray, localArray);
+                }
+            }
+
+            // Perform the same test but with `UiaStringMap`.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct arrays of values and a map out of the arrays.
+                const std::vector<int> baseValueArray{ 1, 2 };
+                UiaArray<UiaInt> array1{ baseValueArray };
+                UiaArray<UiaInt> array2{ baseValueArray };
+
+                UiaStringMap<UiaArray<UiaInt>> arrayMap;
+                arrayMap.Insert(UiaString{ L"array1" }, array1);
+                arrayMap.Insert(UiaString{ L"array2" }, array2);
+
+                // Return the collection.
+                operationScope.BindResult(arrayMap);
+                operationScope.Resolve();
+
+                // Now, make sure the map contains the expected values.
+                Assert::AreEqual(static_cast<size_t>(2), static_cast<size_t>(arrayMap.Size()));
+
+                const std::array<std::wstring, 2> arrayKeys{ L"array1", L"array2" };
+                for (const auto& arrayKey : arrayKeys)
+                {
+                    Assert::IsTrue(arrayMap.HasKey(arrayKey));
+
+                    const auto array = arrayMap.Lookup(arrayKey);
+                    const auto& localArray = *array;
+                    Assert::AreEqual(baseValueArray, localArray);
+                }
+            }
+        }
+
+        TEST_METHOD(UiaArrayWithCollectionsTestLocal)
+        {
+            UiaArrayWithCollectionsTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaArrayWithCollectionsTestRemote)
+        {
+            UiaArrayWithCollectionsTest(true /* useRemoteOperations */);
+        }
+
+        void UiaStringMapWithCollectionsTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // This test creates `UiaStringMap` instances, builds an array out of them and returns the array.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct a few map and create an array out of them.
+                const std::map<std::wstring, int> baseValueMap{ { L"Value", 1 } };
+                UiaStringMap<UiaInt> map1{ baseValueMap };
+                UiaStringMap<UiaInt> map2{ baseValueMap };
+
+                UiaArray<UiaStringMap<UiaInt>> maps;
+                maps.Append(map1);
+                maps.Append(map2);
+
+                // Return the collection of maps.
+                operationScope.BindResult(maps);
+                operationScope.Resolve();
+
+                // Ensure the array is of the expected shape.
+                const auto mapsSize = static_cast<unsigned int>(maps.Size());
+                Assert::AreEqual(static_cast<unsigned int>(2), mapsSize);
+
+                for (unsigned int i = 0; i < mapsSize; ++i)
+                {
+                    const auto map = maps.GetAt(i);
+                    const auto& localMap = *map;
+                    Assert::AreEqual(baseValueMap, localMap);
+                }
+            }
+
+            // Perform the same test but with `UiaStringMap`.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct a map of maps.
+                const std::map<std::wstring, int> baseValueMap{ { L"Value", 1 } };
+                UiaStringMap<UiaInt> map1{ baseValueMap };
+                UiaStringMap<UiaInt> map2{ baseValueMap };
+
+                UiaStringMap<UiaStringMap<UiaInt>> mapMap;
+                mapMap.Insert(UiaString{ L"map1" }, map1);
+                mapMap.Insert(UiaString{ L"map2" }, map2);
+
+                // Return the map of maps.
+                operationScope.BindResult(mapMap);
+                operationScope.Resolve();
+
+                // Now, make sure the map is of the expected shape.
+                Assert::AreEqual(static_cast<size_t>(2), static_cast<size_t>(mapMap.Size()));
+
+                const std::array<std::wstring, 2> mapKeys{ L"map1", L"map2" };
+                for (const auto& mapKey : mapKeys)
+                {
+                    Assert::IsTrue(mapMap.HasKey(mapKey));
+
+                    const auto map = mapMap.Lookup(mapKey);
+                    const auto& localMap = *map;
+                    Assert::AreEqual(baseValueMap, localMap);
+                }
+            }
+        }
+
+        TEST_METHOD(UiaStringMapWithCollectionsTestLocal)
+        {
+            UiaStringMapWithCollectionsTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaStringMapWithCollectionsTestRemote)
+        {
+            UiaStringMapWithCollectionsTest(true /* useRemoteOperations */);
         }
     };
 }

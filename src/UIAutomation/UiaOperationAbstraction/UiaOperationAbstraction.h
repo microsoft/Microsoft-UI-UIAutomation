@@ -1154,7 +1154,7 @@ namespace UiaOperationAbstraction
         {
             if constexpr (I < sizeof...(ItemWrapperType))
             {
-                using TupleItemWrapperType = typename UiaTuple<ItemWrapperType...>::GetItemWrapperType<I>;
+                using TupleItemWrapperType = typename UiaTuple<ItemWrapperType...>::TupleItemWrapperType<I>;
 
                 TupleItemWrapperType wrapper{ std::get<I>(localTuple) };
                 wrapper.ToRemote();
@@ -1176,7 +1176,7 @@ namespace UiaOperationAbstraction
         {
             if constexpr (I < sizeof...(ItemWrapperType))
             {
-                using TupleItemWrapperType = typename UiaTuple<ItemWrapperType...>::GetItemWrapperType<I>;
+                using TupleItemWrapperType = typename UiaTuple<ItemWrapperType...>::TupleItemWrapperType<I>;
                 using ItemLocalType = typename TupleItemWrapperType::LocalType;
 
                 TupleItemWrapperType wrappedLocal = ItemLocalType();
@@ -1201,6 +1201,9 @@ namespace UiaOperationAbstraction
     public:
         using ItemLocalType = typename ItemWrapperType::LocalType;
 
+        static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsArray;
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsArray;
+
         UiaArray():
             UiaArray(std::vector<ItemLocalType>())
         {
@@ -1208,6 +1211,11 @@ namespace UiaOperationAbstraction
 
         UiaArray(std::vector<ItemLocalType> vector):
             UiaTypeBase(std::make_shared<std::vector<ItemLocalType>>(std::move(vector)))
+        {
+            ToRemote();
+        }
+
+        UiaArray(const std::shared_ptr<std::vector<ItemLocalType>>& value) : UiaTypeBase(value)
         {
             ToRemote();
         }
@@ -1252,6 +1260,11 @@ namespace UiaOperationAbstraction
 
         UiaBool operator!() const { return IsNull(); }
         operator UiaBool() const { return !IsNull(); }
+
+        operator std::shared_ptr<std::vector<ItemLocalType>>() const
+        {
+            return std::get<std::shared_ptr<std::vector<ItemLocalType>>>(m_member);
+        }
 
         std::vector<ItemLocalType>& operator*()
         {
@@ -1441,6 +1454,9 @@ namespace UiaOperationAbstraction
     public:
         using ItemLocalType = typename ItemWrapperType::LocalType;
 
+        static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsStringMap;
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsStringMap;
+
         UiaStringMap():
             UiaStringMap(std::map<std::wstring, ItemLocalType>())
         {
@@ -1448,6 +1464,11 @@ namespace UiaOperationAbstraction
 
         UiaStringMap(std::map<std::wstring, ItemLocalType> map):
             UiaTypeBase(std::make_shared<std::map<std::wstring, ItemLocalType>>(std::move(map)))
+        {
+            ToRemote();
+        }
+
+        UiaStringMap(const std::shared_ptr<std::map<std::wstring, ItemLocalType>>& value) : UiaTypeBase(value)
         {
             ToRemote();
         }
@@ -1481,6 +1502,11 @@ namespace UiaOperationAbstraction
 
         UiaBool operator!() const { return IsNull(); }
         operator UiaBool() const { return !IsNull(); }
+
+        operator std::shared_ptr<std::map<std::wstring, ItemLocalType>>() const
+        {
+            return std::get<std::shared_ptr<std::map<std::wstring, ItemLocalType>>>(m_member);
+        }
 
         std::map<std::wstring, ItemLocalType>& operator*()
         {
@@ -1753,7 +1779,10 @@ namespace UiaOperationAbstraction
         using TupleLocalType = std::tuple<typename ItemWrapperType::LocalType...>;
 
         template<std::size_t I>
-        using GetItemWrapperType = typename std::tuple_element<I, std::tuple<ItemWrapperType...>>::type;
+        using TupleItemWrapperType = typename std::tuple_element<I, std::tuple<ItemWrapperType...>>::type;
+
+        static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsArray;
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsArray;
 
         UiaTuple() : UiaTuple(TupleLocalType{})
         {
@@ -1761,6 +1790,11 @@ namespace UiaOperationAbstraction
 
         UiaTuple(TupleLocalType tuple) :
             UiaTypeBase(std::make_shared<TupleLocalType>(std::move(tuple)))
+        {
+            ToRemote();
+        }
+
+        UiaTuple(const std::shared_ptr<TupleLocalType>& value) : UiaTypeBase(value)
         {
             ToRemote();
         }
@@ -1803,6 +1837,11 @@ namespace UiaOperationAbstraction
 
         UiaBool operator!() const { return IsNull(); }
         operator UiaBool() const { return !IsNull(); }
+
+        operator std::shared_ptr<std::tuple<typename ItemWrapperType::LocalType...>>() const
+        {
+            return std::get<std::shared_ptr<std::tuple<typename ItemWrapperType::LocalType...>>>(m_member);
+        }
 
         TupleLocalType& operator*()
         {
@@ -1847,7 +1886,7 @@ namespace UiaOperationAbstraction
         }
 
         template <unsigned int I>
-        void SetAt(GetItemWrapperType<I> item)
+        void SetAt(TupleItemWrapperType<I> item)
         {
             if (ShouldUseRemoteApi())
             {
@@ -1863,14 +1902,14 @@ namespace UiaOperationAbstraction
         }
 
         template <unsigned int I>
-        GetItemWrapperType<I> GetAt()
+        TupleItemWrapperType<I> GetAt()
         {
             if (ShouldUseRemoteApi())
             {
                 UiaUint index{ I };
                 ToRemote();
                 index.ToRemote();
-                return GetItemWrapperType<I> { std::get<RemoteType>(m_member).GetAt(index) };
+                return TupleItemWrapperType<I>{ std::get<RemoteType>(m_member).GetAt(index) };
             }
 
             return std::get<I>(*std::get<LocalType>(m_member));
