@@ -1147,23 +1147,6 @@ namespace UiaOperationAbstraction
             }
         }
 
-        template <typename ItemWrapperType, typename... ItemWrapperTypes>
-        inline void WrapperItemsToRemoteArray(
-            ItemWrapperType wrapperItem,
-            ItemWrapperTypes... wrapperItems,
-            winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& remoteArray)
-        {
-            WrapperItemsToRemoteArray(wrapperItem, remoteArray);
-            WrapperItemsToRemoteArray(wrapperItems..., remoteArray);
-        }
-
-        template <typename ItemWrapperType>
-        inline void WrapperItemsToRemoteArray(ItemWrapperType wrapperItem, winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& remoteArray)
-        {
-            wrapperItem.ToRemote();
-            remoteArray.Append(wrapperItem);
-        }
-
         template <std::size_t I, typename... ItemWrapperType>
         inline void LocalTupleToRemoteArray(
             const std::tuple<typename ItemWrapperType::LocalType...>& localTuple,
@@ -1788,20 +1771,7 @@ namespace UiaOperationAbstraction
 
         UiaTuple(ItemWrapperType... args) : UiaTuple()
         {
-            SetWrapperItems<0 /* I */>(args...);
-        }
-
-        // TODO:
-        template<std::size_t I, class ItemWrapperType, class... ItemWrapperTypes>
-        void SetWrapperItems(ItemWrapperType item, ItemWrapperTypes... items)
-        {
-            SetAt<I>(item);
-            SetWrapperItems<I + 1>(items...);
-        }
-
-        template<std::size_t I>
-        void SetWrapperItems()
-        {
+            SetTupleWrapperItems<0 /* I */>(args...);
         }
 
         UiaTuple(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray array) :
@@ -1926,6 +1896,21 @@ namespace UiaOperationAbstraction
             m_member = std::make_shared<TupleLocalType>();
             auto& localValue = std::get<LocalType>(m_member);
             impl::RemoteArrayToLocalTuple<0, ItemWrapperType...>(operationResults, *localValue);
+        }
+
+    private:
+        template<std::size_t I, class ItemWrapperType, class... ItemWrapperTypes>
+        void SetTupleWrapperItems(ItemWrapperType item, ItemWrapperTypes... items)
+        {
+            SetAt<I>(std::move(item));
+            SetTupleWrapperItems<I + 1>(items...);
+        }
+
+        template<std::size_t I>
+        void SetTupleWrapperItems()
+        {
+            // Ensure that at this point, we have set all items.
+            static_assert((I == std::tuple_size_v<TupleLocalType>), "Setting tuple wrapper items should have modified all tuple fields");
         }
     };
 
