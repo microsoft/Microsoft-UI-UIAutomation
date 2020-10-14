@@ -1130,7 +1130,7 @@ namespace UiaOperationAbstractionTests
             UiaTupleCreateTest(true /* useRemoteOperations */);
         }
 
-        void UiaTupleWithCollectionsTest(bool useRemoteOperations)
+        void UiaTupleInCollectionsTest(bool useRemoteOperations)
         {
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -1215,17 +1215,17 @@ namespace UiaOperationAbstractionTests
             }
         }
 
-        TEST_METHOD(UiaTupleWithCollectionsTestLocal)
+        TEST_METHOD(UiaTupleInCollectionsTestLocal)
         {
-            UiaTupleWithCollectionsTest(false /* useRemoteOperations */);
+            UiaTupleInCollectionsTest(false /* useRemoteOperations */);
         }
 
-        TEST_METHOD(UiaTupleWithCollectionsTestRemote)
+        TEST_METHOD(UiaTupleInCollectionsTestRemote)
         {
-            UiaTupleWithCollectionsTest(true /* useRemoteOperations */);
+            UiaTupleInCollectionsTest(true /* useRemoteOperations */);
         }
 
-        void UiaArrayWithCollectionsTest(bool useRemoteOperations)
+        void UiaArrayInCollectionsTest(bool useRemoteOperations)
         {
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -1307,17 +1307,17 @@ namespace UiaOperationAbstractionTests
             }
         }
 
-        TEST_METHOD(UiaArrayWithCollectionsTestLocal)
+        TEST_METHOD(UiaArrayInCollectionsTestLocal)
         {
-            UiaArrayWithCollectionsTest(false /* useRemoteOperations */);
+            UiaArrayInCollectionsTest(false /* useRemoteOperations */);
         }
 
-        TEST_METHOD(UiaArrayWithCollectionsTestRemote)
+        TEST_METHOD(UiaArrayInCollectionsTestRemote)
         {
-            UiaArrayWithCollectionsTest(true /* useRemoteOperations */);
+            UiaArrayInCollectionsTest(true /* useRemoteOperations */);
         }
 
-        void UiaStringMapWithCollectionsTest(bool useRemoteOperations)
+        void UiaStringMapInCollectionsTest(bool useRemoteOperations)
         {
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -1398,14 +1398,14 @@ namespace UiaOperationAbstractionTests
             }
         }
 
-        TEST_METHOD(UiaStringMapWithCollectionsTestLocal)
+        TEST_METHOD(UiaStringMapInCollectionsTestLocal)
         {
-            UiaStringMapWithCollectionsTest(false /* useRemoteOperations */);
+            UiaStringMapInCollectionsTest(false /* useRemoteOperations */);
         }
 
-        TEST_METHOD(UiaStringMapWithCollectionsTestRemote)
+        TEST_METHOD(UiaStringMapInCollectionsTestRemote)
         {
-            UiaStringMapWithCollectionsTest(true /* useRemoteOperations */);
+            UiaStringMapInCollectionsTest(true /* useRemoteOperations */);
         }
     };
 }
