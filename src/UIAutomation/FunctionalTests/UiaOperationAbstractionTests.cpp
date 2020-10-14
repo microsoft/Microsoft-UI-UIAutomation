@@ -1029,8 +1029,8 @@ namespace UiaOperationAbstractionTests
                 UiaArray<UiaInt> array2{ baseValueArray };
 
                 UiaStringMap<UiaArray<UiaInt>> arrayMap;
-                arrayMap.Insert(UiaString{ L"array1" }, array1);
-                arrayMap.Insert(UiaString{ L"array2" }, array2);
+                arrayMap.Insert(L"array1", array1);
+                arrayMap.Insert(L"array2", array2);
 
                 // Return the collection.
                 operationScope.BindResult(arrayMap);
@@ -1120,8 +1120,8 @@ namespace UiaOperationAbstractionTests
                 UiaStringMap<UiaInt> map2{ baseValueMap };
 
                 UiaStringMap<UiaStringMap<UiaInt>> mapMap;
-                mapMap.Insert(UiaString{ L"map1" }, map1);
-                mapMap.Insert(UiaString{ L"map2" }, map2);
+                mapMap.Insert(L"map1", map1);
+                mapMap.Insert(L"map2", map2);
 
                 // Return the map of maps.
                 operationScope.BindResult(mapMap);
