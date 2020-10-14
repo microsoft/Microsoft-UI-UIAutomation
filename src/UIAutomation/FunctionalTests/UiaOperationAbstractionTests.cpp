@@ -60,6 +60,28 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
         ss << L"}";
         return ss.str();
     }
+
+#pragma warning(push)
+#pragma warning(disable: 4505)
+    template<>
+    std::wstring ToString(const std::tuple<int>& tuple)
+#pragma warning(pop)
+    {
+        std::wstringstream ss;
+        ss << L"<" << std::get<0>(tuple) << L">";
+        return ss.str();
+    }
+
+#pragma warning(push)
+#pragma warning(disable: 4505)
+    template<>
+    std::wstring ToString(const std::tuple<std::wstring, int>& tuple)
+#pragma warning(pop)
+    {
+        std::wstringstream ss;
+        ss << L"<" << std::get<0>(tuple) << L", " << std::get<1>(tuple) << L">";
+        return ss.str();
+    }
 }
 
 namespace UiaOperationAbstractionTests
@@ -1150,6 +1172,541 @@ namespace UiaOperationAbstractionTests
         TEST_METHOD(UiaStringMapInCollectionsTestRemote)
         {
             UiaStringMapInCollectionsTest(true /* useRemoteOperations */);
+        }
+
+        void UiaTupleCreateTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // This test attempts to create `UiaTuple` instances in a few different ways, return them and ensure
+            // the values behind them are correct.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct `UiaTuple` instances in a few different ways to confirm they can be constructed and
+                // worked with.
+                UiaTuple<UiaElement, UiaInt, UiaBool, UiaString> defaultConstructedTuple;
+                UiaTuple<UiaElement, UiaInt, UiaBool, UiaString> localConstructedTuple{ focusedElement /* elementValue */, 1 /* intValue */, true /* booleanValue */, L"LocalConstructed" /* stringValue */ };
+                UiaTuple<UiaElement, UiaInt, UiaBool, UiaString> wrapperConstructedTuple
+                {
+                    UiaElement{ focusedElement.get() } /* elementValue */,
+                    UiaInt{ 2 } /* intValue */,
+                    UiaBool{ true } /* booleanValue */,
+                    UiaString{ L"WrapperConstructed" } /* stringValue */
+                };
+
+                // Return the results of the comparisons.
+                operationScope.BindResult(defaultConstructedTuple, localConstructedTuple, wrapperConstructedTuple);
+                operationScope.Resolve();
+
+                // Represents a local result of `UiaTuple<UiaElement, UiaInt, UiaBool, UiaString>`
+                struct LocalTupleResult
+                {
+                    // Note: Assumes `tuple` contains local values only.
+                    static LocalTupleResult FromResult(UiaTuple<UiaElement, UiaInt, UiaBool, UiaString>& tuple)
+                    {
+                        auto element = tuple.GetAt<0>();
+                        return LocalTupleResult
+                        {
+                            (!element.IsNull() ? element.GetName().GetLocalWstring() : L"") /* name */,
+                            tuple.GetAt<1>() /* numericValue */,
+                            tuple.GetAt<2>() /* booleanValue */,
+                            tuple.GetAt<3>().GetLocalWstring() /* stringValue */
+                        };
+                    }
+
+                    static void TestEqual(const LocalTupleResult& expectedResult, const LocalTupleResult& actualResult)
+                    {
+                        Assert::AreEqual(expectedResult.name, actualResult.name);
+                        Assert::AreEqual(expectedResult.numericValue, actualResult.numericValue);
+                        Assert::AreEqual(expectedResult.booleanValue, actualResult.booleanValue);
+                        Assert::AreEqual(std::wstring_view(expectedResult.stringValue.c_str()), std::wstring_view(actualResult.stringValue.c_str()));
+                    }
+
+                    std::wstring name;
+                    int numericValue = 0;
+                    bool booleanValue = false;
+                    std::wstring stringValue;
+                };
+
+                // Ensure the correct results have been returned for:
+                // -> Default-constructible `UiaTuple`
+                {
+                    const LocalTupleResult expectedResult{ L"" /* name */, 0 /* numericValue */, false /* booleanValue */, L"" /* stringValue */ };
+                    const auto actualResult = LocalTupleResult::FromResult(defaultConstructedTuple);
+                    LocalTupleResult::TestEqual(expectedResult, actualResult);
+                }
+
+                // -> `UiaTuple` constructed out of local types
+                {
+                    const LocalTupleResult expectedResult{ L"Display is 0" /* name */, 1 /* numericValue */, true /* booleanValue */, L"LocalConstructed" /* stringValue */ };
+                    const auto actualResult = LocalTupleResult::FromResult(localConstructedTuple);
+                    LocalTupleResult::TestEqual(expectedResult, actualResult);
+                }
+
+                // -> `UiaTuple` constructed out of abstraction/wrapper values.
+                {
+                    const LocalTupleResult expectedResult{ L"Display is 0" /* name */, 2 /* numericValue */, true /* booleanValue */, L"WrapperConstructed" /* stringValue */ };
+                    const auto actualResult = LocalTupleResult::FromResult(wrapperConstructedTuple);
+                    LocalTupleResult::TestEqual(expectedResult, actualResult);
+                }
+            }
+        }
+
+        TEST_METHOD(UiaTupleCreateLocal)
+        {
+            UiaTupleCreateTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleCreateRemote)
+        {
+            UiaTupleCreateTest(true /* useRemoteOperations */);
+        }
+
+        void UiaTupleWithTuplesTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Ensure that `UiaTuple` instances can hold other `UiaTuple` values to support breaking values
+            // into groups of values.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create a default numeric tuple.
+                const std::tuple<int> baseValueTuple{ 0 };
+                UiaTuple<UiaTuple<UiaInt>> tuple;
+
+                // Return the tuple from the operation
+                operationScope.BindResult(tuple);
+                operationScope.Resolve();
+
+                // Ensure the tuple is equal to the default numeric tuple.
+                Assert::AreEqual(std::tuple<int>(0), *tuple.GetAt<0>());
+            }
+        }
+
+        TEST_METHOD(UiaTupleWithTuplesLocal)
+        {
+            UiaTupleWithTuplesTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleWithTuplesRemote)
+        {
+            UiaTupleWithTuplesTest(true /* useRemoteOperations */);
+        }
+
+        void UiaTupleWithVariantsTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Make sure `UiaTuple` instances can hold `UiaVariant` objects with different values in them by
+            // creating a `UiaTuple` that holds multiple `UiaVariant` members and ensuring they can be used
+            // during executing remote operations.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create a tuple with a variant.
+                const std::wstring variantValue{ L"This is a string" };
+                UiaTuple<UiaVariant, UiaVariant> tuple{ UiaVariant{ variantValue }, UiaVariant{} };
+
+                // Get the variant and try to get basic information about it.
+                auto variant = tuple.GetAt<0>();
+                auto isVariantString = variant.IsString();
+
+                UiaString variantString{ L"" };
+                operationScope.If(isVariantString, [&]()
+                {
+                    variantString = variant.AsString();
+                });
+
+                // Also, get the empty variant information.
+                auto emptyVariant = tuple.GetAt<1>();
+                auto isEmptyVariantString = emptyVariant.IsString();
+
+                // Return the tuple for the operation and also information about the two variants.
+                operationScope.BindResult(tuple, variantString, isVariantString, emptyVariant, isEmptyVariantString);
+                operationScope.Resolve();
+
+                // Ensure the first returned variant is the expected string.
+                Assert::IsTrue(static_cast<bool>(isVariantString));
+                Assert::AreEqual(variantValue, variantString.GetLocalWstring());
+
+                // Ensure the second returned variant does not represent a string and is `VT_EMPTY`.
+                Assert::IsFalse(static_cast<bool>(isEmptyVariantString));
+                Assert::AreEqual(static_cast<int>(VT_EMPTY), static_cast<int>(emptyVariant.get().vt));
+
+                // Finally, ensure the variants in the returned `UiaTuple` instance matches the two just-checked
+                // variants.
+                auto variantWrapper = tuple.GetAt<0>();
+                Assert::IsTrue(static_cast<bool>(variantWrapper.IsString()));
+                Assert::AreEqual(variantValue, variantWrapper.AsString().GetLocalWstring());
+
+                auto emptyVariantWrapper = tuple.GetAt<1>();
+                Assert::IsFalse(static_cast<bool>(emptyVariantWrapper.IsString()));
+                Assert::AreEqual(static_cast<int>(VT_EMPTY), static_cast<int>(emptyVariantWrapper.get().vt));
+            }
+        }
+
+        TEST_METHOD(UiaTupleWithVariantsLocal)
+        {
+            UiaTupleWithVariantsTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleWithVariantsRemote)
+        {
+            UiaTupleWithVariantsTest(true /* useRemoteOperations */);
+        }
+
+        void UiaTupleWithCollectionsTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Create a `UiaTuple` instance with non-empty collections, return the tuple and ensure that the tuple
+            // and its collections have expected values in them.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create collections to put in the tuple.
+                const std::vector<int> baseValueArray{ 1, 2 };
+                const std::map<std::wstring, int> baseValueMap{ { L"Value", 1 } };
+                const std::tuple<int> baseValueTuple{ 0 };
+
+                UiaArray<UiaInt> baseArray{ baseValueArray };
+                UiaStringMap<UiaInt> baseMap{ baseValueMap };
+
+                // Create a tuple out of the collections.
+                UiaTuple<UiaArray<UiaInt>, UiaStringMap<UiaInt>> tuple{ baseArray, baseMap };
+
+                // Return the collections of tuple.
+                operationScope.BindResult(tuple);
+                operationScope.Resolve();
+
+                // Ensure the tuple contains the two collections.
+                Assert::AreEqual(baseValueArray, *tuple.GetAt<0>());
+                Assert::AreEqual(baseValueMap, *tuple.GetAt<1>());
+            }
+        }
+
+        TEST_METHOD(UiaTupleWithCollectionsLocal)
+        {
+            UiaTupleWithCollectionsTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleWithCollectionsRemote)
+        {
+            UiaTupleWithCollectionsTest(true /* useRemoteOperations */);
+        }
+
+        void UiaTupleModifyTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // This test creates a `UiaTuple` instance out of values, modifies both the tuple and the sources
+            // of the values and ensures their results are correct.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct fields/values, create a `UiaTuple` out of them to initialize the tuple.
+                UiaString immutableStringValue{ L"ImmutableString" };
+                UiaString modifiedStringValue{ L"UnmodifiedString" };
+                UiaTuple<UiaString, UiaString, UiaString, UiaString> tuple{ immutableStringValue, modifiedStringValue, L"OwnedImmutableString", L"OwnedUnmodifiedString" };
+
+                // Modify the string values and tuple fields.
+                modifiedStringValue = L"ModifiedString";
+                tuple.SetAt<3>(wil::make_bstr(L"OwnedModifiedString"));
+
+                // Return the results of the comparisons.
+                operationScope.BindResult(immutableStringValue, modifiedStringValue, tuple);
+                operationScope.Resolve();
+
+                // Ensure the correct results have been returned and that if strings have been modified, they have
+                // bee modified independently from other values (such as the source of the original string/value).
+                Assert::AreEqual(std::wstring(L"ImmutableString"), immutableStringValue.GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"ModifiedString"), modifiedStringValue.GetLocalWstring());
+
+                Assert::AreEqual(std::wstring(L"ImmutableString"), tuple.GetAt<0>().GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"UnmodifiedString"), tuple.GetAt<1>().GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"OwnedImmutableString"), tuple.GetAt<2>().GetLocalWstring());
+                Assert::AreEqual(std::wstring(L"OwnedModifiedString"), tuple.GetAt<3>().GetLocalWstring());
+            }
+        }
+
+        TEST_METHOD(UiaTupleModifyLocal)
+        {
+            UiaTupleCreateTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleModifyRemote)
+        {
+            UiaTupleCreateTest(true /* useRemoteOperations */);
+        }
+
+        void UiaTupleGetAndSetTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // The test ensures that tuple values get be fetched and used to modify other tuples.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct tuples with different values.
+                UiaTuple<UiaString, UiaInt> tuple1{ L"tuple1.string", 1 };
+                UiaTuple<UiaString, UiaInt> tuple2{ L"tuple2.string", 2 };
+
+                // Modify `tuple1` by replacing its numeric value with `tuple2`'s.
+                auto tuple1PreviousInt = tuple1.GetAt<1>();
+                auto tuple2Int = tuple2.GetAt<1>();
+                tuple1.SetAt<1>(tuple2Int);
+
+                // Use the string field of `tuple1` to modify the string field of `tuple2`.
+                auto tuple2PreviousString = tuple2.GetAt<0>();
+                auto tuple1String = tuple1.GetAt<0>();
+                tuple2.SetAt<0>(tuple1String);
+
+                // Return the tuples and the previous values, too.
+                operationScope.BindResult(tuple1, tuple2, tuple1PreviousInt, tuple2PreviousString);
+                operationScope.Resolve();
+
+                // Ensure the returned comparison results are correct.
+                const auto toLocalTupleResult = [](auto& tuple)
+                {
+                    return std::tuple<std::wstring, int>{ tuple.GetAt<0>().GetLocalWstring(), tuple.GetAt<1>() };
+                };
+
+                Assert::AreEqual(1, static_cast<int>(tuple1PreviousInt));
+                Assert::AreEqual(std::wstring(L"tuple2.string"), tuple2PreviousString.GetLocalWstring());
+
+                Assert::AreEqual(std::tuple<std::wstring, int>{ L"tuple1.string", 2 }, toLocalTupleResult(tuple1));
+                Assert::AreEqual(std::tuple<std::wstring, int>{ L"tuple1.string", 2 }, toLocalTupleResult(tuple2));
+            }
+        }
+
+        TEST_METHOD(UiaTupleGetAndSetLocal)
+        {
+            UiaTupleGetAndSetTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleGetAndSetRemote)
+        {
+            UiaTupleGetAndSetTest(true /* useRemoteOperations */);
+        }
+
+        void UiaTupleComparisonTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Create tuples and verify their comparison operators.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct tuples that differ on one field.
+                UiaTuple<UiaString, UiaInt> tuple1{ L"Value1", 0 };
+                UiaTuple<UiaString, UiaInt> tuple2{ L"Value2", 0 };
+                UiaTuple<UiaString, UiaInt> tuple3{ L"Value1", 1 };
+
+                // Compare the first tuple against all 3 tuples to understand their relationships.
+                auto tuplesEqual = (tuple1 == tuple1);
+                auto tuplesNotEqualOnString = (tuple1 != tuple2);
+                auto tuplesNotEqualOnInt = (tuple1 != tuple3);
+
+                // Return the results of the comparisons.
+                operationScope.BindResult(tuplesEqual, tuplesNotEqualOnString, tuplesNotEqualOnInt);
+                operationScope.Resolve();
+
+                // Ensure the returned comparison results are correct.
+                Assert::IsTrue(static_cast<bool>(tuplesEqual));
+                Assert::IsTrue(static_cast<bool>(tuplesNotEqualOnString));
+                Assert::IsTrue(static_cast<bool>(tuplesNotEqualOnInt));
+            }
+        }
+
+        TEST_METHOD(UiaTupleComparisonLocal)
+        {
+            UiaTupleComparisonTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleComparisonRemote)
+        {
+            UiaTupleComparisonTest(true /* useRemoteOperations */);
+        }
+
+        void UiaTupleInCollectionsTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // This test creates an `UiaTuple` instances and builds an array collection out of them to return them
+            // back to the caller.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct a few tuples and create collections out of them.
+                UiaTuple<UiaString, UiaString> tuple1{ UiaString{ L"tuple1.string1" }, UiaString{ L"tuple1.string2" } };
+                UiaTuple<UiaString, UiaString> tuple2{ UiaString{ L"tuple2.string1" }, UiaString{ L"tuple2.string2" } };
+
+                UiaArray<UiaTuple<UiaString, UiaString>> tupleArray;
+                tupleArray.Append(tuple1);
+                tupleArray.Append(tuple2);
+
+                // Return the collection of tuples.
+                operationScope.BindResult(tupleArray);
+                operationScope.Resolve();
+
+                // Ensure the array is of the expected shape.
+                Assert::AreEqual(static_cast<size_t>(2), static_cast<size_t>(tupleArray.Size()));
+
+                const std::array<std::wstring, 2> tupleKeys{ L"tuple1", L"tuple2" };
+                for (unsigned int i = 0; i < tupleKeys.size(); ++i)
+                {
+                    const auto& tupleKey = tupleKeys[i];
+                    auto tuple = tupleArray.GetAt(i);
+
+                    const auto tupleKeyPrefix = tupleKey + L".";
+                    Assert::AreEqual(tupleKeyPrefix + L"string1", tuple.GetAt<0>().GetLocalWstring());
+                    Assert::AreEqual(tupleKeyPrefix + L"string2", tuple.GetAt<1>().GetLocalWstring());
+                }
+            }
+
+            // Perform the same test but with `UiaStringMap`.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Construct a few tuples and a map of out of them.
+                UiaTuple<UiaString, UiaString> tuple1{ UiaString{ L"tuple1.string1" }, UiaString{ L"tuple1.string2" } };
+                UiaTuple<UiaString, UiaString> tuple2{ UiaString{ L"tuple2.string1" }, UiaString{ L"tuple2.string2" } };
+
+                UiaStringMap<UiaTuple<UiaString, UiaString>> tupleMap;
+                tupleMap.Insert(L"tuple1", tuple1);
+                tupleMap.Insert(L"tuple2", tuple2);
+
+                // Return the collection.
+                operationScope.BindResult(tupleMap);
+                operationScope.Resolve();
+
+                // Now, make sure the collection contains the expected values.
+                Assert::AreEqual(static_cast<size_t>(2), static_cast<size_t>(tupleMap.Size()));
+
+                const std::array<std::wstring, 2> tupleKeys{ L"tuple1", L"tuple2" };
+                for (unsigned int i = 0; i < tupleKeys.size(); ++i)
+                {
+                    const auto& tupleKey = tupleKeys[i];
+                    Assert::IsTrue(tupleMap.HasKey(tupleKey));
+
+                    auto tuple = tupleMap.Lookup(tupleKey);
+                    const auto tupleKeyPrefix = tupleKey + L".";
+                    Assert::AreEqual(tupleKeyPrefix + L"string1", tuple.GetAt<0>().GetLocalWstring());
+                    Assert::AreEqual(tupleKeyPrefix + L"string2", tuple.GetAt<1>().GetLocalWstring());
+                }
+            }
+        }
+
+        TEST_METHOD(UiaTupleInCollectionsTestLocal)
+        {
+            UiaTupleInCollectionsTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleInCollectionsTestRemote)
+        {
+            UiaTupleInCollectionsTest(true /* useRemoteOperations */);
         }
     };
 }
