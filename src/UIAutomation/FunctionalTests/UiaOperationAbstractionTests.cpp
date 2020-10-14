@@ -55,20 +55,46 @@ namespace Microsoft::VisualStudio::CppUnitTestFramework
         return ss.str();
     }
 
+    template<std::size_t I, class... Args>
+    void TupleToStringStream([[maybe_unused]] const std::tuple<Args...>& tuple, [[maybe_unused]] std::wstringstream& stream)
+    {
+        if constexpr (I < sizeof...(Args))
+        {
+            // Add the current field/value of the tuple.
+            if constexpr (I != 0)
+            {
+                stream << L", ";
+            }
+
+            stream << std::get<I>(tuple);
+
+            // And move to adding the next onto to the stream (if any remain).
+            TupleToStringStream<I + 1>(tuple, stream);
+        }
+    }
+
+    template<class... Args>
+    std::wstring TupleToString(const std::tuple<Args...>& tuple)
+    {
+        std::wstringstream ss;
+
+        ss << L"<";
+        TupleToStringStream<0>(tuple, ss);
+        ss << L">";
+
+        return ss.str();
+    }
+
     template<>
     std::wstring ToString(const std::tuple<int>& tuple)
     {
-        std::wstringstream ss;
-        ss << L"<" << std::get<0>(tuple) << L">";
-        return ss.str();
+        return TupleToString(tuple);
     }
 
     template<>
     std::wstring ToString(const std::tuple<std::wstring, int>& tuple)
     {
-        std::wstringstream ss;
-        ss << L"<" << std::get<0>(tuple) << L", " << std::get<1>(tuple) << L">";
-        return ss.str();
+        return TupleToString(tuple);
     }
 }
 
