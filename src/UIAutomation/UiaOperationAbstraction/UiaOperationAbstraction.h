@@ -2000,12 +2000,12 @@ namespace UiaOperationAbstraction
             else
             {
                 // For local contexts, just set the values of the underlying `std::tuple`.
-                SetTupleWrapperItems<0>(std::forward<ItemWrapperTypes>(items)...);
+                SetTupleWrapperItems<0 /* I */>(std::forward<ItemWrapperTypes>(items)...);
             }
         }
 
         // The functions allow callers to swap all `UiaTuple` values with new, provided values by
-        // calling `Set<I>(newValue)` for every indexed value field of `UiaTuple`.
+        // calling `Set<I>(newValue)` for every indexed value/field of `UiaTuple`.
         template<std::size_t I, class ItemWrapperType, class... ItemWrapperTypes>
         void SetTupleWrapperItems(ItemWrapperType&& item, ItemWrapperTypes&&... items)
         {
