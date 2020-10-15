@@ -335,6 +335,11 @@ namespace UiaOperationAbstraction
             }
         }
 
+        template <class ItemWrapperType>
+        void ConvertVariantDataToRemote(std::variant<
+            std::shared_ptr<std::map<std::wstring, typename ItemWrapperType::LocalType>>,
+            winrt::Microsoft::UI::UIAutomation::AutomationRemoteStringMap>& localMapVariant) const;
+
         template <class... ItemWrapperType>
         void ConvertVariantDataToRemote(std::variant<
             std::shared_ptr<std::tuple<typename ItemWrapperType::LocalType...>>,
@@ -352,37 +357,19 @@ namespace UiaOperationAbstraction
             }
         }
 
-        template <class ItemWrapperType>
-        void ConvertVariantDataToRemote(std::variant<
-            std::shared_ptr<std::map<std::wstring, typename ItemWrapperType::LocalType>>,
-            winrt::Microsoft::UI::UIAutomation::AutomationRemoteStringMap>& localMapVariant) const;
-
-        // Creates a `AutomationRemoteArray` object out of the provided items (converting them to remote).
+        // Creates an `AutomationRemoteArray` object out of the provided items (converting them to remote).
+        //
+        // In order to convert the provided items to remote, the function has to be called in a remote
+        // context.
         template<class... ItemWrapperTypes>
-        winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray ToRemoteArray(ItemWrapperTypes&&... items)
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray ItemsToRemoteArray(ItemWrapperTypes&&... items)
         {
             auto remoteArray = m_remoteOperation.NewArray();
-            AppendItemsToRemoteArray(remoteArray, std::forward<ItemWrapperTypes>(items)...);
+            impl::AppendItemsToRemoteArray(remoteArray, std::forward<ItemWrapperTypes>(items)...);
             return remoteArray;
         }
 
     private:
-        template<class... ItemWrapperTypes>
-        void AppendItemsToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& array, ItemWrapperTypes&&... items)
-        {
-            (AppendItemToRemoteArray(array, std::forward<ItemWrapperTypes>(items)), ...);
-        }
-
-        template<class ItemWrapperType>
-        void AppendItemToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& array, ItemWrapperType&& item)
-        {
-            // If the conversion cannot be made due to not executing this in a remote context, the function will
-            // fail on attempting to append to the array due to making an attempt to get a remote object when the
-            // underlying representation is local.
-            item.ToRemote();
-            array.Append(item);
-        }
-
         bool m_useRemoteApi;
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation m_remoteOperation;
 
@@ -1233,6 +1220,30 @@ namespace UiaOperationAbstraction
                 RemoteArrayToLocalTuple<I + 1, ItemWrapperType...>(remoteArray, localTuple);
             }
         }
+
+        // The functions allow callers to convert and append multiple remote values to a given remote array.
+        //
+        // The functions expect `UiaTypeBase`-based wrappers to:
+        // 1. Convert them to remote values (stand-ins),
+        // 2. Obtain the remote values from the wrappers and append them to the array.
+        //
+        // Due to the requirement of having and using stand-ins, the functions should only be called in remote
+        // contexts.
+        template<class... ItemWrapperTypes>
+        void AppendItemsToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& array, ItemWrapperTypes&&... items)
+        {
+            (AppendItemToRemoteArray(array, std::forward<ItemWrapperTypes>(items)), ...);
+        }
+
+        template<class ItemWrapperType>
+        void AppendItemToRemoteArray(winrt::Microsoft::UI::UIAutomation::AutomationRemoteArray& array, ItemWrapperType&& item)
+        {
+            // If the conversion cannot be made due to not executing this in a remote context, the function will
+            // fail on attempting to append to the array due to trying to get a remote value representation when
+            // the underlying value is local.
+            item.ToRemote();
+            array.Append(item);
+        }
     } // namespace impl
 
     template <class ItemWrapperType>
@@ -1984,7 +1995,7 @@ namespace UiaOperationAbstraction
                 auto delegator = UiaOperationScope::GetCurrentDelegator();
                 FAIL_FAST_IF(!delegator);
 
-                m_member = delegator->ToRemoteArray(std::forward<ItemWrapperTypes>(items)...);
+                m_member = delegator->ItemsToRemoteArray(std::forward<ItemWrapperTypes>(items)...);
             }
             else
             {
@@ -1993,6 +2004,8 @@ namespace UiaOperationAbstraction
             }
         }
 
+        // The functions allow callers to swap all `UiaTuple` values with new, provided values by
+        // calling `Set<I>(newValue)` for every indexed value field of `UiaTuple`.
         template<std::size_t I, class ItemWrapperType, class... ItemWrapperTypes>
         void SetTupleWrapperItems(ItemWrapperType&& item, ItemWrapperTypes&&... items)
         {
