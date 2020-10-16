@@ -385,6 +385,10 @@ namespace UiaOperationAbstraction
 
             switch (type)
             {
+            case winrt::Windows::Foundation::PropertyType::Empty:
+                variant.vt = VT_EMPTY;
+                break;
+
             case winrt::Windows::Foundation::PropertyType::Boolean:
                 variant.vt = VT_BOOL;
                 variant.boolVal = winrt::unbox_value<bool>(propertyValue) ? VARIANT_TRUE : VARIANT_FALSE;
@@ -909,6 +913,9 @@ namespace UiaOperationAbstraction
                 auto localVariant = *localVariantPointer;
                 switch (localVariant->vt)
                 {
+                case VT_EMPTY:
+                    localVariantVariant = m_remoteOperation.NewNull();
+                    break;
                 case VT_BOOL:
                     localVariantVariant = m_remoteOperation.NewBool(localVariant->boolVal ? true : false);
                     break;
@@ -1811,6 +1818,10 @@ namespace UiaOperationAbstraction
         return BinaryOperator<UiaHwnd, NotEqual>(this->m_member, rhs.m_member);
     }
 
+    UiaVariant::UiaVariant() : UiaVariant(wil::unique_variant{})
+    {
+    }
+
     UiaVariant::UiaVariant(const VARIANT& variant):
         UiaTypeBase(std::make_shared<wil::unique_variant>(CopyToUniqueVariant(variant)))
     {
@@ -1976,6 +1987,8 @@ namespace UiaOperationAbstraction
 
         switch (lhsLocal->vt)
         {
+        case VT_EMPTY:
+            return true;
         case VT_BOOL:
             return lhsLocal->boolVal == rhsLocal->boolVal;
         case VT_I4:
