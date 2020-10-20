@@ -7008,7 +7008,10 @@
             auto element = std::get<AutomationRemoteElement>(m_member).GetParentElement();
             if (cacheRequest)
             {
-                element.PopulateCache(*cacheRequest);
+                delegator->If(element.IsNull().BoolNot(), [&]()
+                {
+                    element.PopulateCache(*cacheRequest);
+                });
             }
             return element;
         }
@@ -7040,7 +7043,10 @@
             auto element = std::get<AutomationRemoteElement>(m_member).GetFirstChildElement();
             if (cacheRequest)
             {
-                element.PopulateCache(*cacheRequest);
+                delegator->If(element.IsNull().BoolNot(), [&]()
+                {
+                    element.PopulateCache(*cacheRequest);
+                });
             }
             return element;
         }
@@ -7072,7 +7078,10 @@
             auto element = std::get<AutomationRemoteElement>(m_member).GetLastChildElement();
             if (cacheRequest)
             {
-                element.PopulateCache(*cacheRequest);
+                delegator->If(element.IsNull().BoolNot(), [&]()
+                {
+                    element.PopulateCache(*cacheRequest);
+                });
             }
             return element;
         }
@@ -7104,7 +7113,10 @@
             auto element = std::get<AutomationRemoteElement>(m_member).GetNextSiblingElement();
             if (cacheRequest)
             {
-                element.PopulateCache(*cacheRequest);
+                delegator->If(element.IsNull().BoolNot(), [&]()
+                {
+                    element.PopulateCache(*cacheRequest);
+                });
             }
             return element;
         }
@@ -7136,7 +7148,10 @@
             auto element = std::get<AutomationRemoteElement>(m_member).GetPreviousSiblingElement();
             if (cacheRequest)
             {
-                element.PopulateCache(*cacheRequest);
+                delegator->If(element.IsNull().BoolNot(), [&]()
+                {
+                    element.PopulateCache(*cacheRequest);
+                });
             }
             return element;
         }
