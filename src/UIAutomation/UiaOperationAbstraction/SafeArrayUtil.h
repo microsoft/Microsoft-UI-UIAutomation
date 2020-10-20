@@ -2,14 +2,8 @@
 // Licensed under the MIT License.
 #pragma once
 
-#include <wil/resource.h>
-#include <wil/result.h>
-
-// --------------------------------------------------------------------------
-//
-//  SafeArray utilities
-//
-// --------------------------------------------------------------------------
+namespace SafeArrayUtil
+{
 
 // A `unique_any` alias that handles safely disposing of a SAFEARRAY.
 using unique_safearray = wil::unique_any<SAFEARRAY*, decltype(&::SafeArrayDestroy), ::SafeArrayDestroy>;
@@ -274,7 +268,7 @@ HRESULT ArrayToSafeArray(_In_ const T* originalArray, int count, _Outptr_ SAFEAR
 {
     *resultOut = nullptr;
     *resultOut = ArrayToSafeArray<vt>(originalArray, count, [](const auto& el) { return el; }).release();
-    
+
     return S_OK;
 }
 CATCH_RETURN();
@@ -346,17 +340,6 @@ HRESULT SafeArrayCompare(_In_ SAFEARRAY* array1, _In_ SAFEARRAY* array2, VARTYPE
 }
 CATCH_RETURN();
 
-inline
-HRESULT SafeArrayGetCount(_In_ SAFEARRAY* array, _Out_ long* size) noexcept try
-{
-    *size = 0;
+HRESULT SafeArrayGetCount(_In_ SAFEARRAY* array, _Out_ long* size) noexcept;
 
-    long lowerBound = 0;
-    long upperBound = 0;
-    THROW_IF_FAILED(::SafeArrayGetLBound(array, 1 /* nDim */, &lowerBound));
-    THROW_IF_FAILED(::SafeArrayGetUBound(array, 1 /* nDim */, &upperBound));
-
-    *size = (upperBound - lowerBound + 1);
-    return S_OK;
-}
-CATCH_RETURN();
+} // SafeArrayUtil

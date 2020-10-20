@@ -3,21 +3,7 @@
 
 #pragma once
 
-#include <variant>
-#include <memory>
-#include <optional>
-#include <functional>
-#include <sstream>
-
-#include <combaseapi.h>
-#include <UIAutomation.h>
-#include "fibersapi.h"
-
-#include <wil/Resource.h>
-#include <wil/com.h>
 #include <winrt/Microsoft.UI.UIAutomation.h>
-#include <winrt/windows.foundation.h>
-#include <winrt/windows.foundation.collections.h>
 
 #include "SafeArrayUtil.h"
 
