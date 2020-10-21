@@ -356,18 +356,18 @@ namespace UiaOperationAbstractionTests
 
             UiaArray<UiaElement> parentChain;
             scope.While(
-            [&]() // condition
-            {
-                return !element.IsNull();
-            },
-            [&]()
-            {
-                parentChain.Append(element);
-                // The last element we get should be Null here, we are testing wrapper implementation
-                // could make sure the whole operation won't abort due to this.
-                UiaElement parent = element.GetParentElement(cacheRequest);
-                element = parent;
-            });
+                [&]() // condition
+                {
+                    return !element.IsNull();
+                },
+                [&]() // body
+                {
+                    parentChain.Append(element);
+                    // The last element we get should be Null here, we are testing wrapper implementation
+                    // could make sure the whole operation won't abort due to this.
+                    UiaElement parent = element.GetParentElement(cacheRequest);
+                    element = parent;
+                });
 
             scope.BindResult(parentChain);
             scope.Resolve();
