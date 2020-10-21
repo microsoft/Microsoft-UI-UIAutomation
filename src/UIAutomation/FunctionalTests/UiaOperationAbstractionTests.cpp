@@ -334,6 +334,55 @@ namespace UiaOperationAbstractionTests
             CacheRequestNavigationMethodTest(true);
         }
 
+        // This test aims to test the wrapper implementation could
+        // elegantly handle the case that UIA navigation hits a
+        // boundary element which means the navigation API does not
+        // find the desired element. In this case, we should simply
+        // return an empty element even a cache request is provided.
+        TEST_METHOD(CacheRequestNavigationNullReturnRemoteTest)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            const auto guard = InitializeUiaOperationAbstraction(true /* useRemoteOperation */);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+
+            UiaOperationAbstraction::UiaCacheRequest cacheRequest;
+            cacheRequest.AddProperty(UIA_NamePropertyId);
+
+            UiaArray<UiaElement> parentChain;
+            scope.While(
+            [&]() // condition
+            {
+                return !element.IsNull();
+            },
+            [&]()
+            {
+                parentChain.Append(element);
+                // The last element we get should be Null here, we are testing wrapper implementation
+                // could make sure the whole operation won't abort due to this.
+                UiaElement parent = element.GetParentElement(cacheRequest);
+                element = parent;
+            });
+
+            scope.BindResult(parentChain);
+            scope.Resolve();
+
+            // There should be three elements in total in this case.
+            unsigned int size = parentChain.Size();
+            Assert::AreEqual(3, static_cast<int>(size));
+
+            // The last element is the Calculator core window element.
+            auto ancestor = parentChain.GetAt(2);
+            auto name = ancestor.GetName(true /* useCachedApi */);
+            Assert::IsNotNull(name.get());
+            Assert::AreEqual(std::wstring(name.get()), std::wstring(L"Calculator"));
+        }
+
         // Asserts that UiaCacheRequest can't be returned from a remote
         // operation. If this test fails, it will fail at compile time.
         TEST_METHOD(CantReturnCacheRequestTest)
