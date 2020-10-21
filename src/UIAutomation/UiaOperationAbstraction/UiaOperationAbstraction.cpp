@@ -7,6 +7,7 @@
 using namespace winrt::Microsoft::UI::UIAutomation;
 using namespace winrt::Windows::UI::UIAutomation;
 using namespace UiaOperationAbstraction::impl;
+using namespace SafeArrayUtil;
 
 namespace winrt
 {

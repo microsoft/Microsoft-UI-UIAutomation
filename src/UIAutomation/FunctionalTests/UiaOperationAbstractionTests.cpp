@@ -10,6 +10,7 @@
 #include "UiaOperationAbstraction.h"
 
 using namespace UiaOperationAbstraction;
+using namespace SafeArrayUtil;
 
 // Test framework extensions used for comparing and printing different types via the
 // `Assert` test functions.

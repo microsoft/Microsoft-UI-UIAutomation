@@ -14,11 +14,13 @@
 #include <Windows.h>
 #include <uiautomation.h>
 
+#include <sstream>
+#include <string>
+#include <variant>
+
 #include <wil/resource.h>
 #include <wil/result.h>
 #include <wil/com.h>
 
 #include <winrt/Windows.Foundation.h>
-
-#include <string>
-#include <sstream>
+#include <winrt/windows.foundation.collections.h>
