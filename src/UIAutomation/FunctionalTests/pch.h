@@ -23,4 +23,3 @@
 #include <wil/com.h>
 
 #include <winrt/Windows.Foundation.h>
-#include <winrt/windows.foundation.collections.h>

@@ -8,6 +8,7 @@
 #include "TestUtils.h"
 
 #include "UiaOperationAbstraction.h"
+#include "SafeArrayUtil.h"
 
 using namespace UiaOperationAbstraction;
 using namespace SafeArrayUtil;

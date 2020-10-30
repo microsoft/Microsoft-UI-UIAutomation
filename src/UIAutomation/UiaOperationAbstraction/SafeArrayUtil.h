@@ -2,6 +2,11 @@
 // Licensed under the MIT License.
 #pragma once
 
+#include <memory>
+#include <vector>
+
+#include <wil/resource.h>
+
 namespace SafeArrayUtil
 {
 
