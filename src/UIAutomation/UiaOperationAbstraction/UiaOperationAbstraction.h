@@ -3,9 +3,22 @@
 
 #pragma once
 
-#include <winrt/Microsoft.UI.UIAutomation.h>
+#include <variant>
+#include <memory>
+#include <optional>
+#include <functional>
+#include <sstream>
 
-#include "SafeArrayUtil.h"
+#include <combaseapi.h>
+#include <UIAutomation.h>
+#include <fibersapi.h>
+
+#include <wil/resource.h>
+#include <wil/com.h>
+
+#include <winrt/Microsoft.UI.UIAutomation.h>
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Foundation.Collections.h>
 
 // Implements an API that allows users to write code that can execute either in a UIAutomation Remote Operation or
 // in the classic UIA approach where each call is a cross-process call.

@@ -1,8 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
-
 #include "pch.h"
+
 #include "UiaOperationAbstraction.h"
+#include "SafeArrayUtil.h"
 
 using namespace winrt::Microsoft::UI::UIAutomation;
 using namespace winrt::Windows::UI::UIAutomation;
