@@ -1258,7 +1258,7 @@ namespace UiaOperationAbstractionTests
             const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto operationScope = UiaOperationScope::StartNew();
-
+            // Create a map that use UiaElement as the value.
             UiaStringMap<UiaElement> names;
 
             UiaElement displayElement{ focusedElement.get() };
@@ -1275,6 +1275,8 @@ namespace UiaOperationAbstractionTests
 
             // We just need to make sure we have a valid map that could carry element entries.
             Assert::AreEqual(static_cast<size_t>(2), static_cast<size_t>(names.Size()));
+            auto resultElement = names.Lookup(L"Display is 0");
+            Assert::IsNotNull(resultElement.get());
         }
 
         TEST_METHOD(UiaStringMapInElementTypeTestRemote)
