@@ -1245,6 +1245,50 @@ namespace UiaOperationAbstractionTests
             UiaStringMapInCollectionsTest(false /* useRemoteOperations */);
         }
 
+        void UiaStringMapInElementTypeTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto operationScope = UiaOperationScope::StartNew();
+            // Create a map that use UiaElement as the value.
+            UiaStringMap<UiaElement> names;
+
+            UiaElement displayElement{ focusedElement.get() };
+            UiaString focusedName = displayElement.GetName();
+            names.Insert(focusedName, displayElement);
+
+            UiaElement parentElement = displayElement.GetParentElement();
+            UiaString parentName = parentElement.GetName();
+            names.Insert(parentName, parentElement);
+
+            // Return the map of maps.
+            operationScope.BindResult(names);
+            operationScope.Resolve();
+
+            // We just need to make sure we have a valid map that could carry element entries.
+            Assert::AreEqual(static_cast<size_t>(2), static_cast<size_t>(names.Size()));
+            auto resultElement = names.Lookup(L"Display is 0");
+            Assert::IsNotNull(resultElement.get());
+        }
+
+        TEST_METHOD(UiaStringMapInElementTypeTestRemote)
+        {
+            UiaStringMapInElementTypeTest(true /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaStringMapInElementTypeTestLocal)
+        {
+            UiaStringMapInElementTypeTest(false /* useRemoteOperations */);
+        }
+
         TEST_METHOD(UiaStringMapInCollectionsTestRemote)
         {
             UiaStringMapInCollectionsTest(true /* useRemoteOperations */);

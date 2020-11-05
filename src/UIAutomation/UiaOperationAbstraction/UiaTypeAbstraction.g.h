@@ -11,6 +11,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteInvokePattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsInvokePattern;
+
         UiaInvokePattern(_In_ IUIAutomationInvokePattern* pattern);
         UiaInvokePattern(winrt::com_ptr<IUIAutomationInvokePattern> const& pattern);
         UiaInvokePattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteInvokePattern const& pattern);
@@ -63,6 +65,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteSelectionPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsSelectionPattern;
+
         UiaSelectionPattern(_In_ IUIAutomationSelectionPattern* pattern);
         UiaSelectionPattern(winrt::com_ptr<IUIAutomationSelectionPattern> const& pattern);
         UiaSelectionPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteSelectionPattern const& pattern);
@@ -117,6 +121,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteValuePattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsValuePattern;
+
         UiaValuePattern(_In_ IUIAutomationValuePattern* pattern);
         UiaValuePattern(winrt::com_ptr<IUIAutomationValuePattern> const& pattern);
         UiaValuePattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteValuePattern const& pattern);
@@ -171,6 +177,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteRangeValuePattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsRangeValuePattern;
+
         UiaRangeValuePattern(_In_ IUIAutomationRangeValuePattern* pattern);
         UiaRangeValuePattern(winrt::com_ptr<IUIAutomationRangeValuePattern> const& pattern);
         UiaRangeValuePattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteRangeValuePattern const& pattern);
@@ -229,6 +237,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteScrollPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsScrollPattern;
+
         UiaScrollPattern(_In_ IUIAutomationScrollPattern* pattern);
         UiaScrollPattern(winrt::com_ptr<IUIAutomationScrollPattern> const& pattern);
         UiaScrollPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteScrollPattern const& pattern);
@@ -288,6 +298,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteExpandCollapsePattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsExpandCollapsePattern;
+
         UiaExpandCollapsePattern(_In_ IUIAutomationExpandCollapsePattern* pattern);
         UiaExpandCollapsePattern(winrt::com_ptr<IUIAutomationExpandCollapsePattern> const& pattern);
         UiaExpandCollapsePattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteExpandCollapsePattern const& pattern);
@@ -342,6 +354,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteGridPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsGridPattern;
+
         UiaGridPattern(_In_ IUIAutomationGridPattern* pattern);
         UiaGridPattern(winrt::com_ptr<IUIAutomationGridPattern> const& pattern);
         UiaGridPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteGridPattern const& pattern);
@@ -396,6 +410,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteGridItemPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsGridItemPattern;
+
         UiaGridItemPattern(_In_ IUIAutomationGridItemPattern* pattern);
         UiaGridItemPattern(winrt::com_ptr<IUIAutomationGridItemPattern> const& pattern);
         UiaGridItemPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteGridItemPattern const& pattern);
@@ -452,6 +468,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteMultipleViewPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsMultipleViewPattern;
+
         UiaMultipleViewPattern(_In_ IUIAutomationMultipleViewPattern* pattern);
         UiaMultipleViewPattern(winrt::com_ptr<IUIAutomationMultipleViewPattern> const& pattern);
         UiaMultipleViewPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteMultipleViewPattern const& pattern);
@@ -507,6 +525,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteWindowPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsWindowPattern;
+
         UiaWindowPattern(_In_ IUIAutomationWindowPattern* pattern);
         UiaWindowPattern(winrt::com_ptr<IUIAutomationWindowPattern> const& pattern);
         UiaWindowPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteWindowPattern const& pattern);
@@ -567,6 +587,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteSelectionItemPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsSelectionItemPattern;
+
         UiaSelectionItemPattern(_In_ IUIAutomationSelectionItemPattern* pattern);
         UiaSelectionItemPattern(winrt::com_ptr<IUIAutomationSelectionItemPattern> const& pattern);
         UiaSelectionItemPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteSelectionItemPattern const& pattern);
@@ -623,6 +645,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteDockPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsDockPattern;
+
         UiaDockPattern(_In_ IUIAutomationDockPattern* pattern);
         UiaDockPattern(winrt::com_ptr<IUIAutomationDockPattern> const& pattern);
         UiaDockPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteDockPattern const& pattern);
@@ -676,6 +700,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTablePattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTablePattern;
+
         UiaTablePattern(_In_ IUIAutomationTablePattern* pattern);
         UiaTablePattern(winrt::com_ptr<IUIAutomationTablePattern> const& pattern);
         UiaTablePattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTablePattern const& pattern);
@@ -730,6 +756,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTableItemPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTableItemPattern;
+
         UiaTableItemPattern(_In_ IUIAutomationTableItemPattern* pattern);
         UiaTableItemPattern(winrt::com_ptr<IUIAutomationTableItemPattern> const& pattern);
         UiaTableItemPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTableItemPattern const& pattern);
@@ -783,6 +811,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextRange>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTextRange;
+
         UiaTextRange(_In_ IUIAutomationTextRange* object);
         UiaTextRange(winrt::com_ptr<IUIAutomationTextRange> const& object);
         UiaTextRange(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextRange const& object);
@@ -854,6 +884,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTextPattern;
+
         UiaTextPattern(_In_ IUIAutomationTextPattern* pattern);
         UiaTextPattern(winrt::com_ptr<IUIAutomationTextPattern> const& pattern);
         UiaTextPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextPattern const& pattern);
@@ -911,6 +943,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTogglePattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTogglePattern;
+
         UiaTogglePattern(_In_ IUIAutomationTogglePattern* pattern);
         UiaTogglePattern(winrt::com_ptr<IUIAutomationTogglePattern> const& pattern);
         UiaTogglePattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTogglePattern const& pattern);
@@ -964,6 +998,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTransformPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTransformPattern;
+
         UiaTransformPattern(_In_ IUIAutomationTransformPattern* pattern);
         UiaTransformPattern(winrt::com_ptr<IUIAutomationTransformPattern> const& pattern);
         UiaTransformPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTransformPattern const& pattern);
@@ -1021,6 +1057,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteScrollItemPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsScrollItemPattern;
+
         UiaScrollItemPattern(_In_ IUIAutomationScrollItemPattern* pattern);
         UiaScrollItemPattern(winrt::com_ptr<IUIAutomationScrollItemPattern> const& pattern);
         UiaScrollItemPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteScrollItemPattern const& pattern);
@@ -1073,6 +1111,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteLegacyIAccessiblePattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsLegacyIAccessiblePattern;
+
         UiaLegacyIAccessiblePattern(_In_ IUIAutomationLegacyIAccessiblePattern* pattern);
         UiaLegacyIAccessiblePattern(winrt::com_ptr<IUIAutomationLegacyIAccessiblePattern> const& pattern);
         UiaLegacyIAccessiblePattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteLegacyIAccessiblePattern const& pattern);
@@ -1137,6 +1177,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteItemContainerPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsItemContainerPattern;
+
         UiaItemContainerPattern(_In_ IUIAutomationItemContainerPattern* pattern);
         UiaItemContainerPattern(winrt::com_ptr<IUIAutomationItemContainerPattern> const& pattern);
         UiaItemContainerPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteItemContainerPattern const& pattern);
@@ -1189,6 +1231,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteVirtualizedItemPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsVirtualizedItemPattern;
+
         UiaVirtualizedItemPattern(_In_ IUIAutomationVirtualizedItemPattern* pattern);
         UiaVirtualizedItemPattern(winrt::com_ptr<IUIAutomationVirtualizedItemPattern> const& pattern);
         UiaVirtualizedItemPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteVirtualizedItemPattern const& pattern);
@@ -1241,6 +1285,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteSynchronizedInputPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsSynchronizedInputPattern;
+
         UiaSynchronizedInputPattern(_In_ IUIAutomationSynchronizedInputPattern* pattern);
         UiaSynchronizedInputPattern(winrt::com_ptr<IUIAutomationSynchronizedInputPattern> const& pattern);
         UiaSynchronizedInputPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteSynchronizedInputPattern const& pattern);
@@ -1294,6 +1340,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnnotationPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsAnnotationPattern;
+
         UiaAnnotationPattern(_In_ IUIAutomationAnnotationPattern* pattern);
         UiaAnnotationPattern(winrt::com_ptr<IUIAutomationAnnotationPattern> const& pattern);
         UiaAnnotationPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnnotationPattern const& pattern);
@@ -1350,6 +1398,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextPattern2>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTextPattern2;
+
         UiaTextPattern2(_In_ IUIAutomationTextPattern2* pattern);
         UiaTextPattern2(winrt::com_ptr<IUIAutomationTextPattern2> const& pattern);
         UiaTextPattern2(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextPattern2 const& pattern);
@@ -1403,6 +1453,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteStylesPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsStylesPattern;
+
         UiaStylesPattern(_In_ IUIAutomationStylesPattern* pattern);
         UiaStylesPattern(winrt::com_ptr<IUIAutomationStylesPattern> const& pattern);
         UiaStylesPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteStylesPattern const& pattern);
@@ -1461,6 +1513,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteSpreadsheetPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsSpreadsheetPattern;
+
         UiaSpreadsheetPattern(_In_ IUIAutomationSpreadsheetPattern* pattern);
         UiaSpreadsheetPattern(winrt::com_ptr<IUIAutomationSpreadsheetPattern> const& pattern);
         UiaSpreadsheetPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteSpreadsheetPattern const& pattern);
@@ -1513,6 +1567,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteSpreadsheetItemPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsSpreadsheetItemPattern;
+
         UiaSpreadsheetItemPattern(_In_ IUIAutomationSpreadsheetItemPattern* pattern);
         UiaSpreadsheetItemPattern(winrt::com_ptr<IUIAutomationSpreadsheetItemPattern> const& pattern);
         UiaSpreadsheetItemPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteSpreadsheetItemPattern const& pattern);
@@ -1567,6 +1623,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTransformPattern2>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTransformPattern2;
+
         UiaTransformPattern2(_In_ IUIAutomationTransformPattern2* pattern);
         UiaTransformPattern2(winrt::com_ptr<IUIAutomationTransformPattern2> const& pattern);
         UiaTransformPattern2(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTransformPattern2 const& pattern);
@@ -1624,6 +1682,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextChildPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTextChildPattern;
+
         UiaTextChildPattern(_In_ IUIAutomationTextChildPattern* pattern);
         UiaTextChildPattern(winrt::com_ptr<IUIAutomationTextChildPattern> const& pattern);
         UiaTextChildPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextChildPattern const& pattern);
@@ -1677,6 +1737,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteDragPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsDragPattern;
+
         UiaDragPattern(_In_ IUIAutomationDragPattern* pattern);
         UiaDragPattern(winrt::com_ptr<IUIAutomationDragPattern> const& pattern);
         UiaDragPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteDragPattern const& pattern);
@@ -1732,6 +1794,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteDropTargetPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsDropTargetPattern;
+
         UiaDropTargetPattern(_In_ IUIAutomationDropTargetPattern* pattern);
         UiaDropTargetPattern(winrt::com_ptr<IUIAutomationDropTargetPattern> const& pattern);
         UiaDropTargetPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteDropTargetPattern const& pattern);
@@ -1785,6 +1849,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextEditPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsTextEditPattern;
+
         UiaTextEditPattern(_In_ IUIAutomationTextEditPattern* pattern);
         UiaTextEditPattern(winrt::com_ptr<IUIAutomationTextEditPattern> const& pattern);
         UiaTextEditPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextEditPattern const& pattern);
@@ -1838,6 +1904,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteCustomNavigationPattern>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsCustomNavigationPattern;
+
         UiaCustomNavigationPattern(_In_ IUIAutomationCustomNavigationPattern* pattern);
         UiaCustomNavigationPattern(winrt::com_ptr<IUIAutomationCustomNavigationPattern> const& pattern);
         UiaCustomNavigationPattern(winrt::Microsoft::UI::UIAutomation::AutomationRemoteCustomNavigationPattern const& pattern);
@@ -1890,6 +1958,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteSelectionPattern2>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsSelectionPattern2;
+
         UiaSelectionPattern2(_In_ IUIAutomationSelectionPattern2* pattern);
         UiaSelectionPattern2(winrt::com_ptr<IUIAutomationSelectionPattern2> const& pattern);
         UiaSelectionPattern2(winrt::Microsoft::UI::UIAutomation::AutomationRemoteSelectionPattern2 const& pattern);
@@ -1945,6 +2015,8 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>
     {
     public:
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsElement;
+
         UiaElement(_In_ IUIAutomationElement* element);
         UiaElement(winrt::com_ptr<IUIAutomationElement> const& element);
         UiaElement(winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement const& element);
