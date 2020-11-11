@@ -510,6 +510,41 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    // AutomationRemoteExtensionTarget
+
+    AutomationRemoteExtensionTarget::AutomationRemoteExtensionTarget(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
+    {
+    }
+
+    void AutomationRemoteExtensionTarget::CallExtension(const winrt::AutomationRemoteGuid& extensionId, winrt::array_view<const winrt::AutomationRemoteObject> operands)
+    {
+        std::vector<bytecode::OperandId> operandIds;
+        for (const auto& operand : operands)
+        {
+            operandIds.emplace_back(GetOperandId<AutomationRemoteObject>(operand));
+        }
+
+        m_parent->InsertInstruction(bytecode::CallExtension{
+            m_operandId,
+            GetOperandId<AutomationRemoteGuid>(extensionId),
+            std::move(operandIds)
+            });
+    }
+
+    winrt::AutomationRemoteBool AutomationRemoteExtensionTarget::IsExtensionSupported(const winrt::AutomationRemoteGuid& extensionId)
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::IsExtensionSupported{
+            resultId,
+            m_operandId,
+            GetOperandId<AutomationRemoteGuid>(extensionId)
+            });
+
+        const auto result = Make<AutomationRemoteBool>(resultId);
+        return result;
+    }
+
     // AutomationRemoteStringMap
 
     AutomationRemoteStringMap::AutomationRemoteStringMap(bytecode::OperandId operandId, AutomationRemoteOperation& parent) :
