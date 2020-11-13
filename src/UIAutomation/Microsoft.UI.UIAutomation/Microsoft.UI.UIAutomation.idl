@@ -10,14 +10,6 @@ namespace Microsoft.UI.UIAutomation
 
     runtimeclass AutomationRemoteAnyObject;
 
-    runtimeclass AutomationRemoteGuid;
-
-    unsealed runtimeclass AutomationRemoteExtensionTarget : AutomationRemoteObject
-    {
-        void CallExtension(AutomationRemoteGuid extensionId, AutomationRemoteObject[] operands);
-        AutomationRemoteBool IsExtensionSupported(AutomationRemoteGuid extensionId);
-    }
-
     runtimeclass AutomationRemoteBool : AutomationRemoteObject
     {
         void Set(AutomationRemoteBool rhs);
@@ -147,6 +139,12 @@ namespace Microsoft.UI.UIAutomation
 
         AutomationRemoteAnnotationType LookupAnnotationType();
         AutomationRemotePropertyId LookupPropertyId();
+    }
+
+    unsealed runtimeclass AutomationRemoteExtensionTarget : AutomationRemoteObject
+    {
+        void CallExtension(AutomationRemoteGuid extensionId, AutomationRemoteObject[] operands);
+        AutomationRemoteBool IsExtensionSupported(AutomationRemoteGuid extensionId);
     }
 
     runtimeclass AutomationRemoteArray : AutomationRemoteObject

@@ -539,7 +539,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
             resultId,
             m_operandId,
             GetOperandId<AutomationRemoteGuid>(extensionId)
-            });
+        });
 
         const auto result = Make<AutomationRemoteBool>(resultId);
         return result;
