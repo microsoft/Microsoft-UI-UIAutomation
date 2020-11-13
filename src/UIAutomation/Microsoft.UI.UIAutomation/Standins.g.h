@@ -568,7 +568,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteSupportedTextSelection GetSupportedTextSelection();
     };
 
-    class AutomationRemoteTextRange : public AutomationRemoteTextRangeT<AutomationRemoteTextRange, AutomationRemoteObject>
+    class AutomationRemoteTextRange : public AutomationRemoteTextRangeT<AutomationRemoteTextRange, AutomationRemoteExtensionTarget>
     {
     public:
         AutomationRemoteTextRange(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
