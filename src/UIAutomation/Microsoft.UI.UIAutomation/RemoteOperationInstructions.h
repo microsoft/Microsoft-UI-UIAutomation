@@ -152,6 +152,10 @@ enum class InstructionType
     Stringify = 0x51,
     GetMetadataValue = 0x52,
 
+    // Extensibility
+    CallExtension = 0x53,
+    IsExtensionSupported = 0x54,
+
     // UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValues.g.h"
 };
@@ -242,6 +246,8 @@ constexpr std::array c_supportedInstructions =
     InstructionType::PopulateCache,
     InstructionType::Stringify,
     InstructionType::GetMetadataValue,
+    InstructionType::CallExtension,
+    InstructionType::IsExtensionSupported,
 
     // Auto-generated UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValuesArray.g.h"
@@ -933,6 +939,24 @@ struct GetMetadataValue
     OperandId metadataId;
 };
 
+struct CallExtension
+{
+    constexpr static InstructionType type = InstructionType::CallExtension;
+
+    OperandId targetId;
+    OperandId extensionIdId;
+    std::vector<OperandId> operandIds;
+};
+
+struct IsExtensionSupported
+{
+    constexpr static InstructionType type = InstructionType::IsExtensionSupported;
+
+    OperandId resultId;
+    OperandId targetId;
+    OperandId extensionIdId;
+};
+
 #include "RemoteOperationInstructions.g.h"
 
 using Instruction = std::variant<
@@ -1051,7 +1075,11 @@ using Instruction = std::variant<
     IsGuid,
     IsCacheRequest,
 
-    Stringify
+    Stringify,
+
+    // Provider Extension methods
+    CallExtension,
+    IsExtensionSupported
 
 #include "RemoteOperationInstructionsVariantParams.g.h"
     >;

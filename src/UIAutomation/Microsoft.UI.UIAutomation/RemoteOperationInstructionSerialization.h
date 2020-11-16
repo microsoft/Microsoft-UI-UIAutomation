@@ -114,6 +114,8 @@ private:
     void Write(const bytecode::LookupId&);
     void Write(const bytecode::LookupGuid&);
     void Write(const bytecode::Stringify&);
+    void Write(const bytecode::CallExtension&);
+    void Write(const bytecode::IsExtensionSupported&);
 
     void Write(const bytecode::GetterBase&);
 #include "RemoteOperationInstructionSerializerMethods.g.h"

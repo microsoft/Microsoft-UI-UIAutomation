@@ -18,9 +18,11 @@
 #include "AutomationRemoteCacheRequest.g.h"
 #include "AutomationRemoteElement.g.h"
 #include "AutomationRemoteAnyObject.g.h"
+#include "AutomationRemoteExtensionTarget.g.h"
 #include "AutomationRemoteOperation.h"
 
 #include "RemoteOperationInstructions.h"
+#include <winrt/Windows.Foundation.Collections.h>
 
 namespace winrt
 {
@@ -521,6 +523,15 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteString Stringify();
     };
 
+     class AutomationRemoteExtensionTarget : public AutomationRemoteExtensionTargetT<AutomationRemoteExtensionTarget, AutomationRemoteObject>
+    {
+    public:
+        AutomationRemoteExtensionTarget(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
+
+        void CallExtension(const winrt::AutomationRemoteGuid& extensionId, winrt::array_view<const winrt::AutomationRemoteObject> operands);
+        winrt::AutomationRemoteBool IsExtensionSupported(const winrt::AutomationRemoteGuid& extensionId);
+    };
+
     struct AutomationRemoteStringMap : AutomationRemoteStringMapT<AutomationRemoteStringMap, Microsoft::UI::UIAutomation::implementation::AutomationRemoteObject>
     {
         AutomationRemoteStringMap(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
@@ -547,7 +558,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         void AddPattern(const winrt::AutomationRemotePatternId& patternId);
     };
 
-    class AutomationRemoteElement : public AutomationRemoteElementT<AutomationRemoteElement, AutomationRemoteObject>
+    class AutomationRemoteElement : public AutomationRemoteElementT<AutomationRemoteElement, AutomationRemoteExtensionTarget>
     {
     public:
         AutomationRemoteElement(bytecode::OperandId operandId, AutomationRemoteOperation& parent);

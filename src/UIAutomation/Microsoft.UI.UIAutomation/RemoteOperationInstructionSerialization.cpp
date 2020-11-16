@@ -491,6 +491,24 @@ void RemoteOperationInstructionSerializer::Write(const bytecode::Stringify& inst
     Write(instruction.targetId);
 }
 
+void RemoteOperationInstructionSerializer::Write(const bytecode::CallExtension& instruction)
+{
+    Write(instruction.targetId);
+    Write(instruction.extensionIdId);
+    Write(static_cast<int>(instruction.operandIds.size()));
+    for (const auto& operandId : instruction.operandIds)
+    {
+        Write(operandId);
+    }
+}
+
+void RemoteOperationInstructionSerializer::Write(const bytecode::IsExtensionSupported& instruction)
+{
+    Write(instruction.resultId);
+    Write(instruction.targetId);
+    Write(instruction.extensionIdId);
+}
+
 void RemoteOperationInstructionSerializer::Write(const GetterBase& instruction)
 {
     Write(instruction.resultId);

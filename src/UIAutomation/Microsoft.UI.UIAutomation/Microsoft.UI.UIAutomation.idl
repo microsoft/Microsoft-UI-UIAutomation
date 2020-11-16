@@ -141,6 +141,12 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemotePropertyId LookupPropertyId();
     }
 
+    unsealed runtimeclass AutomationRemoteExtensionTarget : AutomationRemoteObject
+    {
+        void CallExtension(AutomationRemoteGuid extensionId, AutomationRemoteObject[] operands);
+        AutomationRemoteBool IsExtensionSupported(AutomationRemoteGuid extensionId);
+    }
+
     runtimeclass AutomationRemoteArray : AutomationRemoteObject
     {
         void Set(AutomationRemoteArray rhs);
@@ -196,7 +202,7 @@ namespace Microsoft.UI.UIAutomation
         void AddPattern(AutomationRemotePatternId patternId);
     }
 
-    partial runtimeclass AutomationRemoteElement : AutomationRemoteObject
+    partial runtimeclass AutomationRemoteElement : AutomationRemoteExtensionTarget
     {
         void Set(AutomationRemoteElement rhs);
 
@@ -1273,7 +1279,7 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteArray GetColumnHeaderItems();
     };
 
-    runtimeclass AutomationRemoteTextRange : AutomationRemoteObject
+    runtimeclass AutomationRemoteTextRange : AutomationRemoteExtensionTarget
     {
         void Set(AutomationRemoteTextRange rhs);
         AutomationRemoteTextRange Clone();
