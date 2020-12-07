@@ -730,6 +730,13 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         });
     }
 
+    // AutomationRemoteConnectionBoundObject
+    
+     AutomationRemoteConnectionBoundObject::AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
+    {
+    }
+
     // AutomationRemoteAnyObject
 
     AutomationRemoteAnyObject::AutomationRemoteAnyObject(bytecode::OperandId operandId, AutomationRemoteOperation& parent)

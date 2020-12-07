@@ -152,6 +152,15 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return make<AutomationRemoteAnyObject>(newId, *this);
     }
 
+    winrt::AutomationRemoteAnyObject AutomationRemoteOperation::NewEmpty()
+    {
+        // NewEmpty is similar to NewNull except it doesn't insert any instruction, instead NewEmpty serves as a place holder
+        // for any operands that are to be set when the Remote Operation gets executed(an out only parameter without wasting an instruction)
+        const auto newId = GetNextId();
+
+        return make<AutomationRemoteAnyObject>(newId, *this);
+    }
+
     winrt::AutomationRemoteElement AutomationRemoteOperation::ImportElement(winrt::AutomationElement const& element)
     {
         const auto elementId = GetNextId();
@@ -167,6 +176,15 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         m_remoteOperation.ImportTextRange({ textRangeId.Value }, textRange);
 
         const auto result = make<AutomationRemoteTextRange>(textRangeId, *this);
+        return result;
+    }
+
+    winrt::AutomationRemoteConnectionBoundObject AutomationRemoteOperation::ImportConnectionBoundObject(winrt::AutomationConnectionBoundObject const& connectionBoundObject)
+    {
+        const auto connectionBoundObjectId = GetNextId();
+        m_remoteOperation.ImportConnectionBoundObject({ connectionBoundObjectId.Value }, connectionBoundObject);
+
+        const auto result = make<AutomationRemoteConnectionBoundObject>(connectionBoundObjectId, *this);
         return result;
     }
 

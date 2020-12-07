@@ -66,9 +66,11 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteArray NewArray();
         winrt::AutomationRemoteStringMap NewStringMap();
         winrt::AutomationRemoteAnyObject NewNull();
+         winrt::AutomationRemoteAnyObject NewEmpty();
 
         winrt::AutomationRemoteElement ImportElement(winrt::Windows::UI::UIAutomation::AutomationElement const& element);
         winrt::AutomationRemoteTextRange ImportTextRange(winrt::Windows::UI::UIAutomation::AutomationTextRange const& textRange);
+        winrt::AutomationRemoteConnectionBoundObject ImportConnectionBoundObject(winrt::Windows::UI::UIAutomation::AutomationConnectionBoundObject const& connectionBoundObject);
 
         AutomationRemoteOperationResponseToken RequestResponse(const winrt::AutomationRemoteObject& object);
 

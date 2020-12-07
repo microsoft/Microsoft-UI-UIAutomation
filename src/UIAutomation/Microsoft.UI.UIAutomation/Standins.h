@@ -17,6 +17,7 @@
 #include "AutomationRemoteStringMap.g.h"
 #include "AutomationRemoteCacheRequest.g.h"
 #include "AutomationRemoteElement.g.h"
+#include "AutomationRemoteConnectionBoundObject.g.h"
 #include "AutomationRemoteAnyObject.g.h"
 #include "AutomationRemoteExtensionTarget.g.h"
 #include "AutomationRemoteOperation.h"
@@ -593,6 +594,17 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteElement Navigate(const winrt::AutomationRemoteInt& direction);
         winrt::AutomationRemoteElement Navigate(NavigateDirection direction);
     };
+
+    class AutomationRemoteConnectionBoundObject : public AutomationRemoteConnectionBoundObjectT<AutomationRemoteConnectionBoundObject, AutomationRemoteExtensionTarget>
+    {
+        public:
+            AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
+
+            void Set(const class_type& rhs)
+            {
+                AutomationRemoteObject::Set<AutomationRemoteConnectionBoundObject>(rhs);
+            }
+    }
 
     class AutomationRemoteAnyObject : public AutomationRemoteAnyObjectT<AutomationRemoteAnyObject, AutomationRemoteObject>
     {

@@ -1593,6 +1593,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteTextPattern AsTextPattern();
         AutomationRemoteBool IsTextRange();
         AutomationRemoteTextRange AsTextRange();
+        AutomationRemoteConnectionBoundObject AsConnectionBoundObject();
+        AutomationRemoteBool IsConnectionBoundObject();
         AutomationRemoteBool IsTogglePattern();
         AutomationRemoteTogglePattern AsTogglePattern();
         AutomationRemoteBool IsTransformPattern();
@@ -1759,9 +1761,11 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteArray NewArray();
         AutomationRemoteStringMap NewStringMap();
         AutomationRemoteAnyObject NewNull();
+        AutomationRemoteAnyObject NewEmpty();
 
         AutomationRemoteElement ImportElement(Windows.UI.UIAutomation.AutomationElement element);
         AutomationRemoteTextRange ImportTextRange(Windows.UI.UIAutomation.AutomationTextRange textRange);
+        AutomationRemoteConnectionBoundObject ImportConnectionBoundObject(Windows.UI.UIAutomation.AutomationConnectionBoundObject connectionBoundObject);
 
         AutomationRemoteOperationResponseToken RequestResponse(AutomationRemoteObject object);
 
