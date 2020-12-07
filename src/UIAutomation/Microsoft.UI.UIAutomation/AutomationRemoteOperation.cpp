@@ -152,10 +152,10 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return make<AutomationRemoteAnyObject>(newId, *this);
     }
 
+    // NewEmpty is similar to NewNull except it doesn't insert any instruction, instead NewEmpty serves as a place holder
+    // for any operands that are to be set when the Remote Operation gets executed(an out only parameter without wasting an instruction)
     winrt::AutomationRemoteAnyObject AutomationRemoteOperation::NewEmpty()
     {
-        // NewEmpty is similar to NewNull except it doesn't insert any instruction, instead NewEmpty serves as a place holder
-        // for any operands that are to be set when the Remote Operation gets executed(an out only parameter without wasting an instruction)
         const auto newId = GetNextId();
 
         return make<AutomationRemoteAnyObject>(newId, *this);

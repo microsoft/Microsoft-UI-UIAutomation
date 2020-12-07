@@ -1303,6 +1303,11 @@ namespace Microsoft.UI.UIAutomation
         void ShowContextMenu();
     };
 
+    runtimeclass AutomationRemoteConnectionBoundObject : AutomationRemoteExtensionTarget
+    {
+        void Set(AutomationRemoteConnectionBoundObject rhs);
+    }
+
     runtimeclass AutomationRemoteTextPattern : AutomationRemoteObject
     {
         void Set(AutomationRemoteTextPattern rhs);
