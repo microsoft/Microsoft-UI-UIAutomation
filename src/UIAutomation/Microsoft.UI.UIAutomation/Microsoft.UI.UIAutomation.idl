@@ -1599,7 +1599,6 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteBool IsTextRange();
         AutomationRemoteTextRange AsTextRange();
         AutomationRemoteConnectionBoundObject AsConnectionBoundObject();
-        AutomationRemoteBool IsConnectionBoundObject();
         AutomationRemoteBool IsTogglePattern();
         AutomationRemoteTogglePattern AsTogglePattern();
         AutomationRemoteBool IsTransformPattern();

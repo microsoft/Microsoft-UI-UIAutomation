@@ -154,6 +154,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
 
     // NewEmpty is similar to NewNull except it doesn't insert any instruction, instead NewEmpty serves as a place holder
     // for any operands that are to be set when the Remote Operation gets executed(an out only parameter without wasting an instruction)
+    // This is particularly used with CallExtension as it takes an arrray of operands and most of them will be
+    // out params and using NullOperand for all of them would waste instructions.
     winrt::AutomationRemoteAnyObject AutomationRemoteOperation::NewEmpty()
     {
         const auto newId = GetNextId();
