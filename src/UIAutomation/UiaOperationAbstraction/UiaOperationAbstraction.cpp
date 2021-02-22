@@ -1946,6 +1946,21 @@ namespace UiaOperationAbstraction
         ToRemote();
     }
 
+    UiaBool UiaVariant::IsNull() const
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->IsNull();
+            }
+        }
+
+        // The local version of a UiaVariant can never be null.
+        return false;
+    }
+
     UiaBool UiaVariant::operator==(const UiaVariant& rhs)
     {
         if (ShouldUseRemoteApi())

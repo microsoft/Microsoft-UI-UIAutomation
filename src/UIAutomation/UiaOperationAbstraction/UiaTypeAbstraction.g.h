@@ -2148,6 +2148,8 @@
         UiaElement GetNextSiblingElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
         UiaElement GetPreviousSiblingElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
 
+        UiaVariant GetMetadataValue(UiaPropertyId propertyId, UiaMetadata metadataId);
+
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
             m_member = result.as<IUIAutomationElement>();
