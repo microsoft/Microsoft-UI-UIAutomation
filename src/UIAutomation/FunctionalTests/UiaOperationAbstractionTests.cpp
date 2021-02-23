@@ -1828,5 +1828,111 @@ namespace UiaOperationAbstractionTests
         {
             UiaTupleInCollectionsTest(true /* useRemoteOperations */);
         }
+
+        void GetMetadataValueTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Get metadata value operation.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Get metadata value from the element
+                UiaVariant variant = displayElement.GetMetadataValue(UIA_NamePropertyId, UIA_SayAsInterpretAsMetadataId);
+                UiaBool isVariantNull = (variant.IsNull());
+                UiaBool isVariantTypeInt{ false };
+                operationScope.If(!variant.IsNull(), [&]()
+                {
+                    isVariantTypeInt = variant.IsType<UiaInt>();
+                });
+
+                // Return the results of the comparisons.
+                operationScope.BindResult(isVariantNull, isVariantTypeInt);
+                operationScope.Resolve();
+
+                // Because the focused element does not hold any metadata value, the returned variant will not contain actual value.
+                if (useRemoteOperations)
+                {
+                    // When use remote operations, the returned variant will be null.
+                    Assert::AreEqual(true, static_cast<bool>(isVariantNull));
+                }
+                else
+                {
+                    // When evaluate locally, the variant should never be null and we will get a local VARIANT with VT_EMPTY type.
+                    Assert::AreEqual(false, static_cast<bool>(isVariantNull));
+                    Assert::AreEqual(false, static_cast<bool>(isVariantTypeInt));
+                }
+            }
+        }
+
+        TEST_METHOD(GetMetadataValueTestLocal)
+        {
+            GetMetadataValueTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(GetMetadataValueTestRemote)
+        {
+            GetMetadataValueTest(true /* useRemoteOperations */);
+        }
+
+        void UiaVariantCastUiaEnumTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Make sure `UiaVariant` instances can be cast to `UiaEnum` type.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create a variant with a enum.
+                UiaSayAsInterpretAs originalValue{ SayAsInterpretAs_Spell };
+                UiaVariant variantValue{ originalValue };
+
+                // Cast the variant to enum.
+                UiaSayAsInterpretAs castValue = variantValue.AsType<UiaSayAsInterpretAs>();
+
+                // Return the tuple for the operation and also information about the two variants.
+                operationScope.BindResult(castValue);
+                operationScope.Resolve();
+
+                // Ensure the returned enum is the expected value.
+                auto expected = static_cast<int>(SayAsInterpretAs_Spell);
+                auto actual = static_cast<int>(castValue);
+                Assert::AreEqual(expected, actual);
+            }
+        }
+
+        TEST_METHOD(UiaVariantCastUiaEnumTestLocal)
+        {
+            UiaVariantCastUiaEnumTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaVariantCastUiaEnumTestRemote)
+        {
+            UiaVariantCastUiaEnumTest(true /* useRemoteOperations */);
+        }
     };
 }

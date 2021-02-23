@@ -1724,7 +1724,7 @@ namespace UiaOperationAbstraction
         explicit UiaVariant(UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc> value) :
             UiaTypeBase(
                 value.IsRemoteType() ?
-                UiaVariant(static_cast<AutomationRemoteObject>(static_cast<typename UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>::RemoteType>(value))) :
+                UiaVariant(static_cast<winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject>(static_cast<typename UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>::RemoteType>(value))) :
                 UiaVariant(details::MakeVariantFrom<UiaInt>(static_cast<int>(static_cast<WinRTEnumT>(value)))))
         {
         }
