@@ -29,6 +29,15 @@ namespace UiaOperationAbstraction
 {
     using unique_safearray = wil::unique_any<SAFEARRAY*, decltype(&::SafeArrayDestroy), ::SafeArrayDestroy>;
 
+    // This type is representing a function type, where the return type is a template parameter, the function should be
+    // a const member function of class `winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject`, the parameter
+    // list is void.
+    // For example, the type of function:
+    //     `winrt::Microsoft::UI::UIAutomation::AutomationRemoteSayAsInterpretAs winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsSayAsInterpretAs() const;`
+    // can be represented by CastFuncType<winrt::Microsoft::UI::UIAutomation::AutomationRemoteSayAsInterpretAs>.
+    // This type is used as one of the template parameters of class `UiaEnum`, for the sake of this, we could assign the
+    // any cast function for `UiaEnum`. And furthermore, we could use `UiaVariant::AsType` to convert `UiaVariant` to
+    // any `UiaEnum` classes.
     template <typename StandinT>
     using CastFuncType = StandinT (winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::*)() const;
 
