@@ -7173,3 +7173,28 @@
 
         return localResult;
     }
+
+    UiaVariant UiaElement::GetMetadataValue(UiaPropertyId propertyId, UiaMetadata metadataId)
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            this->ToRemote();
+            propertyId.ToRemote();
+            metadataId.ToRemote();
+            return std::get<AutomationRemoteElement>(m_member).GetMetadataValue(
+                propertyId,
+                metadataId);
+        }
+
+        auto localObject = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);
+        auto localObjectQueried = localObject.as<IUIAutomationElement7>();
+
+        wil::unique_variant metadataValue;
+        winrt::check_hresult(localObjectQueried->GetCurrentMetadataValue(
+            propertyId,
+            metadataId,
+            &metadataValue));
+
+        return metadataValue;
+    }

@@ -29,6 +29,18 @@ namespace UiaOperationAbstraction
 {
     using unique_safearray = wil::unique_any<SAFEARRAY*, decltype(&::SafeArrayDestroy), ::SafeArrayDestroy>;
 
+    // This type is representing a function type, where the return type is a template parameter, the function should be
+    // a const member function of class `winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject`, the parameter
+    // list is void.
+    // For example, the type of function:
+    //     `winrt::Microsoft::UI::UIAutomation::AutomationRemoteSayAsInterpretAs winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsSayAsInterpretAs() const;`
+    // can be represented by CastFuncType<winrt::Microsoft::UI::UIAutomation::AutomationRemoteSayAsInterpretAs>.
+    // This type is used as one of the template parameters of class `UiaEnum`, for the sake of this, we could assign the
+    // any cast function for `UiaEnum`. And furthermore, we could use `UiaVariant::AsType` to convert `UiaVariant` to
+    // any `UiaEnum` classes.
+    template <typename StandinT>
+    using CastFuncType = StandinT (winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::*)() const;
+
     // This function must be called before using the abstraction.
     void Initialize(bool useRemoteOperations, _In_ IUIAutomation* automation) noexcept;
 
@@ -927,11 +939,13 @@ namespace UiaOperationAbstraction
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 
-    template <typename ComEnumT, typename WinRTEnumT, typename StandinT>
+    template <typename ComEnumT, typename WinRTEnumT, typename StandinT, CastFuncType<StandinT> CastFunc>
     class UiaEnum : public UiaTypeBase<ComEnumT, StandinT>
     {
     public:
         static constexpr VARTYPE c_comVariantType = VT_I4;
+        static constexpr auto c_variantMember = &VARIANT::lVal;
+        static constexpr auto c_anyCast = CastFunc;
 
         UiaEnum(ComEnumT value) : UiaTypeBase(value)
         {
@@ -947,7 +961,7 @@ namespace UiaOperationAbstraction
         {
         }
 
-        UiaEnum(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>&) = default;
+        UiaEnum(const UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>&) = default;
 
         operator ComEnumT() const
         {
@@ -964,7 +978,7 @@ namespace UiaOperationAbstraction
             return static_cast<WinRTEnumT>(std::get<ComEnumT>(m_member));
         }
 
-        UiaEnum<ComEnumT, WinRTEnumT, StandinT>& operator=(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>& other)
+        UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>& operator=(const UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>& other)
         {
             if (ShouldUseRemoteApi())
             {
@@ -981,7 +995,7 @@ namespace UiaOperationAbstraction
             return *this;
         }
 
-        UiaBool operator==(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>& rhs) const
+        UiaBool operator==(const UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>& rhs) const
         {
             if (ShouldUseRemoteApi())
             {
@@ -995,7 +1009,7 @@ namespace UiaOperationAbstraction
             return std::get<ComEnumT>(m_member) == std::get<ComEnumT>(rhs.m_member);
         }
 
-        UiaBool operator!=(const UiaEnum<ComEnumT, WinRTEnumT, StandinT>& rhs) const
+        UiaBool operator!=(const UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>& rhs) const
         {
             if (ShouldUseRemoteApi())
             {
@@ -1012,13 +1026,13 @@ namespace UiaOperationAbstraction
         template<class T>
         UiaBool operator==(T rhs) const
         {
-            return (*this == UiaEnum<ComEnumT, WinRTEnumT, StandinT>(rhs));
+            return (*this == UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>(rhs));
         }
 
         template<class T>
         UiaBool operator!=(T rhs) const
         {
-            return (*this != UiaEnum<ComEnumT, WinRTEnumT, StandinT>(rhs));
+            return (*this != UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>(rhs));
         }
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
@@ -1706,14 +1720,19 @@ namespace UiaOperationAbstraction
         explicit UiaVariant(UiaDouble value);
         explicit UiaVariant(UiaString value);
 
-        template <typename ComEnumT, typename WinRTEnumT, typename StandinT>
-        explicit UiaVariant(UiaEnum<ComEnumT, WinRTEnumT, StandinT> value) :
+        template <typename ComEnumT, typename WinRTEnumT, typename StandinT, CastFuncType<StandinT> CastFunc>
+        explicit UiaVariant(UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc> value) :
             UiaTypeBase(
                 value.IsRemoteType() ?
-                UiaVariant(static_cast<AutomationRemoteObject>(static_cast<typename UiaEnum<ComEnumT, WinRTEnumT, StandinT>::RemoteType>(value))) :
+                UiaVariant(static_cast<winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject>(static_cast<typename UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>::RemoteType>(value))) :
                 UiaVariant(details::MakeVariantFrom<UiaInt>(static_cast<int>(static_cast<WinRTEnumT>(value)))))
         {
         }
+
+        UiaBool IsNull() const;
+
+        UiaBool operator!() const { return IsNull(); }
+        operator UiaBool() const { return !IsNull(); }
 
         UiaVariant(const UiaVariant&) = default;
 
@@ -1775,7 +1794,7 @@ namespace UiaOperationAbstraction
             }
             auto localValue = std::get<typename LocalType>(m_member);
             THROW_HR_IF(E_INVALIDARG, V_VT(localValue) != ReturnType::c_comVariantType);
-            return (*localValue).*(ReturnType::c_variantMember);
+            return static_cast<typename ReturnType::LocalType>((*localValue).*(ReturnType::c_variantMember));
         }
 
         UiaBool IsBool() const;
