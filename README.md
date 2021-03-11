@@ -56,9 +56,7 @@ between these "modes" does come at a runtime cost.
 ### Building
 
 In order to build the solution, please make sure you have the [Windows Insider Preview SDK](https://www.microsoft.com/en-us/software-download/windowsinsiderpreviewSDK)
-installed. The current target is the SDK version: `10.0.19613.0`.
-
-Older Insider Preview SDKs can be found [here](https://docs.microsoft.com/en-us/windows-insider/flight-hub/).
+installed. 
 
 The solution can then be built either from Visual Studio or simply from the Visual Studio Developer
 Console using `msbuild`. For instance:
@@ -67,14 +65,9 @@ Console using `msbuild`. For instance:
 msbuild UIAutomation.sln /p:Configuration=Release,Platform=x64
 ```
 
-Should you install a newer SDK, you will need to re-target the projects to that version. (The simplest way
-is to search for `19613` in all `.vcxproj` files and update them to the new version.) Note, however,
-that there are no guarantees that the platform API will be unchanged and as such the project might not
-build or it could work differently at runtime.
-
-In the future, once the platform API has stabilized into an official SDK release, this project will
-target the stable version.
-
+As  these projects have been written against an older preview sdk (10.0.19613.0), there are no guarantees that the platform API will be unchanged and as such the project might not
+build or it could work differently at runtime on newer versions.
+ 
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
