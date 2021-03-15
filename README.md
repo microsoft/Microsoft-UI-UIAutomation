@@ -65,8 +65,7 @@ Console using `msbuild`. For instance:
 msbuild UIAutomation.sln /p:Configuration=Release,Platform=x64
 ```
 
-As  these projects have been written against an older preview sdk (10.0.19613.0), there are no guarantees that the platform API will be unchanged and as such the project might not
-build or it could work differently at runtime on newer versions.
+These projects target SDK version 10.0. Note that breaking changes can occur in preview SDKs, so if you install a new preview SDK there are no guarantees that the platform API will be unchanged and as such the projects might not build or they could work differently at runtime.
  
 # Contributing
 
