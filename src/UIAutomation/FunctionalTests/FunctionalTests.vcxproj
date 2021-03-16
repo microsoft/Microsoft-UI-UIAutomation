@@ -24,7 +24,7 @@
     <ProjectGuid>{ADC03671-2DB4-4130-BC73-B78314046BFB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>FunctionalTests</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19613.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectSubType>NativeUnitTestProject</ProjectSubType>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -193,7 +193,7 @@
       <IsWinMDFile>true</IsWinMDFile>
     </Reference>
     <Reference Include="Windows">
-      <HintPath>$(FrameworkSdkDir)UnionMetadata\10.0.19613.0\Windows.winmd</HintPath>
+      <HintPath>$(FrameworkSdkDir)UnionMetadata\$(TargetPlatformVersion)\Windows.winmd</HintPath>
       <IsWinMDFile>true</IsWinMDFile>
     </Reference>
   </ItemGroup>

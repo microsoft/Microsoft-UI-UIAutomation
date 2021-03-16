@@ -24,7 +24,7 @@
     <ProjectGuid>{A5682ADB-8C0C-4CFD-AED9-2E979751FDCC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>UiaOperationAbstraction</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.19613.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -177,7 +177,7 @@
       <IsWinMDFile>true</IsWinMDFile>
     </Reference>
     <Reference Include="Windows">
-      <HintPath>$(FrameworkSdkDir)UnionMetadata\10.0.19613.0\Windows.winmd</HintPath>
+      <HintPath>$(FrameworkSdkDir)UnionMetadata\$(TargetPlatformVersion)\Windows.winmd</HintPath>
       <IsWinMDFile>true</IsWinMDFile>
     </Reference>
   </ItemGroup>
