@@ -565,8 +565,8 @@ namespace UiaOperationAbstraction
 
     void UiaChar::FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
     {
-        static_assert(sizeof(uint16_t) == sizeof(wchar_t), "uint16_t needs to be the same as wchar_t");
-        m_member = static_cast<wchar_t>(winrt::unbox_value<uint16_t>(result));
+        static_assert(sizeof(char16_t) == sizeof(wchar_t), "char16_t needs to be the same as wchar_t");
+        m_member = static_cast<wchar_t>(winrt::unbox_value<char16_t>(result));
     }
 
     UiaString UiaString::Stringify()
