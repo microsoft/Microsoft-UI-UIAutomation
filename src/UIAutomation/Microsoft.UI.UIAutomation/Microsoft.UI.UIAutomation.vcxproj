@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{7D645239-F96E-4FBE-BAA4-B92838B9D361}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
