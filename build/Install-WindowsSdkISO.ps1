@@ -6,8 +6,8 @@ param([Parameter(Mandatory=$true, Position=0)]
 $ErrorActionPreference = 'Stop'
 
 # Constants
-$WindowsSDKOptions = @("OptionId.UWPCpp", "OptionId.UWPManaged", "OptionId.DesktopCPPx86", "OptionId.DesktopCPPx64")
-$WindowsSDKRegPath = "HKLM:\Software\Microsoft\Windows Kits\Installed Roots"
+$WindowsSDKOptions = @("OptionId.UWPCpp", "OptionId.DesktopCPPx64", "OptionId.DesktopCPPx86", "OptionId.DesktopCPPARM64", "OptionId.DesktopCPPARM", "OptionId.WindowsDesktopDebuggers")
+$WindowsSDKRegPath = "HKLM:\Software\WOW6432Node\Microsoft\Windows Kits\Installed Roots"
 $WindowsSDKRegRootKey = "KitsRoot10"
 $WindowsSDKVersion = "10.0.$buildNumber.0"
 $WindowsSDKInstalledRegPath = "$WindowsSDKRegPath\$WindowsSDKVersion\Installed Options"
@@ -33,22 +33,37 @@ function Download-File
 
     Write-Host -NoNewline "Downloading $downloadName..."
 
-    try
+    $retries = 10
+    $downloaded = $false
+    while (-not $downloaded)
     {
-        $webclient = new-object System.Net.WebClient
-        $webclient.DownloadFile($downloadUrl, $downloadPath)
-    }
-    catch [System.Net.WebException]
-    {
-        Write-Host
-        Write-Warning "Failed to fetch updated file from $downloadUrl"
-        if (!(Test-Path $downloadDest))
+        try
         {
-            throw "$downloadName was not found at $downloadDest"
+            $webclient = new-object System.Net.WebClient
+            $webclient.DownloadFile($downloadUrl, $downloadPath)
+            $downloaded = $true
         }
-        else
+        catch [System.Net.WebException]
         {
-            Write-Warning "$downloadName may be out of date"
+            Write-Host
+            Write-Warning "Failed to fetch updated file from $downloadUrl : $($error[0])"
+            if (!(Test-Path $downloadDest))
+            {
+                if ($retries -gt 0)
+                {
+                    Write-Host "$retries retries left, trying download again"
+                    $retries--
+                    start-sleep -Seconds 10
+                }
+                else
+                {
+                    throw "$downloadName was not found at $downloadDest"
+                }
+            }
+            else
+            {
+                Write-Warning "$downloadName may be out of date"
+            }
         }
     }
 
@@ -57,9 +72,11 @@ function Download-File
     $downloadDestTemp = $downloadPath;
 
     # Delete and rename to final dest
-    if (Test-Path -PathType Container $downloadDest)
+    Write-Host "testing $downloadDest"
+    if (Test-Path $downloadDest)
     {
-        [System.IO.Directory]::Delete($downloadDest, $true)
+        Write-Host "Deleting: $downloadDest"
+        Remove-Item $downloadDest -Force
     }
 
     Move-Item -Force $downloadDestTemp $downloadDest
@@ -169,16 +186,18 @@ function Test-InstallWindowsSDK
 
     if (Test-RegistryPathAndValue -Path $WindowsSDKRegPath -Value $WindowsSDKRegRootKey)
     {
-        $correctWindowsSdkIsInstalled = $false
-        
         # A Windows SDK is installed
         # Is an SDK of our version installed with the options we need?
-        foreach ($windowsSDKOption in $WindowsSDKOptions)
+        $allRequiredSdkOptionsInstalled = $true
+        foreach($sdkOption in $WindowsSDKOptions)
         {
-            $correctWindowsSdkIsInstalled = $correctWindowsSdkIsInstalled -and (Test-RegistryPathAndValue -Path $WindowsSDKInstalledRegPath -Value "$windowsSDKOption")
+            if (!(Test-RegistryPathAndValue -Path $WindowsSDKInstalledRegPath -Value $sdkOption))
+            {
+                $allRequiredSdkOptionsInstalled = $false
+            }
         }
 
-        if ($correctWindowsSdkIsInstalled)
+        if($allRequiredSdkOptionsInstalled)
         {
             # It appears we have what we need. Double check the disk
             $sdkRoot = Get-ItemProperty -Path $WindowsSDKRegPath | Select-Object -ExpandProperty $WindowsSDKRegRootKey
@@ -261,7 +280,7 @@ if ($InstallWindowsSDK)
         $env:TEMP = Join-Path $env:SystemDrive 'temp'
     }
 
-    $winsdkTempDir = Join-Path $env:TEMP "WindowsSDK"
+    $winsdkTempDir = Join-Path (Join-Path $env:TEMP ([System.IO.Path]::GetRandomFileName())) "WindowsSDK"
 
     if (![System.IO.Directory]::Exists($winsdkTempDir))
     {
@@ -270,17 +289,9 @@ if ($InstallWindowsSDK)
 
     $file = "winsdk_$buildNumber.iso"
 
-    if (!(Test-Path $winsdkTempDir\$file))
-    {
-        Write-Verbose "Getting WinSDK from $uri"
-        $downloadFile = Download-File $winsdkTempDir $uri $file
-        Write-Verbose "File is at $downloadFile"
-    }
-    else
-    {
-        Write-Verbose "iso already there"
-        $downloadFile = "$winsdkTempDir\$file"
-    }
+    Write-Verbose "Getting WinSDK from $uri"
+    $downloadFile = Download-File $winsdkTempDir $uri $file
+    Write-Verbose "File is at $downloadFile"
     $downloadFileItem = Get-Item $downloadFile
     
     # Check to make sure the file is at least 10 MB.
@@ -303,9 +314,10 @@ if ($InstallWindowsSDK)
 
         if (Test-Path $isoDrive)
         {
-            $setupPath = Join-Path "$isoDrive" "WinSDKSetup.exe"
             Write-Host -NoNewLine "Installing WinSDK..."
-            Start-Process -Wait $setupPath "/features $($WindowsSDKOptions -join " ") /q"
+
+            $setupPath = Join-Path "$isoDrive" "WinSDKSetup.exe"
+            Start-Process -Wait $setupPath "/features $WindowsSDKOptions /q"
             Write-Host "Done"
         }
         else
@@ -316,7 +328,7 @@ if ($InstallWindowsSDK)
     finally
     {
         Write-Host -NoNewline "Dismounting ISO $file..."
-        #Dismount-ISO $downloadFile
+        Dismount-ISO $downloadFile
         Write-Host "Done"
     }
 }
