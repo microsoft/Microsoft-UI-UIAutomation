@@ -174,6 +174,37 @@ namespace UiaOperationAbstractionTests
             ElementGetNameTest(true);
         }
 
+        // Asserts that you can get the name of a UiaElement via a property ID.
+        void ElementGetNameViaGetPropertyValueTest(const bool useRemoteOperations)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+            auto val = element.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId));
+            auto name = val.AsString();
+            scope.BindResult(name);
+
+            scope.Resolve();
+
+            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(name).get()), std::wstring(L"Display is 0"));
+        }
+
+        TEST_METHOD(ElementGetNameViaGetPropertyValueLocalTest)
+        {
+            ElementGetNameViaGetPropertyValueTest(false);
+        }
+
+        TEST_METHOD(ElementGetNameViaGetPropertyValueRemoteTest)
+        {
+            ElementGetNameViaGetPropertyValueTest(true);
+        }
+
         // Asserts that you can get the runtime id of a UiaElement.
         void ElementGetRuntimeIdTest(const bool useRemoteOperations)
         {

@@ -2057,6 +2057,7 @@
 
         UiaBool IsNull() const;
 
+        UiaVariant GetPropertyValue(UiaPropertyId propId, UiaBool ignoreDefault = false, bool useCachedApi = false);
         UiaArray<UiaInt> GetRuntimeId();
         UiaInt GetProcessId(bool useCachedApi = false);
         UiaControlType GetControlType(bool useCachedApi = false);

@@ -5114,6 +5114,31 @@
         return localPropertyValue;
     }
 
+    UiaVariant UiaElement::GetPropertyValue(UiaPropertyId propId, UiaBool ignoreDefault, bool useCachedApi)
+    {
+        auto delegator = UiaOperationScope::GetCurrentDelegator();
+        if (delegator && delegator->GetUseRemoteApi())
+        {
+            this->ToRemote();
+            propId.ToRemote();
+            ignoreDefault.ToRemote();
+            return std::get<AutomationRemoteElement>(m_member).GetPropertyValue(propId, ignoreDefault);
+        }
+
+        auto localObject = std::get<winrt::com_ptr<IUIAutomationElement>>(m_member);
+        wil::unique_variant localPropertyValue;
+        if (useCachedApi)
+        {
+            winrt::check_hresult(localObject->GetCachedPropertyValueEx(propId, ignoreDefault, &localPropertyValue));
+        }
+        else
+        {
+            winrt::check_hresult(localObject->GetCurrentPropertyValueEx(propId, ignoreDefault, &localPropertyValue));
+        }
+
+        return localPropertyValue;
+    }
+
     UiaInt UiaElement::GetProcessId(bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
