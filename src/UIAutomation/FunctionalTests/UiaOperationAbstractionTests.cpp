@@ -1513,6 +1513,54 @@ namespace UiaOperationAbstractionTests
             UiaTupleWithVariantsTest(true /* useRemoteOperations */);
         }
 
+        void UiaTupleWithEnumsTest(bool useRemoteOperations)
+        {
+            // Initialize the test application.
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+
+            // Set focus to the display element.
+            auto focusedElement = WaitForElementFocus(L"Display is 0");
+
+            // Initialize the UIA Remote Operation abstraction.
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            // Make sure `UiaTuple` instances can hold `UiaVariant` objects with different values in them by
+            // creating a `UiaTuple` that holds multiple `UiaVariant` members and ensuring they can be used
+            // during executing remote operations.
+            {
+                auto operationScope = UiaOperationScope::StartNew();
+
+                // Give this operation a remote context.
+                UiaElement displayElement{ focusedElement };
+                operationScope.BindInput(displayElement);
+
+                // Create a tuple with enums.
+                UiaTuple<UiaSayAsInterpretAs, UiaTextUnit> tuple{ SayAsInterpretAs_Spell, TextUnit_Word };
+
+                // Return the tuple for the operation.
+                operationScope.BindResult(tuple);
+                operationScope.Resolve();
+
+                // Ensure the enum values in the returned `UiaTuple` instance matches.
+                auto sayAsInterpretAsWrapper = tuple.Get<0>();
+                Assert::AreEqual(static_cast<int>(SayAsInterpretAs_Spell), static_cast<int>(sayAsInterpretAsWrapper));
+
+                auto textUnitWrapper = tuple.Get<1>();
+                Assert::AreEqual(static_cast<int>(TextUnit_Word), static_cast<int>(textUnitWrapper));
+            }
+        }
+
+        TEST_METHOD(UiaTupleWithEnumsLocal)
+        {
+            UiaTupleWithEnumsTest(false /* useRemoteOperations */);
+        }
+
+        TEST_METHOD(UiaTupleWithEnumsRemote)
+        {
+            UiaTupleWithEnumsTest(true /* useRemoteOperations */);
+        }
+
         void UiaTupleWithCollectionsTest(bool useRemoteOperations)
         {
             // Initialize the test application.

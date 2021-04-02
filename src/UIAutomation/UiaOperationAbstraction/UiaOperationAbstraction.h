@@ -963,6 +963,11 @@ namespace UiaOperationAbstraction
 
         UiaEnum(const UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc>&) = default;
 
+        explicit UiaEnum(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue) :
+           UiaTypeBase((remoteValue.*CastFunc)())
+        {
+        }
+
         operator ComEnumT() const
         {
             return std::get<ComEnumT>(m_member);
