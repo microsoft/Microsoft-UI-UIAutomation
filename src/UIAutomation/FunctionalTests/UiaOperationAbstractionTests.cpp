@@ -1327,8 +1327,12 @@ namespace UiaOperationAbstractionTests
                     UiaString{ L"WrapperConstructed" } /* stringValue */
                 };
 
+                UiaTuple<UiaElement, UiaInt, UiaBool, UiaString> moveAssignmentTuple{};
+                UiaTuple<UiaElement, UiaInt, UiaBool, UiaString> tempTuple{ focusedElement /* elementValue */, 3 /* intValue */, true /* booleanValue */, L"MoveAssignment" /* stringValue */ };
+                moveAssignmentTuple = std::move(tempTuple);
+
                 // Return the results of the comparisons.
-                operationScope.BindResult(defaultConstructedTuple, localConstructedTuple, wrapperConstructedTuple);
+                operationScope.BindResult(defaultConstructedTuple, localConstructedTuple, wrapperConstructedTuple, moveAssignmentTuple);
                 operationScope.Resolve();
 
                 // Represents a local result of `UiaTuple<UiaElement, UiaInt, UiaBool, UiaString>`
@@ -1380,6 +1384,13 @@ namespace UiaOperationAbstractionTests
                 {
                     const LocalTupleResult expectedResult{ L"Display is 0" /* name */, 2 /* numericValue */, true /* booleanValue */, L"WrapperConstructed" /* stringValue */ };
                     const auto actualResult = LocalTupleResult::FromResult(wrapperConstructedTuple);
+                    LocalTupleResult::TestEqual(expectedResult, actualResult);
+                }
+
+                // -> `UiaTuple` using move assignment.
+                {
+                    const LocalTupleResult expectedResult{ L"Display is 0" /* name */, 3 /* numericValue */, true /* booleanValue */, L"MoveAssignment" /* stringValue */ };
+                    const auto actualResult = LocalTupleResult::FromResult(moveAssignmentTuple);
                     LocalTupleResult::TestEqual(expectedResult, actualResult);
                 }
             }

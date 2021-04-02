@@ -1907,6 +1907,9 @@ namespace UiaOperationAbstraction
             return false;
         }
 
+        UiaTuple(UiaTuple&&) = default;
+        UiaTuple& operator=(UiaTuple&&) = default;
+
         UiaBool operator!() const { return IsNull(); }
         operator UiaBool() const { return !IsNull(); }
 
