@@ -1891,6 +1891,12 @@ namespace UiaOperationAbstraction
         }
 
         UiaTuple(const UiaTuple&) = default;
+        UiaTuple& operator=(const UiaTuple&) = delete;
+
+        UiaTuple(UiaTuple&&) = default;
+        UiaTuple& operator=(UiaTuple&&) = default;
+
+        ~UiaTuple() = default;
 
         UiaBool IsNull() const
         {
@@ -1906,9 +1912,6 @@ namespace UiaOperationAbstraction
             // The local version of a UiaTuple can never be null.
             return false;
         }
-
-        UiaTuple(UiaTuple&&) = default;
-        UiaTuple& operator=(UiaTuple&&) = default;
 
         UiaBool operator!() const { return IsNull(); }
         operator UiaBool() const { return !IsNull(); }
