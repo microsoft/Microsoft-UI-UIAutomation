@@ -1946,6 +1946,15 @@ namespace UiaOperationAbstraction
         ToRemote();
     }
 
+    UiaVariant::UiaVariant(UiaElement value) :
+        UiaTypeBase(
+            value.IsRemoteType() ?
+            UiaVariant(static_cast<AutomationRemoteObject>(static_cast<UiaElement::RemoteType>(value))) :
+            UiaVariant(details::MakeVariantFrom<UiaElement>(wil::com_ptr<IUIAutomationElement>(value.get()).detach())))
+    {
+        ToRemote();
+    }
+
     UiaBool UiaVariant::IsNull() const
     {
         if (ShouldUseRemoteApi())
@@ -2117,7 +2126,60 @@ namespace UiaOperationAbstraction
         return AsType<UiaString>();
     }
 
-    UiaVariant::operator std::shared_ptr<wil::unique_variant>() const
+    UiaBool UiaVariant::IsElement() const
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteObject = std::get<RemoteType>(m_member);
+            auto remoteAny = remoteObject.try_as<AutomationRemoteAnyObject>();
+            if (remoteAny)
+            {
+                return remoteAny.IsElement();
+            }
+            auto remoteDerived = remoteObject.try_as<typename UiaElement::RemoteType>();
+                    if (remoteDerived)
+                    {
+                        return true;
+                    }
+            return false;
+        }
+        auto localValue = std::get<typename LocalType>(m_member);
+        if(V_VT(localValue) != UiaElement::c_comVariantType) {
+            return false;
+        }
+        winrt::com_ptr<IUnknown> punk;
+        punk.copy_from(localValue->punkVal);
+        if(punk.try_as<UiaElement::LocalType::type>()) {
+            return true;
+        }
+        return false;
+    }
+
+    UiaElement UiaVariant::AsElement() const
+    {
+        if (ShouldUseRemoteApi())
+        {
+            auto remoteObject = std::get<RemoteType>(m_member);
+            auto remoteAny = remoteObject.try_as<AutomationRemoteAnyObject>();
+            if (remoteAny)
+            {
+                return remoteAny.AsElement();
+            }
+            auto remoteDerived = remoteObject.try_as<typename UiaElement::RemoteType>();
+                    if (remoteDerived)
+                    {
+                        return remoteDerived;
+                    }
+            THROW_HR(E_UNEXPECTED);
+        }
+        auto localValue = std::get<typename LocalType>(m_member);
+        THROW_HR_IF(E_INVALIDARG, V_VT(localValue) != UiaElement::c_comVariantType);
+        winrt::com_ptr<IUnknown> punk;
+        punk.copy_from(localValue->punkVal);
+        return punk.as<UiaElement::LocalType::type>();
+    }
+
+        UiaVariant::operator std::shared_ptr<wil::unique_variant>() const
     {
         return std::get<std::shared_ptr<wil::unique_variant>>(m_member);
     }
