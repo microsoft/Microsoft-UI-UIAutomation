@@ -581,6 +581,8 @@ namespace UiaOperationAbstraction
         UiaTypeBase(UiaTypeBase&&) = default;
         UiaTypeBase& operator=(UiaTypeBase&&) = default;
 
+        ~UiaTypeBase() = default;
+
         constexpr bool IsRemoteType() const
         {
             return std::holds_alternative<RemoteType>(m_member);
