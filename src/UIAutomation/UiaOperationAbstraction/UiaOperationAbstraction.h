@@ -581,6 +581,8 @@ namespace UiaOperationAbstraction
         UiaTypeBase(UiaTypeBase&&) = default;
         UiaTypeBase& operator=(UiaTypeBase&&) = default;
 
+        ~UiaTypeBase() = default;
+
         constexpr bool IsRemoteType() const
         {
             return std::holds_alternative<RemoteType>(m_member);
@@ -1896,6 +1898,12 @@ namespace UiaOperationAbstraction
         }
 
         UiaTuple(const UiaTuple&) = default;
+        UiaTuple& operator=(const UiaTuple&) = delete;
+
+        UiaTuple(UiaTuple&&) = default;
+        UiaTuple& operator=(UiaTuple&&) = default;
+
+        ~UiaTuple() = default;
 
         UiaBool IsNull() const
         {
