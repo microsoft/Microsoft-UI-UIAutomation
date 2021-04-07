@@ -29,7 +29,6 @@ namespace UiaOperationAbstraction
 {
     using unique_safearray = wil::unique_any<SAFEARRAY*, decltype(&::SafeArrayDestroy), ::SafeArrayDestroy>;
 
-    // Forward declare UiaElement as it is used in a constructor for UiaVariant 
     class UiaElement;
 
     // This type is representing a function type, where the return type is a template parameter, the function should be
