@@ -1771,7 +1771,14 @@ namespace UiaOperationAbstraction
                 }
             }
             auto localValue = std::get<typename LocalType>(m_member);
-            return V_VT(localValue) == WrapperType::c_comVariantType;
+            bool isType = V_VT(localValue) == WrapperType::c_comVariantType;
+            if(!isType) return false;
+            if constexpr(WrapperType::c_comVariantType == VT_UNKNOWN) {
+                winrt::com_ptr<IUnknown> punk;
+                punk.copy_from(localValue->punkVal);
+                isType = !!punk.try_as<typename WrapperType::LocalType::type>();
+            }
+            return isType;
         }
 
         template <typename ReturnType>
@@ -1797,7 +1804,13 @@ namespace UiaOperationAbstraction
             }
             auto localValue = std::get<typename LocalType>(m_member);
             THROW_HR_IF(E_INVALIDARG, V_VT(localValue) != ReturnType::c_comVariantType);
-            return static_cast<typename ReturnType::LocalType>((*localValue).*(ReturnType::c_variantMember));
+            if constexpr(ReturnType::c_comVariantType == VT_UNKNOWN) {
+                winrt::com_ptr<IUnknown> punk;
+                punk.copy_from(localValue->punkVal);
+                return punk.as<ReturnType::LocalType::type>();
+            } else {
+                return static_cast<typename ReturnType::LocalType>((*localValue).*(ReturnType::c_variantMember));
+            }
         }
 
         UiaBool IsBool() const;
