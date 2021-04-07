@@ -5114,7 +5114,7 @@
         return localPropertyValue;
     }
 
-    UiaVariant UiaElement::GetPropertyValue(UiaPropertyId propId, UiaBool ignoreDefault, bool useCachedApi)
+    UiaVariant UiaElement::GetPropertyValue(UiaPropertyId propId, UiaBool ignoreDefault /* = false */, bool useCachedApi /* = false */)
     {
         auto delegator = UiaOperationScope::GetCurrentDelegator();
         if (delegator && delegator->GetUseRemoteApi())
