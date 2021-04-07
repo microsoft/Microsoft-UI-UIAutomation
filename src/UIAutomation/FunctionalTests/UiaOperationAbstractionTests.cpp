@@ -1947,18 +1947,18 @@ namespace UiaOperationAbstractionTests
             auto scope = UiaOperationScope::StartNew();
 
             UiaElement element = calc;
-            auto ev = UiaVariant(element);
-            auto ev_IsElement = ev.IsElement();
-            scope.BindResult(ev_IsElement);
+            auto variantFromElement = UiaVariant(element);
+            auto variantIsElement = variantFromElement.IsElement();
+            scope.BindResult(variantIsElement);
             
-            auto ev_AsElement = ev.AsElement();
+            auto elementFromVariant = variantFromElement.AsElement();
 
-            auto name = ev_AsElement.GetName(false /*useCachedApi*/);
+            auto name = elementFromVariant.GetName(false /*useCachedApi*/);
             scope.BindResult(name);
 
             scope.Resolve();
 
-            Assert::IsTrue(static_cast<bool>(ev_IsElement));
+            Assert::IsTrue(static_cast<bool>(variantIsElement));
             Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(name).get()), std::wstring(L"Display is 0"));
         }
 
