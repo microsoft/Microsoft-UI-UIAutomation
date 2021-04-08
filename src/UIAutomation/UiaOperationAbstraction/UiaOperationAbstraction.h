@@ -1743,12 +1743,9 @@ namespace UiaOperationAbstraction
 
         VARIANT get() const;
 
-        // It would be nice if this didn't have to be told what the unsupported attribute value is,
-        // but we don't have an IUIAutomation object handy in this library so it does.
-        UiaBool IsNotSupported(_In_ const IUnknown* unsupportedAttributeValue) const;
+        UiaBool IsNotSupported() const;
 
-        // Same for the mixed attribute value.
-        UiaBool IsMixedAttribute(_In_ const IUnknown* mixedAttributeValue) const;
+        UiaBool IsMixedAttribute() const;
 
         template<typename WrapperType>
         UiaBool IsType() const
