@@ -244,6 +244,51 @@ namespace UiaOperationAbstractionTests
             GetPropertyValueIgnoreDefaultTest(true);
         }
 
+        // Tests GetPropertyValue with useCachedAPI set to true and false
+        // Ensuring that an exception is raised if trying to fetch a cached value that is not cached. 
+        void GetPropertyValueUseCachedAPITest(const bool useRemoteOperations)
+                {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement elementWithoutCache = calc;
+            scope.BindResult(elementWithoutCache);
+
+            UiaOperationAbstraction::UiaCacheRequest cacheRequest;
+            cacheRequest.AddProperty(UIA_NamePropertyId);
+
+            auto elementWithCache = elementWithoutCache.GetUpdatedCacheElement(cacheRequest);
+scope.BindResult(elementWithCache);
+
+            scope.Resolve();
+
+            UiaString cachedName = elementWithCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ true).AsString();
+            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(cachedName).get()), std::wstring(L"Display is 0"));
+
+            Assert::ExpectException<winrt::hresult_error>([&]()
+                {
+                elementWithoutCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ true);
+            });
+
+            UiaString uncachedName = elementWithoutCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ false).AsString();
+            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(uncachedName).get()), std::wstring(L"Display is 0"));
+        }
+
+        TEST_METHOD(GetPropertyValueUseCachedAPILocalTest)
+                {
+            GetPropertyValueUseCachedAPITest(false);
+        }
+
+        TEST_METHOD(GetPropertyValueUseCachedAPIRemoteTest)
+        {
+            GetPropertyValueUseCachedAPITest(true);
+        }
+
         // Asserts that you can get the runtime id of a UiaElement.
         void ElementGetRuntimeIdTest(const bool useRemoteOperations)
         {
