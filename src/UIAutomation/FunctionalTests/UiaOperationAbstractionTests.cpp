@@ -175,7 +175,7 @@ namespace UiaOperationAbstractionTests
         }
 
         // Asserts that you can get the name of a UiaElement via a property ID.
-        void ElementGetNameViaGetPropertyValueTest(const bool useRemoteOperations)
+        void GetPropertyValueFetchNameTest(const bool useRemoteOperations)
         {
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
@@ -195,14 +195,53 @@ namespace UiaOperationAbstractionTests
             Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(name).get()), std::wstring(L"Display is 0"));
         }
 
-        TEST_METHOD(ElementGetNameViaGetPropertyValueLocalTest)
+        TEST_METHOD(GetPropertyValueFetchNameLocalTest)
         {
-            ElementGetNameViaGetPropertyValueTest(false);
+            GetPropertyValueFetchNameTest(false);
         }
 
-        TEST_METHOD(ElementGetNameViaGetPropertyValueRemoteTest)
+        TEST_METHOD(GetPropertyValueFetchNameRemoteTest)
         {
-            ElementGetNameViaGetPropertyValueTest(true);
+            GetPropertyValueFetchNameTest(true);
+        }
+
+            // Tests that GetPropertyValue with ignoreDefault true raises an exception on an unimplemented property ID
+        // and that ignoreDefault false correctly returns a default value.
+        void GetPropertyValueIgnoreDefaultTest(const bool useRemoteOperations)
+                {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+
+            auto defaultVal = element.GetPropertyValue(UiaPropertyId(UIA_AriaPropertiesPropertyId), false);
+            scope.BindResult(defaultVal);
+            auto ariaProperties = defaultVal.AsString();
+            scope.BindResult(ariaProperties);
+
+            auto notSupportedVal = element.GetPropertyValue(UiaPropertyId(UIA_AriaPropertiesPropertyId), true);
+            scope.BindResult(notSupportedVal);
+
+            scope.Resolve();
+
+            Assert::AreEqual(static_cast<bool>(defaultVal.IsNotSupported()), false);
+            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(ariaProperties).get()), std::wstring(L""));
+            Assert::AreEqual(static_cast<bool>(notSupportedVal.IsNotSupported()), true);
+        }
+
+        TEST_METHOD(GetPropertyValueIgnoreDefaultLocalTest)
+                {
+            GetPropertyValueIgnoreDefaultTest(false);
+        }
+
+        TEST_METHOD(GetPropertyValueIgnoreDefaultRemoteTest)
+        {
+            GetPropertyValueIgnoreDefaultTest(true);
         }
 
         // Asserts that you can get the runtime id of a UiaElement.
