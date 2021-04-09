@@ -205,10 +205,10 @@ namespace UiaOperationAbstractionTests
             GetPropertyValueFetchNameTest(true);
         }
 
-            // Tests that GetPropertyValue with ignoreDefault true raises an exception on an unimplemented property ID
+        // Tests that GetPropertyValue with ignoreDefault true raises an exception on an unimplemented property ID
         // and that ignoreDefault false correctly returns a default value.
         void GetPropertyValueIgnoreDefaultTest(const bool useRemoteOperations)
-                {
+        {
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
@@ -235,7 +235,7 @@ namespace UiaOperationAbstractionTests
         }
 
         TEST_METHOD(GetPropertyValueIgnoreDefaultLocalTest)
-                {
+        {
             GetPropertyValueIgnoreDefaultTest(false);
         }
 
@@ -247,7 +247,7 @@ namespace UiaOperationAbstractionTests
         // Tests GetPropertyValue with useCachedAPI set to true and false
         // Ensuring that an exception is raised if trying to fetch a cached value that is not cached. 
         void GetPropertyValueUseCachedAPITest(const bool useRemoteOperations)
-                {
+        {
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
@@ -263,7 +263,7 @@ namespace UiaOperationAbstractionTests
             cacheRequest.AddProperty(UIA_NamePropertyId);
 
             auto elementWithCache = elementWithoutCache.GetUpdatedCacheElement(cacheRequest);
-scope.BindResult(elementWithCache);
+            scope.BindResult(elementWithCache);
 
             scope.Resolve();
 
@@ -271,7 +271,7 @@ scope.BindResult(elementWithCache);
             Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(cachedName).get()), std::wstring(L"Display is 0"));
 
             Assert::ExpectException<winrt::hresult_error>([&]()
-                {
+            {
                 elementWithoutCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ true);
             });
 
@@ -280,7 +280,7 @@ scope.BindResult(elementWithCache);
         }
 
         TEST_METHOD(GetPropertyValueUseCachedAPILocalTest)
-                {
+        {
             GetPropertyValueUseCachedAPITest(false);
         }
 
