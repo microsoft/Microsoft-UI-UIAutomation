@@ -267,16 +267,19 @@ namespace UiaOperationAbstractionTests
 
             scope.Resolve();
 
-            UiaString cachedName = elementWithCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ true).AsString();
-            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(cachedName).get()), std::wstring(L"Display is 0"));
+            UiaString cachedNameFromElementWithCache = elementWithCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ true).AsString();
+            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(cachedNameFromElementWithCache).get()), std::wstring(L"Display is 0"));
+
+            UiaString uncachedNameFromElementWithCache = elementWithCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ false).AsString();
+            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(uncachedNameFromElementWithCache).get()), std::wstring(L"Display is 0"));
 
             Assert::ExpectException<winrt::hresult_error>([&]()
             {
                 elementWithoutCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ true);
             });
 
-            UiaString uncachedName = elementWithoutCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ false).AsString();
-            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(uncachedName).get()), std::wstring(L"Display is 0"));
+            UiaString uncachedNameFromElementWithoutCache = elementWithoutCache.GetPropertyValue(UiaPropertyId(UIA_NamePropertyId), /*ignoreDefault=*/ false, /*useCachedApi=*/ false).AsString();
+            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(uncachedNameFromElementWithoutCache).get()), std::wstring(L"Display is 0"));
         }
 
         TEST_METHOD(GetPropertyValueUseCachedAPILocalTest)
