@@ -1773,7 +1773,8 @@ namespace UiaOperationAbstraction
             auto localValue = std::get<typename LocalType>(m_member);
             bool isType = V_VT(localValue) == WrapperType::c_comVariantType;
             if(!isType) return false;
-            if constexpr(WrapperType::c_comVariantType == VT_UNKNOWN) {
+            if constexpr(WrapperType::c_comVariantType == VT_UNKNOWN)
+            {
                 // wrapper types representing COM objects such as UiaElement are stored as an IUnknown in variants.
                 // Therefore they require an extra QI to their actual interface.
                 winrt::com_ptr<IUnknown> punk;
@@ -1806,13 +1807,16 @@ namespace UiaOperationAbstraction
             }
             auto localValue = std::get<typename LocalType>(m_member);
             THROW_HR_IF(E_INVALIDARG, V_VT(localValue) != ReturnType::c_comVariantType);
-            if constexpr(ReturnType::c_comVariantType == VT_UNKNOWN) {
+            if constexpr(ReturnType::c_comVariantType == VT_UNKNOWN)
+            {
                 // wrapper types representing COM objects such as UiaElement are stored as an IUnknown in variants.
                 // Therefore they require an extra QI to their actual interface.
                 winrt::com_ptr<IUnknown> punk;
                 punk.copy_from(localValue->punkVal);
                 return punk.as<ReturnType::LocalType::type>();
-            } else {
+            }
+            else
+            {
                 return static_cast<typename ReturnType::LocalType>((*localValue).*(ReturnType::c_variantMember));
             }
         }
