@@ -219,12 +219,12 @@ namespace UiaOperationAbstractionTests
 
             UiaElement element = calc;
 
-            auto defaultVal = element.GetPropertyValue(UiaPropertyId(UIA_AriaPropertiesPropertyId), false);
+            auto defaultVal = element.GetPropertyValue(UiaPropertyId(UIA_AriaPropertiesPropertyId), false /*ignoreDefault*/);
             scope.BindResult(defaultVal);
             auto ariaProperties = defaultVal.AsString();
             scope.BindResult(ariaProperties);
 
-            auto notSupportedVal = element.GetPropertyValue(UiaPropertyId(UIA_AriaPropertiesPropertyId), true);
+            auto notSupportedVal = element.GetPropertyValue(UiaPropertyId(UIA_AriaPropertiesPropertyId), true /*ignoreDefault*/);
             scope.BindResult(notSupportedVal);
 
             scope.Resolve();
