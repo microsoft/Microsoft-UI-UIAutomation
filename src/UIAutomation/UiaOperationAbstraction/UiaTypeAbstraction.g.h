@@ -2015,6 +2015,9 @@
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>
     {
     public:
+        static constexpr VARTYPE c_comVariantType = VT_UNKNOWN;
+        static constexpr auto c_variantMember = &VARIANT::punkVal;
+        static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsElement;
         static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsElement;
 
         UiaElement(_In_ IUIAutomationElement* element);

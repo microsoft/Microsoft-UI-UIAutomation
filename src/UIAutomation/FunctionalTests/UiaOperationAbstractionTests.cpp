@@ -2111,5 +2111,42 @@ namespace UiaOperationAbstractionTests
         {
             UiaVariantCastUiaEnumTest(true /* useRemoteOperations */);
         }
+
+        // Asserts that you can convert a UiaElement to / from a UiaVariant 
+        void ElementAsVariantTest(const bool useRemoteOperations)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+            auto variantFromElement = UiaVariant(element);
+            auto variantIsElement = variantFromElement.IsElement();
+            scope.BindResult(variantIsElement);
+            
+            auto elementFromVariant = variantFromElement.AsElement();
+
+            auto name = elementFromVariant.GetName(false /*useCachedApi*/);
+            scope.BindResult(name);
+
+            scope.Resolve();
+
+            Assert::IsTrue(static_cast<bool>(variantIsElement));
+            Assert::AreEqual(std::wstring(static_cast<wil::shared_bstr>(name).get()), std::wstring(L"Display is 0"));
+        }
+
+        TEST_METHOD(ElementAsVariantLocalTest)
+        {
+            ElementAsVariantTest(false);
+        }
+
+        TEST_METHOD(ElementAsVariantRemoteTest)
+        {
+            ElementAsVariantTest(true);
+        }
     };
 }

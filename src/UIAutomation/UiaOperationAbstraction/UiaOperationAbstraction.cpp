@@ -1946,6 +1946,15 @@ namespace UiaOperationAbstraction
         ToRemote();
     }
 
+    UiaVariant::UiaVariant(UiaElement value) :
+        UiaTypeBase(
+            value.IsRemoteType() ?
+            UiaVariant(static_cast<AutomationRemoteObject>(static_cast<UiaElement::RemoteType>(value))) :
+            UiaVariant(details::MakeVariantFrom<UiaElement>(wil::com_ptr<IUIAutomationElement>(value.get()).detach())))
+    {
+        ToRemote();
+    }
+
     UiaBool UiaVariant::IsNull() const
     {
         if (ShouldUseRemoteApi())
@@ -2125,6 +2134,16 @@ namespace UiaOperationAbstraction
     UiaString UiaVariant::AsString() const
     {
         return AsType<UiaString>();
+    }
+
+    UiaBool UiaVariant::IsElement() const
+    {
+        return IsType<UiaElement>();
+    }
+
+    UiaElement UiaVariant::AsElement() const
+    {
+        return AsType<UiaElement>();
     }
 
     UiaVariant::operator std::shared_ptr<wil::unique_variant>() const

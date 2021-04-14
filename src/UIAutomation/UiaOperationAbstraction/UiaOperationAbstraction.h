@@ -29,6 +29,8 @@ namespace UiaOperationAbstraction
 {
     using unique_safearray = wil::unique_any<SAFEARRAY*, decltype(&::SafeArrayDestroy), ::SafeArrayDestroy>;
 
+    class UiaElement;
+
     // This type is representing a function type, where the return type is a template parameter, the function should be
     // a const member function of class `winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject`, the parameter
     // list is void.
@@ -1726,6 +1728,7 @@ namespace UiaOperationAbstraction
         explicit UiaVariant(UiaUint value);
         explicit UiaVariant(UiaDouble value);
         explicit UiaVariant(UiaString value);
+        explicit UiaVariant(UiaElement value);
 
         template <typename ComEnumT, typename WinRTEnumT, typename StandinT, CastFuncType<StandinT> CastFunc>
         explicit UiaVariant(UiaEnum<ComEnumT, WinRTEnumT, StandinT, CastFunc> value) :
@@ -1772,7 +1775,17 @@ namespace UiaOperationAbstraction
                 }
             }
             auto localValue = std::get<typename LocalType>(m_member);
-            return V_VT(localValue) == WrapperType::c_comVariantType;
+            bool isType = V_VT(localValue) == WrapperType::c_comVariantType;
+            if(!isType) return false;
+            if constexpr(WrapperType::c_comVariantType == VT_UNKNOWN)
+            {
+                // wrapper types representing COM objects such as UiaElement are stored as an IUnknown in variants.
+                // Therefore they require an extra QI to their actual interface.
+                winrt::com_ptr<IUnknown> punk;
+                punk.copy_from(localValue->punkVal);
+                isType = !!punk.try_as<typename WrapperType::LocalType::type>();
+            }
+            return isType;
         }
 
         template <typename ReturnType>
@@ -1798,7 +1811,18 @@ namespace UiaOperationAbstraction
             }
             auto localValue = std::get<typename LocalType>(m_member);
             THROW_HR_IF(E_INVALIDARG, V_VT(localValue) != ReturnType::c_comVariantType);
-            return static_cast<typename ReturnType::LocalType>((*localValue).*(ReturnType::c_variantMember));
+            if constexpr(ReturnType::c_comVariantType == VT_UNKNOWN)
+            {
+                // wrapper types representing COM objects such as UiaElement are stored as an IUnknown in variants.
+                // Therefore they require an extra QI to their actual interface.
+                winrt::com_ptr<IUnknown> punk;
+                punk.copy_from(localValue->punkVal);
+                return punk.as<ReturnType::LocalType::type>();
+            }
+            else
+            {
+                return static_cast<typename ReturnType::LocalType>((*localValue).*(ReturnType::c_variantMember));
+            }
         }
 
         UiaBool IsBool() const;
@@ -1815,6 +1839,9 @@ namespace UiaOperationAbstraction
 
         UiaBool IsString() const;
         UiaString AsString() const;
+
+        UiaBool IsElement() const;
+        UiaElement AsElement() const;
 
         operator winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject() const;
 
