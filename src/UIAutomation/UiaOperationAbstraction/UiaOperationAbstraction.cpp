@@ -2136,7 +2136,7 @@ namespace UiaOperationAbstraction
         return AsType<UiaElement>();
     }
 
-        UiaVariant::operator std::shared_ptr<wil::unique_variant>() const
+    UiaVariant::operator std::shared_ptr<wil::unique_variant>() const
     {
         return std::get<std::shared_ptr<wil::unique_variant>>(m_member);
     }
