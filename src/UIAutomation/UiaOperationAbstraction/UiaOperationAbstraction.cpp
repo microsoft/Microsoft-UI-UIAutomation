@@ -2029,7 +2029,7 @@ namespace UiaOperationAbstraction
         return !(*this == rhs);
     }
 
-    UiaBool UiaVariant::IsNotSupported(_In_ const IUnknown* unsupportedAttributeValue) const
+    UiaBool UiaVariant::IsNotSupported() const
     {
         if (ShouldUseRemoteApi())
         {
@@ -2045,10 +2045,15 @@ namespace UiaOperationAbstraction
             }
         }
         const auto localValue = std::get<std::shared_ptr<wil::unique_variant>>(m_member);
-        return (localValue->vt == VT_UNKNOWN) && (localValue->punkVal == unsupportedAttributeValue);
+        if(localValue->vt == VT_UNKNOWN) {
+            wil::com_ptr<IUnknown> notSupportedVal;
+            g_automation.get()->get_ReservedNotSupportedValue(&notSupportedVal);
+            return localValue->punkVal == notSupportedVal.get();
+        }
+        return false;
     }
 
-    UiaBool UiaVariant::IsMixedAttribute(_In_ const IUnknown* mixedAttributeValue) const
+    UiaBool UiaVariant::IsMixedAttribute() const
     {
         if (ShouldUseRemoteApi())
         {
@@ -2064,7 +2069,12 @@ namespace UiaOperationAbstraction
             }
         }
         const auto localValue = std::get<std::shared_ptr<wil::unique_variant>>(m_member);
-        return (localValue->vt == VT_UNKNOWN) && (localValue->punkVal == mixedAttributeValue);
+        if(localValue->vt == VT_UNKNOWN) {
+            wil::com_ptr<IUnknown> mixedAttributeVal;
+            g_automation.get()->get_ReservedMixedAttributeValue(&mixedAttributeVal);
+            return localValue->punkVal == mixedAttributeVal.get();
+        }
+        return false;
     }
 
     UiaBool UiaVariant::IsBool() const
