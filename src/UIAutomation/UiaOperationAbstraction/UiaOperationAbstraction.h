@@ -123,6 +123,55 @@ namespace UiaOperationAbstraction
             }
         }
 
+        template<class TryBody, class CatchBody>
+        void Try(TryBody&& tryBody, CatchBody&& catchBody) const
+        {
+            if (m_useRemoteApi)
+            {
+                m_remoteOperation.TryBlock(std::forward<TryBody>(tryBody), std::forward<CatchBody>(catchBody));
+            }
+            else
+            {
+                try
+                {
+                    tryBody();
+                }
+                catch(std::exception /*e*/)
+                {
+                    catchBody();
+                }
+            }
+        }
+
+        template<class TryBody>
+        void Try(TryBody&& tryBody) const
+        {
+            if (m_useRemoteApi)
+            {
+                m_remoteOperation.TryBlock(std::forward<TryBody>(tryBody));
+            }
+            else
+            {
+                try
+                {
+                    tryBody();
+                }
+                catch(std::exception /*e*/)
+                {
+                }
+            }
+        }
+
+        std::optional<winrt::Microsoft::UI::UIAutomation::AutomationRemoteInt> GetCurrentFailureCode()
+        {
+            if (m_useRemoteApi)
+            {
+                return m_remoteOperation.GetCurrentFailureCode();
+            }
+
+            return std::nullopt;
+        }
+
         // This method handles a pure lvalue conditional.
         // This method MUST NOT be modified to take a const lvalue ref or a non-ref value, because those
         // would allow an expression as the first argument.
@@ -2370,6 +2419,34 @@ namespace UiaOperationAbstraction
         inline void If(UiaBool conditionBool, OnTrue&& onTrue) const
         {
             GetCurrentDelegator()->If<OnTrue>(conditionBool, std::forward<OnTrue>(onTrue));
+        }
+
+        template<class TryBody, class CatchBody>
+        inline void Try(TryBody&& tryBody, CatchBody&& catchBody) const
+        {
+            GetCurrentDelegator()->Try<TryBody, CatchBody>(std::forward<TryBody>(tryBody), std::forward<CatchBody>(catchBody));
+        }
+
+        template<class TryBody>
+        inline void Try(TryBody&& tryBody) const
+        {
+            GetCurrentDelegator()->Try<TryBody>(std::forward<TryBody>(tryBody));
+        }
+
+        UiaInt GetCurrentFailureCode() const 
+        {
+            auto currentFailureCode = GetCurrentDelegator()->GetCurrentFailureCode();
+            UiaInt resultFailureCode = S_OK;
+            if (!currentFailureCode.has_value())
+            {
+                resultFailureCode = wil::ResultFromCaughtException();
+            }
+            else
+            {
+                resultFailureCode = *currentFailureCode;
+            }
+
+            return resultFailureCode;
         }
 
         // This method handles a pure lvalue conditional.
