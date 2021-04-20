@@ -2148,5 +2148,97 @@ namespace UiaOperationAbstractionTests
         {
             ElementAsVariantTest(true);
         }
+
+        TEST_METHOD(TestTryAndCatchBlockAsLocalTest)
+        {
+            TryAndCatchBlockTest(false);
+        }
+
+        TEST_METHOD(TestTryAndCatchBlockAsRemoteTest)
+        {
+            TryAndCatchBlockTest(true);
+        }
+
+        // Tests the try block and catch block implementation both locally and remote. When an exception is encountered, the execution
+        // continues till the end of instructions without returning from the exception location, also records the
+        void TryAndCatchBlockTest(const bool useRemoteOperations)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+            UiaElement element = calc;
+
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            scope.BindInput(element);
+
+            UiaInt failureCode = 0;
+            UiaArray<UiaInt> numbers;
+            numbers.Append(1);
+            numbers.Append(2);
+            numbers.Append(3);
+            scope.Try([&]()
+            {
+                auto number = numbers.GetAt(3);
+            },
+            [&](UiaFailure failure)
+            {
+                failureCode = failure.GetCurrentFailureCode();
+            });
+
+            UiaInt numberAfterTryCatch = numbers.GetAt(2);
+            scope.BindResult(failureCode);
+            scope.BindResult(numberAfterTryCatch);
+            scope.Resolve();
+
+            auto hresult = HRESULT_FROM_WIN32(failureCode);
+            bool isExpectedException = ((hresult == E_BOUNDS) || (hresult == HRESULT_FROM_WIN32(ERROR_UNHANDLED_EXCEPTION)));
+            Assert::IsTrue(isExpectedException);
+            Assert::AreEqual(3, static_cast<int>(numberAfterTryCatch));
+        }
+
+        TEST_METHOD(TestTryBlockAsLocalTest)
+        {
+            TryBlockTest(false);
+        }
+
+        TEST_METHOD(TestTryBlockAsRemoteTest)
+        {
+            TryBlockTest(true);
+        }
+
+        // Tests the try block implementation both locally and remote. When an exception is encountered, the execution
+        // continues till the end of instructions without returning from the exception location.
+        void TryBlockTest(const bool useRemoteOperations)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+            UiaElement element = calc;
+
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            scope.BindInput(element);
+
+            UiaInt failureCode = 0;
+            UiaArray<UiaInt> numbers;
+            numbers.Append(1);
+            numbers.Append(2);
+            numbers.Append(3);
+            scope.Try([&]()
+            {
+                auto number = numbers.GetAt(3);
+            });
+
+            UiaString testString{ L"Text after the try block" };
+            scope.BindResult(testString);
+            scope.Resolve();
+
+            Assert::AreEqual(std::wstring(L"Text after the try block"), testString.GetLocalWstring());
+        }
     };
 }

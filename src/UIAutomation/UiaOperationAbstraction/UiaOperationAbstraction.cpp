@@ -760,6 +760,18 @@ namespace UiaOperationAbstraction
         g_automation.get().reset();
     }
 
+    // UiaFailure
+    UiaInt UiaFailure::GetCurrentFailureCode()
+    {
+        if (m_useRemoteApi && m_remoteOperation)
+        {
+            return m_remoteOperation.GetCurrentFailureCode();
+        }
+
+        return wil::ResultFromCaughtException();
+    }
+
+    // UiaOperationDelegator
     UiaOperationDelegator::UiaOperationDelegator() :
         UiaOperationDelegator(g_useRemoteOperations)
     {

@@ -71,6 +71,20 @@ namespace UiaOperationAbstraction
         const char* what() const override { return "RemoteOperationsWrapper local loop break"; }
     };
 
+    class UiaFailure
+    {
+    public:
+        UiaFailure(const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation& remoteOperation, const bool& useRemoteApi) :
+            m_remoteOperation(remoteOperation),
+            m_useRemoteApi(useRemoteApi) {}
+
+        UiaInt GetCurrentFailureCode();
+
+    private:
+        const bool& m_useRemoteApi;
+        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation& m_remoteOperation;
+    };
+
     // The UiaOperationDelegator class in is charge of delegating calls on UIA wrapper types in this abstraction
     // to either the UIA remote operations API or the non-remote UIA API. This class also exposes basic constructs
     // such as if-statements and loops which operate on UIA abstraction wrapper types which should be used by
@@ -128,7 +142,12 @@ namespace UiaOperationAbstraction
         {
             if (m_useRemoteApi)
             {
-                m_remoteOperation.TryBlock(std::forward<TryBody>(tryBody), std::forward<CatchBody>(catchBody));
+                auto newCatchBody = [this, catchBody(std::forward<CatchBody>(catchBody))]()
+                {
+                    catchBody(UiaFailure(m_remoteOperation, m_useRemoteApi));
+                };
+
+                m_remoteOperation.TryBlock(std::forward<TryBody>(tryBody), std::move(newCatchBody));
             }
             else
             {
@@ -136,9 +155,9 @@ namespace UiaOperationAbstraction
                 {
                     tryBody();
                 }
-                catch(std::exception /*e*/)
+                catch(...)
                 {
-                    catchBody();
+                    catchBody(UiaFailure(m_remoteOperation, m_useRemoteApi));
                 }
             }
         }
@@ -156,20 +175,10 @@ namespace UiaOperationAbstraction
                 {
                     tryBody();
                 }
-                catch(std::exception /*e*/)
+                catch(...)
                 {
                 }
             }
-        }
-
-        std::optional<winrt::Microsoft::UI::UIAutomation::AutomationRemoteInt> GetCurrentFailureCode()
-        {
-            if (m_useRemoteApi)
-            {
-                return m_remoteOperation.GetCurrentFailureCode();
-            }
-
-            return std::nullopt;
         }
 
         // This method handles a pure lvalue conditional.
@@ -2431,22 +2440,6 @@ namespace UiaOperationAbstraction
         inline void Try(TryBody&& tryBody) const
         {
             GetCurrentDelegator()->Try<TryBody>(std::forward<TryBody>(tryBody));
-        }
-
-        UiaInt GetCurrentFailureCode() const 
-        {
-            auto currentFailureCode = GetCurrentDelegator()->GetCurrentFailureCode();
-            UiaInt resultFailureCode = S_OK;
-            if (!currentFailureCode.has_value())
-            {
-                resultFailureCode = wil::ResultFromCaughtException();
-            }
-            else
-            {
-                resultFailureCode = *currentFailureCode;
-            }
-
-            return resultFailureCode;
         }
 
         // This method handles a pure lvalue conditional.
