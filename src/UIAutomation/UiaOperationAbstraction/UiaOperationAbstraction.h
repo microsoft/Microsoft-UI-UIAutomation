@@ -89,6 +89,8 @@ namespace UiaOperationAbstraction
         UiaFailure(UiaFailure&&) = delete;
         UiaFailure& operator=(UiaFailure&&) = delete;
 
+        ~UiaFailure() = default;
+
         UiaInt GetCurrentFailureCode();
 
     private:
