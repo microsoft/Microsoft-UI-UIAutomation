@@ -71,6 +71,38 @@ namespace UiaOperationAbstraction
         const char* what() const override { return "RemoteOperationsWrapper local loop break"; }
     };
 
+    class UiaFailure
+    {
+    public:
+        // Make UiaOperationDelegator a friend class for UiaFailure and make the UiaFailure
+        // constructor private so that only UiaOperationDelegator can create instances for
+        // UiaFailure in try/catch. This is necessary as UiaFailure contains GetCurrentFailureCode() which
+        // returns the last failure code in both remote/local cases. The local case uses 
+        // wil::ResultFromCaughtException which should be invoked only inside catch block as it
+        // rethows the exception and when called outside the catch block can crash the application.
+        friend class UiaOperationDelegator;
+
+        // Delete copy/move constructors.
+        UiaFailure(const UiaFailure&) = delete;
+        UiaFailure& operator=(const UiaFailure&) = delete;
+
+        UiaFailure(UiaFailure&&) = delete;
+        UiaFailure& operator=(UiaFailure&&) = delete;
+
+        ~UiaFailure() = default;
+
+        UiaInt GetCurrentFailureCode();
+
+    private:
+        // Private constructor used only by the TryCatch/Try of UiaOperationDelegator.
+        UiaFailure(const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation remoteOperation, const bool useRemoteApi) :
+            m_remoteOperation(remoteOperation),
+            m_useRemoteApi(useRemoteApi) {}
+
+        const bool m_useRemoteApi;
+        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation m_remoteOperation;
+    };
+
     // The UiaOperationDelegator class in is charge of delegating calls on UIA wrapper types in this abstraction
     // to either the UIA remote operations API or the non-remote UIA API. This class also exposes basic constructs
     // such as if-statements and loops which operate on UIA abstraction wrapper types which should be used by
@@ -121,6 +153,44 @@ namespace UiaOperationAbstraction
                     onTrue();
                 }
             }
+        }
+
+        template<class TryBody, class CatchBody>
+        void TryCatch(TryBody&& tryBody, CatchBody&& catchBody) const
+        {
+            if (m_useRemoteApi)
+            {
+                // A new catch body is defined to hold the caller sent catch body as the caller
+                // sent catch body takes UiaFailure as the input param which can be used to get the
+                // failure code on any failure. For local execution, GetCurrentFailureCode calls
+                // wil::ResultFromCaughtException and this needs to be called only in catch block
+                // as it rethrows the exception. Calling it outside the catch block can crash the process.
+                // Having UiaFailure glued with CatchBody can prevent the GetCurrentFailureCode to be accessed
+                // outside catch block
+                auto newCatchBody = [this, catchBody(std::forward<CatchBody>(catchBody))]()
+                {
+                    catchBody(UiaFailure(m_remoteOperation, m_useRemoteApi));
+                };
+
+                m_remoteOperation.TryBlock(std::forward<TryBody>(tryBody), std::move(newCatchBody));
+            }
+            else
+            {
+                try
+                {
+                    tryBody();
+                }
+                catch(...)
+                {
+                    catchBody(UiaFailure(m_remoteOperation, m_useRemoteApi));
+                }
+            }
+        }
+
+        template<class TryBody>
+        void Try(TryBody&& tryBody) const
+        {
+            TryCatch(std::forward<TryBody>(tryBody), [](UiaFailure /*failure*/) {});
         }
 
         // This method handles a pure lvalue conditional.
@@ -2370,6 +2440,18 @@ namespace UiaOperationAbstraction
         inline void If(UiaBool conditionBool, OnTrue&& onTrue) const
         {
             GetCurrentDelegator()->If<OnTrue>(conditionBool, std::forward<OnTrue>(onTrue));
+        }
+
+        template<class TryBody, class CatchBody>
+        inline void TryCatch(TryBody&& tryBody, CatchBody&& catchBody) const
+        {
+            GetCurrentDelegator()->TryCatch<TryBody, CatchBody>(std::forward<TryBody>(tryBody), std::forward<CatchBody>(catchBody));
+        }
+
+        template<class TryBody>
+        inline void Try(TryBody&& tryBody) const
+        {
+            GetCurrentDelegator()->Try<TryBody>(std::forward<TryBody>(tryBody));
         }
 
         // This method handles a pure lvalue conditional.

@@ -760,6 +760,21 @@ namespace UiaOperationAbstraction
         g_automation.get().reset();
     }
 
+    // UiaFailure
+    UiaInt UiaFailure::GetCurrentFailureCode()
+    {
+        if (m_useRemoteApi)
+        {
+            return m_remoteOperation.GetCurrentFailureCode();
+        }
+
+        // wil::ResultFromCaughtException needs to be used only inside the catch block.
+        // Usually it rethrows the error in the catch block and using it outside the catch
+        // block could crash the process.
+        return wil::ResultFromCaughtException();
+    }
+
+    // UiaOperationDelegator
     UiaOperationDelegator::UiaOperationDelegator() :
         UiaOperationDelegator(g_useRemoteOperations)
     {
