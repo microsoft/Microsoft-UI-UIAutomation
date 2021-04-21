@@ -74,13 +74,29 @@ namespace UiaOperationAbstraction
     class UiaFailure
     {
     public:
-        UiaFailure(const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation remoteOperation, const bool useRemoteApi) :
-            m_remoteOperation(remoteOperation),
-            m_useRemoteApi(useRemoteApi) {}
+        // Make UiaOperationDelegator a friend class for UiaFailure and make the UiaFailure
+        // constructor private so that only UiaOperationDelegator can create instances for
+        // UiaFailure in try/catch. This is necessary as UiaFailure contains GetCurrentFailureCode() which
+        // returns the last failure code in both remote/local cases. The local case uses 
+        // wil::ResultFromCaughtException which should be invoked only inside catch block as it
+        // rethows the exception and when called outside the catch block can crash the application.
+        friend class UiaOperationDelegator;
+
+        // Delete copy/move constructors.
+        UiaFailure(const UiaFailure&) = delete;
+        UiaFailure& operator=(const UiaFailure&) = delete;
+
+        UiaFailure(UiaFailure&&) = delete;
+        UiaFailure& operator=(UiaFailure&&) = delete;
 
         UiaInt GetCurrentFailureCode();
 
     private:
+        // Private constructor used only by the TryCatch/Try of UiaOperationDelegator.
+        UiaFailure(const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation remoteOperation, const bool useRemoteApi) :
+            m_remoteOperation(remoteOperation),
+            m_useRemoteApi(useRemoteApi) {}
+
         const bool m_useRemoteApi;
         const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation m_remoteOperation;
     };
