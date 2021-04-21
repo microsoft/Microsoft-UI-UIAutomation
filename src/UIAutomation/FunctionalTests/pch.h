@@ -18,6 +18,7 @@
 #include <string>
 #include <variant>
 
+#include <wil/cppwinrt.h>
 #include <wil/resource.h>
 #include <wil/result.h>
 #include <wil/com.h>

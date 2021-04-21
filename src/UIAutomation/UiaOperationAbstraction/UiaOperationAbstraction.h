@@ -74,15 +74,15 @@ namespace UiaOperationAbstraction
     class UiaFailure
     {
     public:
-        UiaFailure(const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation& remoteOperation, const bool& useRemoteApi) :
+        UiaFailure(const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation remoteOperation, const bool useRemoteApi) :
             m_remoteOperation(remoteOperation),
             m_useRemoteApi(useRemoteApi) {}
 
         UiaInt GetCurrentFailureCode();
 
     private:
-        const bool& m_useRemoteApi;
-        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation& m_remoteOperation;
+        const bool m_useRemoteApi;
+        const winrt::Microsoft::UI::UIAutomation::AutomationRemoteOperation m_remoteOperation;
     };
 
     // The UiaOperationDelegator class in is charge of delegating calls on UIA wrapper types in this abstraction
@@ -138,10 +138,17 @@ namespace UiaOperationAbstraction
         }
 
         template<class TryBody, class CatchBody>
-        void Try(TryBody&& tryBody, CatchBody&& catchBody) const
+        void TryCatch(TryBody&& tryBody, CatchBody&& catchBody) const
         {
             if (m_useRemoteApi)
             {
+                // A new catch body is defined to hold the caller sent catch body as the caller
+                // sent catch body takes UiaFailure as the input param which can be used to get the
+                // failure code on any failure. For local execution, GetCurrentFailureCode calls
+                // wil::ResultFromCaughtException and this needs to be called only in catch block
+                // as it rethrows the exception. Calling it outside the catch block can crash the process.
+                // Having UiaFailure glued with CatchBody can prevent the GetCurrentFailureCode to be accessed
+                // outside catch block
                 auto newCatchBody = [this, catchBody(std::forward<CatchBody>(catchBody))]()
                 {
                     catchBody(UiaFailure(m_remoteOperation, m_useRemoteApi));
@@ -165,20 +172,7 @@ namespace UiaOperationAbstraction
         template<class TryBody>
         void Try(TryBody&& tryBody) const
         {
-            if (m_useRemoteApi)
-            {
-                m_remoteOperation.TryBlock(std::forward<TryBody>(tryBody));
-            }
-            else
-            {
-                try
-                {
-                    tryBody();
-                }
-                catch(...)
-                {
-                }
-            }
+            TryCatch(std::forward<TryBody>(tryBody), [](UiaFailure /*failure*/) {});
         }
 
         // This method handles a pure lvalue conditional.
@@ -2431,9 +2425,9 @@ namespace UiaOperationAbstraction
         }
 
         template<class TryBody, class CatchBody>
-        inline void Try(TryBody&& tryBody, CatchBody&& catchBody) const
+        inline void TryCatch(TryBody&& tryBody, CatchBody&& catchBody) const
         {
-            GetCurrentDelegator()->Try<TryBody, CatchBody>(std::forward<TryBody>(tryBody), std::forward<CatchBody>(catchBody));
+            GetCurrentDelegator()->TryCatch<TryBody, CatchBody>(std::forward<TryBody>(tryBody), std::forward<CatchBody>(catchBody));
         }
 
         template<class TryBody>

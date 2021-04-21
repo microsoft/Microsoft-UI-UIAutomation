@@ -2149,18 +2149,9 @@ namespace UiaOperationAbstractionTests
             ElementAsVariantTest(true);
         }
 
-        TEST_METHOD(TestTryAndCatchBlockAsLocalTest)
-        {
-            TryAndCatchBlockTest(false);
-        }
-
-        TEST_METHOD(TestTryAndCatchBlockAsRemoteTest)
-        {
-            TryAndCatchBlockTest(true);
-        }
-
         // Tests the try block and catch block implementation both locally and remote. When an exception is encountered, the execution
-        // continues till the end of instructions without returning from the exception location, also records the
+        // continues till the end of instructions without returning from the exception location, also records the exception
+        // in catch block.
         void TryAndCatchBlockTest(const bool useRemoteOperations)
         {
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -2179,38 +2170,37 @@ namespace UiaOperationAbstractionTests
             numbers.Append(1);
             numbers.Append(2);
             numbers.Append(3);
-            scope.Try([&]()
-            {
-                auto number = numbers.GetAt(3);
-            },
-            [&](UiaFailure failure)
-            {
-                failureCode = failure.GetCurrentFailureCode();
-            });
+            scope.TryCatch([&]()
+                {
+                    auto number = numbers.GetAt(3);
+                },
+                [&](UiaFailure failure)
+                {
+                    failureCode = failure.GetCurrentFailureCode();
+                });
 
             UiaInt numberAfterTryCatch = numbers.GetAt(2);
             scope.BindResult(failureCode);
             scope.BindResult(numberAfterTryCatch);
             scope.Resolve();
 
-            auto hresult = HRESULT_FROM_WIN32(failureCode);
-            bool isExpectedException = ((hresult == E_BOUNDS) || (hresult == HRESULT_FROM_WIN32(ERROR_UNHANDLED_EXCEPTION)));
-            Assert::IsTrue(isExpectedException);
+            auto hresult = static_cast<HRESULT>(failureCode);
+            Assert::AreEqual(E_BOUNDS, hresult);
             Assert::AreEqual(3, static_cast<int>(numberAfterTryCatch));
         }
 
-        TEST_METHOD(TestTryBlockAsLocalTest)
+        TEST_METHOD(TestTryAndCatchBlockAsRemoteTest)
         {
-            TryBlockTest(false);
+            TryAndCatchBlockTest(true);
         }
 
-        TEST_METHOD(TestTryBlockAsRemoteTest)
+        TEST_METHOD(TestTryAndCatchBlockAsLocalTest)
         {
-            TryBlockTest(true);
+            TryAndCatchBlockTest(false);
         }
 
         // Tests the try block implementation both locally and remote. When an exception is encountered, the execution
-        // continues till the end of instructions without returning from the exception location.
+       // continues till the end of instructions without returning from the exception location.
         void TryBlockTest(const bool useRemoteOperations)
         {
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -2230,15 +2220,25 @@ namespace UiaOperationAbstractionTests
             numbers.Append(2);
             numbers.Append(3);
             scope.Try([&]()
-            {
-                auto number = numbers.GetAt(3);
-            });
+                {
+                    auto number = numbers.GetAt(3);
+                });
 
             UiaString testString{ L"Text after the try block" };
             scope.BindResult(testString);
             scope.Resolve();
 
             Assert::AreEqual(std::wstring(L"Text after the try block"), testString.GetLocalWstring());
+        }
+
+        TEST_METHOD(TestTryBlockAsRemoteTest)
+        {
+            TryBlockTest(true);
+        }
+
+        TEST_METHOD(TestTryBlockAsLocalTest)
+        {
+            TryBlockTest(false);
         }
     };
 }
