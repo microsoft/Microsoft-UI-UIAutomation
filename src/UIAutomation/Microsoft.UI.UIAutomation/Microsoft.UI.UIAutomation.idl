@@ -1760,6 +1760,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteStringMap NewStringMap();
         AutomationRemoteAnyObject NewNull();
 
+        Boolean IsOpcodeSupported(UInt32 opcode);
+
         AutomationRemoteElement ImportElement(Windows.UI.UIAutomation.AutomationElement element);
         AutomationRemoteTextRange ImportTextRange(Windows.UI.UIAutomation.AutomationTextRange textRange);
 

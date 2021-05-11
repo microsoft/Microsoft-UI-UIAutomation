@@ -124,6 +124,12 @@ namespace UiaOperationAbstraction
 
         bool GetUseRemoteApi() const;
 
+        // Returns whether the given opcode is supported in the current remote
+        // operation connection if remote, returns true if local. Throws E_FAIL
+        // if remote and no connection is currently active.
+        // TODO #77: Specify which Windows release we start throwing that error.
+        bool IsOpcodeSupported(uint32_t opcode) const;
+
         template<class OnTrue, class OnFalse>
         void If(UiaBool conditionBool, OnTrue&& onTrue, OnFalse&& onFalse) const
         {
@@ -2428,6 +2434,11 @@ namespace UiaOperationAbstraction
         inline bool GetUseRemoteApi() const
         {
             return GetCurrentDelegator()->GetUseRemoteApi();
+        }
+
+        bool IsOpcodeSupported(const uint32_t opcode) const
+        {
+            return GetCurrentDelegator()->IsOpcodeSupported(opcode);
         }
 
         template<class OnTrue, class OnFalse>

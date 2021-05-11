@@ -152,6 +152,11 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return make<AutomationRemoteAnyObject>(newId, *this);
     }
 
+    bool AutomationRemoteOperation::IsOpcodeSupported(const uint32_t opcode) const
+    {
+        return m_remoteOperation.IsOpcodeSupported(opcode);
+    }
+
     winrt::AutomationRemoteElement AutomationRemoteOperation::ImportElement(winrt::AutomationElement const& element)
     {
         const auto elementId = GetNextId();

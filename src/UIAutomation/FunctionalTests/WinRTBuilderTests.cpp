@@ -520,5 +520,33 @@ namespace WinRTBuilderTests
             Assert::AreEqual(true, winrt::unbox_value<bool>(results.GetResult(isNullToken)));
             Assert::IsTrue(results.GetResult(metadataToken) == nullptr);
         }
+
+        TEST_METHOD(IsOpcodeSupported_AfterImport)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            winrt::AutomationRemoteOperation op;
+            auto remoteElement = op.ImportElement(calc.as<winrt::AutomationElement>());
+
+            Assert::IsTrue(op.IsOpcodeSupported(0x0 /*Nop*/));
+            Assert::IsTrue(op.IsOpcodeSupported(0x48 /*NewGuid*/));
+            Assert::IsFalse(op.IsOpcodeSupported(10000000000000));
+        }
+
+        TEST_METHOD(IsOpcodeSupported_BeforeImport)
+        {
+            winrt::AutomationRemoteOperation op;
+
+            const auto hr = wil::ResultFromException([&]()
+            {
+                op.IsOpcodeSupported(0x0);
+            });
+
+            // TODO #77: Do a Windows version check once a build with this
+            // failing behavior is released.
+            // Assert::AreEqual(E_FAIL, hr);
+        }
     };
 }

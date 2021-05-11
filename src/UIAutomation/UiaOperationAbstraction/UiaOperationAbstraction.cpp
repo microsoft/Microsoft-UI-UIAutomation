@@ -790,6 +790,20 @@ namespace UiaOperationAbstraction
         return m_useRemoteApi;
     }
 
+    bool UiaOperationDelegator::IsOpcodeSupported(const uint32_t opcode) const
+    {
+        if (m_useRemoteApi)
+        {
+            return m_remoteOperation.IsOpcodeSupported(opcode);
+        }
+        else
+        {
+            // If we're not in a remote operation we'll just be using classic
+            // UIA, in which everything is supported.
+            return true;
+        }
+    }
+
     void UiaOperationDelegator::AbortOperationWithHresult(HRESULT hr)
     {
         if (m_useRemoteApi && m_remoteOperation)
