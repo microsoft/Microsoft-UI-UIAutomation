@@ -521,6 +521,8 @@ namespace WinRTBuilderTests
             Assert::IsTrue(results.GetResult(metadataToken) == nullptr);
         }
 
+        // Test that calling IsOpcodeSupported works after we import an
+        // element, establishing a connection.
         TEST_METHOD(IsOpcodeSupported_AfterImport)
         {
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
@@ -535,6 +537,9 @@ namespace WinRTBuilderTests
             Assert::IsFalse(op.IsOpcodeSupported(10000000000000));
         }
 
+        // Test that calling IsOpcodeSupported fails on certain Windows builds
+        // if we haven't imported an element yet, thus not establishing a
+        // connection.
         TEST_METHOD(IsOpcodeSupported_BeforeImport)
         {
             winrt::AutomationRemoteOperation op;

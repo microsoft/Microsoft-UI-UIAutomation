@@ -2241,7 +2241,9 @@ namespace UiaOperationAbstractionTests
             TryBlockTest(false);
         }
 
-        void IsOpcodeSupported_AfterImport(const bool useRemoteOperations)
+        // Test that calling IsOpcodeSupported works after we import an
+        // element, establishing a connection.
+        void IsOpcodeSupportedTest_AfterImport(const bool useRemoteOperations)
         {
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
@@ -2270,15 +2272,18 @@ namespace UiaOperationAbstractionTests
 
         TEST_METHOD(IsOpcodeSupported_AfterImport_Remote)
         {
-            IsOpcodeSupported_AfterImport(true);
+            IsOpcodeSupportedTest_AfterImport(true);
         }
 
         TEST_METHOD(IsOpcodeSupported_AfterImport_Local)
         {
-            IsOpcodeSupported_AfterImport(false);
+            IsOpcodeSupportedTest_AfterImport(false);
         }
 
-        void IsOpcodeSupported_BeforeImport(const bool useRemoteOperations)
+        // Test that calling IsOpcodeSupported fails for remote ops on certain
+        // Windows builds if we haven't imported an element yet, thus not
+        // establishing a connection.
+        void IsOpcodeSupportedTest_BeforeImport(const bool useRemoteOperations)
         {
             auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
@@ -2304,12 +2309,12 @@ namespace UiaOperationAbstractionTests
 
         TEST_METHOD(IsOpcodeSupported_BeforeImport_Remote)
         {
-            IsOpcodeSupported_BeforeImport(true);
+            IsOpcodeSupportedTest_BeforeImport(true);
         }
 
         TEST_METHOD(IsOpcodeSupported_BeforeImport_Local)
         {
-            IsOpcodeSupported_BeforeImport(false);
+            IsOpcodeSupportedTest_BeforeImport(false);
         }
     };
 }
