@@ -67,6 +67,13 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteStringMap NewStringMap();
         winrt::AutomationRemoteAnyObject NewNull();
 
+        // Returns whether the given opcode is supported in the current remote
+        // operation connection. Calls directly into the corresponding
+        // CoreAutomationRemoteOperation API. Throws E_FAIL if no connection is
+        // currently active.
+        // TODO #77: Specify which Windows release we start throwing that error.
+        bool IsOpcodeSupported(uint32_t opcode) const;
+
         winrt::AutomationRemoteElement ImportElement(winrt::Windows::UI::UIAutomation::AutomationElement const& element);
         winrt::AutomationRemoteTextRange ImportTextRange(winrt::Windows::UI::UIAutomation::AutomationTextRange const& textRange);
 

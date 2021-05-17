@@ -2240,5 +2240,81 @@ namespace UiaOperationAbstractionTests
         {
             TryBlockTest(false);
         }
+
+        // Test that calling IsOpcodeSupported works after we import an
+        // element, establishing a connection.
+        void IsOpcodeSupportedTest_AfterImport(const bool useRemoteOperations)
+        {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+            UiaElement element = calc;
+
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(element);
+
+            Assert::IsTrue(scope.IsOpcodeSupported(0x0 /*Nop*/));
+            Assert::IsTrue(scope.IsOpcodeSupported(0x48 /*NewGuid*/));
+
+            const auto isNonExistentOpcodeSupported = scope.IsOpcodeSupported(10000000000000);
+            if (useRemoteOperations)
+            {
+                Assert::IsFalse(isNonExistentOpcodeSupported);
+            }
+            else
+            {
+                // All operations are supported locally.
+                Assert::IsTrue(isNonExistentOpcodeSupported);
+            }
+        }
+
+        TEST_METHOD(IsOpcodeSupported_AfterImport_Remote)
+        {
+            IsOpcodeSupportedTest_AfterImport(true);
+        }
+
+        TEST_METHOD(IsOpcodeSupported_AfterImport_Local)
+        {
+            IsOpcodeSupportedTest_AfterImport(false);
+        }
+
+        // Test that calling IsOpcodeSupported fails for remote ops on certain
+        // Windows builds if we haven't imported an element yet, thus not
+        // establishing a connection.
+        void IsOpcodeSupportedTest_BeforeImport(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            auto scope = UiaOperationScope::StartNew();
+
+            const auto hr = wil::ResultFromException([&]()
+            {
+                scope.IsOpcodeSupported(0x0);
+            });
+
+            if (useRemoteOperations)
+            {
+                // TODO #77: Do a Windows version check once a build with this
+                // failing behavior is released.
+                // Assert::AreEqual(E_FAIL, hr);
+            }
+            else
+            {
+                // Calling IsOpcodeSupported never produces an error in the local case.
+                Assert::AreEqual(S_OK, hr);
+            }
+        }
+
+        TEST_METHOD(IsOpcodeSupported_BeforeImport_Remote)
+        {
+            IsOpcodeSupportedTest_BeforeImport(true);
+        }
+
+        TEST_METHOD(IsOpcodeSupported_BeforeImport_Local)
+        {
+            IsOpcodeSupportedTest_BeforeImport(false);
+        }
     };
 }
