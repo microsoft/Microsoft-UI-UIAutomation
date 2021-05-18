@@ -186,7 +186,20 @@ namespace UiaOperationAbstraction
                 {
                     tryBody();
                 }
-                catch(...)
+                // Let special exceptions we use for control flow pass through.
+                catch (UiaOperationAbstraction::ReturnSuccessException)
+                {
+                    throw;
+                }
+                catch (UiaOperationAbstraction::LoopContinueException)
+                {
+                    throw;
+                }
+                catch (UiaOperationAbstraction::LoopBreakException)
+                {
+                    throw;
+                }
+                catch (...)
                 {
                     catchBody(UiaFailure(m_remoteOperation, m_useRemoteApi));
                 }
