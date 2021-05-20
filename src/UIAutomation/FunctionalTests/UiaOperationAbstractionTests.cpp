@@ -147,11 +147,11 @@ namespace UiaOperationAbstractionTests
         // Asserts that you can get the name of a UiaElement.
         void ElementGetNameTest(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
-
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -177,11 +177,11 @@ namespace UiaOperationAbstractionTests
         // Asserts that you can get the name of a UiaElement via a property ID.
         void GetPropertyValueFetchNameTest(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
-
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -209,11 +209,11 @@ namespace UiaOperationAbstractionTests
         // and that ignoreDefault false correctly returns a default value.
         void GetPropertyValueIgnoreDefaultTest(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
-
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -248,11 +248,11 @@ namespace UiaOperationAbstractionTests
         // Ensuring that an exception is raised if trying to fetch a cached value that is not cached. 
         void GetPropertyValueUseCachedAPITest(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
-
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -295,14 +295,14 @@ namespace UiaOperationAbstractionTests
         // Asserts that you can get the runtime id of a UiaElement.
         void ElementGetRuntimeIdTest(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
 
             unique_safearray expected;
             THROW_IF_FAILED(calc->GetRuntimeId(&expected));
-
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -339,11 +339,11 @@ namespace UiaOperationAbstractionTests
         // be called with or without a cache request.
         void CacheRequestPatternMethodTest(const bool useRemoteOperations)
         {
+            const auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
-
-            const auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -400,11 +400,11 @@ namespace UiaOperationAbstractionTests
         // be called with or without a cache request.
         void CacheRequestNavigationMethodTest(const bool useRemoteOperations)
         {
+            const auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
-
-            const auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -472,11 +472,11 @@ namespace UiaOperationAbstractionTests
         // running in remote context only in wrapper implementation with.
         TEST_METHOD(CacheRequestNavigationNullReturnRemoteTest)
         {
+            const auto guard = InitializeUiaOperationAbstraction(true /* useRemoteOperation */);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
-
-            const auto guard = InitializeUiaOperationAbstraction(true /* useRemoteOperation */);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -610,15 +610,14 @@ namespace UiaOperationAbstractionTests
 
         void RectDimensions(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Fetch bounding rectangle for the focused display field.
             //
@@ -696,11 +695,11 @@ namespace UiaOperationAbstractionTests
 
         void ArrayEqualityComparisonTest(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
-
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -746,15 +745,14 @@ namespace UiaOperationAbstractionTests
 
         void StringifyTest(const bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Test all types that are convertible to strings:
             // -> Boolean
@@ -899,15 +897,14 @@ namespace UiaOperationAbstractionTests
 
         void GetUpdatedCacheElement(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Rebuild the cache of the focused element using two different cache requests with distinct
             // properties in them to test that the rebuilt elements are different and contain requested
@@ -977,15 +974,14 @@ namespace UiaOperationAbstractionTests
 
         void ForEachLoop(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             {
                 auto operationScope = UiaOperationScope::StartNew();
@@ -1030,15 +1026,14 @@ namespace UiaOperationAbstractionTests
 
         void ConvertRectTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Create rectangles using 2 different input types and check that they are the same when returned
             // back to the caller.
@@ -1074,15 +1069,14 @@ namespace UiaOperationAbstractionTests
 
         void UseCachedApiTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Ensure that the focused element has no Name cached for it (as otherwise we would not be
             // able to distinguish between asks for Cached and Current.
@@ -1127,15 +1121,14 @@ namespace UiaOperationAbstractionTests
 
         void CompareEnumTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Create an operation that fetches a `UiaEnum`-based property value for a UIA element and compare the
             // value against different values types that can be used to construct that property-specific `UiaEnum`
@@ -1187,15 +1180,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaArrayInCollectionsTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // This test creates `UiaArray` instances, builds an array out of them. The returned array
             // of arrays is tested against the expectations.
@@ -1279,15 +1271,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaStringMapInCollectionsTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // This test creates `UiaStringMap` instances, builds an array out of them and returns the array.
             {
@@ -1365,15 +1356,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaStringMapInElementTypeTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto operationScope = UiaOperationScope::StartNew();
             // Create a map that use UiaElement as the value.
@@ -1414,15 +1404,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaTupleCreateTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // This test attempts to create `UiaTuple` instances in a few different ways, return them and ensure
             // the values behind them are correct.
@@ -1526,15 +1515,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaTupleWithTuplesTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Ensure that `UiaTuple` instances can hold other `UiaTuple` values to support breaking values
             // into groups of values.
@@ -1570,15 +1558,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaTupleWithVariantsTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Make sure `UiaTuple` instances can hold `UiaVariant` objects with different values in them by
             // creating a `UiaTuple` that holds multiple `UiaVariant` members and ensuring they can be used
@@ -1644,15 +1631,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaTupleWithEnumsTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Make sure `UiaTuple` instances can hold `UiaVariant` objects with different values in them by
             // creating a `UiaTuple` that holds multiple `UiaVariant` members and ensuring they can be used
@@ -1692,15 +1678,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaTupleWithCollectionsTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Create a `UiaTuple` instance with non-empty collections, return the tuple and ensure that the tuple
             // and its collections have expected values in them.
@@ -1744,15 +1729,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaTupleModifyTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // This test creates a `UiaTuple` instance out of values, modifies both the tuple and the sources
             // of the values and ensures their results are correct.
@@ -1800,15 +1784,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaTupleGetAndSetTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // The test ensures that tuple values get be fetched and used to modify other tuples.
             {
@@ -1862,15 +1845,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaTupleComparisonTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Create tuples and verify their comparison operators.
             {
@@ -1913,15 +1895,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaTupleInCollectionsTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // This test creates an `UiaTuple` instances and builds an array collection out of them to return them
             // back to the caller.
@@ -2008,15 +1989,14 @@ namespace UiaOperationAbstractionTests
 
         void GetMetadataValueTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Get metadata value operation.
             {
@@ -2066,15 +2046,14 @@ namespace UiaOperationAbstractionTests
 
         void UiaVariantCastUiaEnumTest(bool useRemoteOperations)
         {
+            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             // Initialize the test application.
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
 
             // Set focus to the display element.
             auto focusedElement = WaitForElementFocus(L"Display is 0");
-
-            // Initialize the UIA Remote Operation abstraction.
-            const auto cleanup = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             // Make sure `UiaVariant` instances can be cast to `UiaEnum` type.
             {
@@ -2115,11 +2094,11 @@ namespace UiaOperationAbstractionTests
         // Asserts that you can convert a UiaElement to / from a UiaVariant 
         void ElementAsVariantTest(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
-
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -2149,17 +2128,135 @@ namespace UiaOperationAbstractionTests
             ElementAsVariantTest(true);
         }
 
+        // Tests the CompileOrRun API
+        void CompileOrRunTest(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            UiaElement calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(calc);
+
+            UiaString name = L"";
+            scope.CompileOrRun([&]()
+            {
+                name = calc.GetName();
+            });
+
+            scope.BindResult(name);
+            scope.Resolve();
+
+            Assert::AreEqual(
+                std::wstring(L"Display is 0"),
+                std::wstring(static_cast<wil::shared_bstr>(name).get()));
+        }
+
+        TEST_METHOD(CompileOrRun_Remote)
+        {
+            CompileOrRunTest(true);
+        }
+
+        TEST_METHOD(CompileOrRun_Local)
+        {
+            CompileOrRunTest(false);
+        }
+
+        // Tests that we can exit with failure using the CompileOrRun API.
+        void CompileOrRunExitFailureTest(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            UiaElement calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(calc);
+
+            UiaInt i = 1;
+
+            const auto hr = wil::ResultFromException([&]()
+            {
+                scope.CompileOrRun([&]()
+                {
+                    scope.AbortOperationWithHresult(E_FAIL);
+                    i = 2;
+                });
+
+                scope.BindResult(i);
+                scope.Resolve();
+            });
+
+            Assert::AreEqual(E_FAIL, hr);
+
+            // `i` will only be local at this point if the entire operation was
+            // local, since we don't fill in remote results on failure.
+            if (!useRemoteOperations)
+            {
+                Assert::AreEqual(1, static_cast<int>(i));
+            }
+        }
+
+        TEST_METHOD(CompileOrRunExitFailure_Remote)
+        {
+            CompileOrRunExitFailureTest(true);
+        }
+
+        TEST_METHOD(CompileOrRunExitFailure_Local)
+        {
+            CompileOrRunExitFailureTest(false);
+        }
+
+        // Tests that we can exit with success using the CompileOrRun API.
+        void CompileOrRunExitSuccessTest(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            UiaElement calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(calc);
+
+            UiaInt i = 1;
+            scope.CompileOrRun([&]()
+            {
+                scope.AbortOperationWithHresult(S_OK);
+                i = 2;
+            });
+
+            scope.BindResult(i);
+            const auto hr = scope.ResolveHr();
+
+            Assert::AreEqual(S_OK, hr);
+            Assert::AreEqual(1, static_cast<int>(i));
+        }
+
+        TEST_METHOD(CompileOrRunExitSuccess_Remote)
+        {
+            CompileOrRunExitSuccessTest(true);
+        }
+
+        TEST_METHOD(CompileOrRunExitSuccess_Local)
+        {
+            CompileOrRunExitSuccessTest(false);
+        }
+
         // Tests the try block and catch block implementation both locally and remote. When an exception is encountered, the execution
         // continues till the end of instructions without returning from the exception location, also records the exception
         // in catch block.
         void TryAndCatchBlockTest(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
             UiaElement element = calc;
-
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
 
@@ -2200,21 +2297,20 @@ namespace UiaOperationAbstractionTests
         }
 
         // Tests the try block implementation both locally and remote. When an exception is encountered, the execution
-       // continues till the end of instructions without returning from the exception location.
+        // continues till the end of instructions without returning from the exception location.
         void TryBlockTest(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
             UiaElement element = calc;
 
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
-
             auto scope = UiaOperationScope::StartNew();
 
             scope.BindInput(element);
 
-            UiaInt failureCode = 0;
             UiaArray<UiaInt> numbers;
             numbers.Append(1);
             numbers.Append(2);
@@ -2241,16 +2337,169 @@ namespace UiaOperationAbstractionTests
             TryBlockTest(false);
         }
 
+        // Tests that calling AbortOperationWithHresult with a failure is
+        // caught by a try-catch block.
+        void TryBlockAbortOperationFailureTest(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            UiaElement calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(calc);
+
+            UiaInt hr = S_OK;
+            UiaInt i = 1;
+
+            scope.CompileOrRun([&]()
+            {
+                scope.TryCatch([&]()
+                {
+                    scope.AbortOperationWithHresult(E_FAIL);
+                    i = 2;
+                }, [&](UiaFailure failure)
+                {
+                    i = 3;
+                    hr = failure.GetCurrentFailureCode();
+                });
+            });
+
+            scope.BindResult(hr, i);
+            scope.Resolve();
+
+            Assert::AreEqual(E_FAIL, static_cast<HRESULT>(hr));
+            Assert::AreEqual(3, static_cast<int>(i));
+        }
+
+        TEST_METHOD(TryBlockAbortOperationFailure_Remote)
+        {
+            TryBlockAbortOperationFailureTest(true);
+        }
+
+        TEST_METHOD(TryBlockAbortOperationFailure_Local)
+        {
+            TryBlockAbortOperationFailureTest(false);
+        }
+
+        // Tests that calling AbortOperationWithHresult with S_OK is not caught
+        // by a try-catch block, and the operation exits immediately.
+        void TryBlockAbortOperationSuccessTest(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            UiaElement calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(calc);
+
+            UiaInt hr = S_OK;
+            UiaInt i = 1;
+
+            scope.CompileOrRun([&]()
+            {
+                scope.TryCatch([&]()
+                {
+                    scope.AbortOperationWithHresult(S_OK);
+                    i = 2;
+                }, [&](UiaFailure failure)
+                {
+                    i = 3;
+                    hr = failure.GetCurrentFailureCode();
+                });
+            });
+
+            scope.BindResult(hr, i);
+            scope.Resolve();
+
+            Assert::AreEqual(S_OK, static_cast<HRESULT>(hr));
+            Assert::AreEqual(1, static_cast<int>(i));
+        }
+
+        TEST_METHOD(TryBlockAbortOperationSuccess_Remote)
+        {
+            TryBlockAbortOperationSuccessTest(true);
+        }
+
+        TEST_METHOD(TryBlockAbortOperationSuccess_Local)
+        {
+            TryBlockAbortOperationSuccessTest(false);
+        }
+
+        // Tests that we properly handle special exceptions used for loop
+        // control flow in our try-catch block. These are
+        // UiaOperationAbstraction::LoopContinueException and
+        // UiaOperationAbstraction::LoopBreakException.
+        void TryBlockWorksWithLoopsTest(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            UiaElement calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(calc);
+
+            UiaInt i = 0;
+            UiaInt j = 0;
+            scope.While([&]()
+            {
+                return true;
+            },
+            [&]()
+            {
+                scope.If(i == 3, [&]()
+                {
+                    scope.Try([&]()
+                    {
+                        scope.Break();
+                    });
+                });
+
+                i += 1;
+
+                scope.If(i == 2, [&]()
+                {
+                    scope.Try([&]()
+                    {
+                        scope.Continue();
+                    });
+                });
+
+                j += 1;
+            });
+
+            scope.BindResult(i, j);
+            scope.Resolve();
+
+            Assert::AreEqual(3, static_cast<int>(i));
+            Assert::AreEqual(2, static_cast<int>(j));
+        }
+
+        TEST_METHOD(TryBlockWorksWithLoops_Remote)
+        {
+            TryBlockWorksWithLoopsTest(true);
+        }
+
+        TEST_METHOD(TryBlockWorksWithLoops_Local)
+        {
+            TryBlockWorksWithLoopsTest(false);
+        }
+
         // Test that calling IsOpcodeSupported works after we import an
         // element, establishing a connection.
         void IsOpcodeSupportedTest_AfterImport(const bool useRemoteOperations)
         {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
             ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
             app.Activate();
             auto calc = WaitForElementFocus(L"Display is 0");
             UiaElement element = calc;
-
-            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
 
             auto scope = UiaOperationScope::StartNew();
             scope.BindInput(element);
@@ -2258,7 +2507,7 @@ namespace UiaOperationAbstractionTests
             Assert::IsTrue(scope.IsOpcodeSupported(0x0 /*Nop*/));
             Assert::IsTrue(scope.IsOpcodeSupported(0x48 /*NewGuid*/));
 
-            const auto isNonExistentOpcodeSupported = scope.IsOpcodeSupported(10000000000000);
+            const auto isNonExistentOpcodeSupported = scope.IsOpcodeSupported(2000000000);
             if (useRemoteOperations)
             {
                 Assert::IsFalse(isNonExistentOpcodeSupported);
