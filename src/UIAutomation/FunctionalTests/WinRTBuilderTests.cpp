@@ -190,7 +190,13 @@ namespace WinRTBuilderTests
         // Asserts that checking if cache requests are supported returns true.
         TEST_METHOD(IsCacheRequestSupported)
         {
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
             winrt::AutomationRemoteOperation op;
+            auto remoteElement = op.ImportElement(calc.as<winrt::AutomationElement>());
+
             Assert::IsTrue(op.IsCacheRequestSupported());
         }
 
