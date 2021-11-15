@@ -7223,3 +7223,17 @@
 
         return metadataValue;
     }
+
+    UiaBool UiaElement::IsExtensionSupported(UiaGuid guid)
+    {
+        if (UiaOperationAbstraction::ShouldUseRemoteApi())
+        {
+            this->ToRemote();
+            guid.ToRemote();
+            auto remoteValue = std::get<winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>(m_member);
+            return remoteValue.IsExtensionSupported(guid);
+        }
+
+        // No local equivilant
+        throw winrt::hresult_not_implemented();
+    } 

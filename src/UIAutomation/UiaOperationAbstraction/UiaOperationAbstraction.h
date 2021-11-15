@@ -413,6 +413,9 @@ namespace UiaOperationAbstraction
         void ConvertVariantDataToRemote(std::variant<
             winrt::com_ptr<IUIAutomationTextRange>,
             winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextRange>& localTextRangeVariant) const;
+        void ConvertVariantDataToRemote(std::variant<
+            winrt::guid,
+            winrt::Microsoft::UI::UIAutomation::AutomationRemoteGuid>& localGuidVariant) const;
 
         template <class ItemWrapperType>
         void ConvertVariantDataToRemote(std::variant<
@@ -2175,6 +2178,25 @@ namespace UiaOperationAbstraction
         void AddProperty(UiaPropertyId propertyId);
         void AddPattern(UiaPatternId patternId);
     };
+
+    class UiaGuid : public UiaTypeBase<winrt::guid, winrt::Microsoft::UI::UIAutomation::AutomationRemoteGuid>
+    {
+    public:
+        //static constexpr VARTYPE c_comVariantType = VT_CLSID;
+        //static constexpr auto c_variantMember = &VARIANT::puuid;
+        static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsGuid;
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsGuid;
+        UiaGuid(const winrt::guid& value);
+        UiaGuid(winrt::Microsoft::UI::UIAutomation::AutomationRemoteGuid remoteValue);
+        UiaGuid(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue);
+        UiaGuid& operator=(const UiaGuid& other);
+        UiaBool operator==(const UiaGuid& rhs) const;
+        UiaBool operator!=(const UiaGuid& rhs) const;
+        UiaAnnotationType LookupAnnotationType();
+        UiaPropertyId LookupPropertyId();
+        void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
+    };
+
 
 #include "UiaTypeAbstraction.g.h"
 
