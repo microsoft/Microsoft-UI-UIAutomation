@@ -718,8 +718,8 @@ namespace UiaOperationAbstraction
             }
         }
 
-        // No local equivilant
-        return 0;
+        GUID localValue = std::get<LocalType>(m_member);
+        return UiaLookupId(AutomationIdentifierType_Annotation, &localValue);
     }
 
     UiaPropertyId UiaGuid::LookupPropertyId()
@@ -734,8 +734,8 @@ namespace UiaOperationAbstraction
             }
         }
 
-        // No local equivilant
-        return 0;
+        GUID localValue = std::get<LocalType>(m_member);
+        return UiaLookupId(AutomationIdentifierType_Property, &localValue);
     }
 
     void UiaGuid::FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
