@@ -1567,13 +1567,17 @@ namespace UiaOperationAbstraction
         {
             auto operationResults = result.as<winrt::Windows::Foundation::Collections::IVector<winrt::Windows::Foundation::IInspectable>>();
             m_member = std::make_shared<std::vector<ItemLocalType>>();
-            auto& localValue = std::get<LocalType>(m_member);
-            const uint32_t vectorSize = operationResults.Size();
-            for (uint32_t index = 0; index < vectorSize; ++index)
+
+            if (operationResults != nullptr)
             {
-                ItemWrapperType wrappedLocal = ItemLocalType();
-                wrappedLocal.FromRemoteResult(operationResults.GetAt(index));
-                localValue->emplace_back(static_cast<ItemLocalType>(wrappedLocal));
+                auto& localValue = std::get<LocalType>(m_member);
+                const uint32_t vectorSize = operationResults.Size();
+                for (uint32_t index = 0; index < vectorSize; ++index)
+                {
+                    ItemWrapperType wrappedLocal = ItemLocalType();
+                    wrappedLocal.FromRemoteResult(operationResults.GetAt(index));
+                    localValue->emplace_back(static_cast<ItemLocalType>(wrappedLocal));
+                }
             }
         }
 
