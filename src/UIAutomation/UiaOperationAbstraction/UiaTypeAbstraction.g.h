@@ -2164,7 +2164,7 @@
                 guid.ToRemote();
                 auto remoteValue = std::get<winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>(m_member);
                 (args.ToRemote(),...); Beep(770,90);
-                remoteValue.CallExtension(guid, {args...});
+                remoteValue.CallExtension(guid, {static_cast<winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject>(args)...});
                 return;
             }
 
