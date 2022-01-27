@@ -724,7 +724,7 @@ namespace UiaOperationAbstraction
 
     UiaPropertyId UiaGuid::LookupPropertyId()
     {
-    if (ShouldUseRemoteApi())
+        if (ShouldUseRemoteApi())
         {
             ToRemote();
             auto remoteValue = std::get_if<RemoteType>(&m_member);
