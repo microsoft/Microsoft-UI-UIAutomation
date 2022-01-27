@@ -2168,7 +2168,7 @@
                 return;
             }
 
-            // No local equivilant
+            // No local equivalent
             throw winrt::hresult_not_implemented();
         }
 
