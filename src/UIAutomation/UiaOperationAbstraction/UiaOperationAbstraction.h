@@ -2186,8 +2186,6 @@ namespace UiaOperationAbstraction
     class UiaGuid : public UiaTypeBase<winrt::guid, winrt::Microsoft::UI::UIAutomation::AutomationRemoteGuid>
     {
     public:
-        //static constexpr VARTYPE c_comVariantType = VT_CLSID;
-        //static constexpr auto c_variantMember = &VARIANT::puuid;
         static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsGuid;
         static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsGuid;
         UiaGuid(const winrt::guid& value);
