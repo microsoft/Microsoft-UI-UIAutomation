@@ -738,6 +738,11 @@ namespace UiaOperationAbstraction
         return UiaLookupId(AutomationIdentifierType_Property, &localValue);
     }
 
+    UiaGuid::operator winrt::guid() const
+    {
+        return std::get<winrt::guid>(m_member);
+    }
+
     void UiaGuid::FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
     {
         m_member = winrt::unbox_value<GUID>(result);

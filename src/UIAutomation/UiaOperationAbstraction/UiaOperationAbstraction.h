@@ -2196,6 +2196,7 @@ namespace UiaOperationAbstraction
         UiaBool operator!=(const UiaGuid& rhs) const;
         UiaAnnotationType LookupAnnotationType();
         UiaPropertyId LookupPropertyId();
+        operator winrt::guid() const; 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result);
     };
 
