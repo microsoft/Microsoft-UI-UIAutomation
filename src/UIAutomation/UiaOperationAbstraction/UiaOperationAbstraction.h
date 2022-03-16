@@ -71,6 +71,34 @@ namespace UiaOperationAbstraction
         const char* what() const override { return "RemoteOperationsWrapper local loop break"; }
     };
 
+    class ExecutionFailureException: public winrt::hresult_error {
+        public:
+        ExecutionFailureException(const HRESULT code): winrt::hresult_error(code)
+        {
+        }
+    };
+
+    class UnhandledRemoteException: public winrt::hresult_error {
+        public:
+        UnhandledRemoteException(const HRESULT code): winrt::hresult_error(code)
+        {
+        }
+    };
+
+    class MalformedBytecodeException: public winrt::hresult_error {
+        public:
+        MalformedBytecodeException(const HRESULT code): winrt::hresult_error(code)
+        {
+        }
+    };
+
+    class InstructionLimitExceededException: public winrt::hresult_error {
+        public:
+        InstructionLimitExceededException(const HRESULT code): winrt::hresult_error(code)
+        {
+        }
+    };
+
     class UiaFailure
     {
     public:
@@ -2622,7 +2650,7 @@ namespace UiaOperationAbstraction
         template<class Body>
         void While(UiaBool&&, Body body) = delete;
 
-        void ResolveHrInternal(HRESULT& operationResult);
+        void ResolveInternal(winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus& status, HRESULT& extendedError);
 
     };
 

@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 import "Windows.Foundation.idl";
+import "Windows.UI.UIAutomation.core.idl";
 import "Windows.UI.UIAutomation.idl";
 
 namespace Microsoft.UI.UIAutomation
@@ -184,8 +185,11 @@ namespace Microsoft.UI.UIAutomation
 
     runtimeclass AutomationRemoteOperationResultSet
     {
+        // The following method is deprecated.
+        // Use Status or ExtendedError instead.
         HRESULT OperationStatus{ get; };
-
+        Windows.UI.UIAutomation.Core.AutomationRemoteOperationStatus Status{ get; };
+        HRESULT ExtendedError{ get; };
         Boolean HasResult(AutomationRemoteOperationResponseToken token);
         IInspectable GetResult(AutomationRemoteOperationResponseToken token);
     }
