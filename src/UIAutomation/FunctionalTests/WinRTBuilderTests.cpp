@@ -331,7 +331,14 @@ namespace WinRTBuilderTests
             cacheRequest.AddProperty(op.NewEnum(static_cast<winrt::AutomationPropertyId>(UIA_NamePropertyId)));
             cacheRequest.AddPattern(op.NewEnum(static_cast<winrt::AutomationPatternId>(UIA_TextPatternId)));
 
-            const auto window = remoteCalc.GetParentElement().GetParentElement();
+            auto window = remoteCalc.GetParentElement().GetParentElement();
+            // Newer versions of Calculator have an extra ancestor element (with custom controlType) between the grouping element and the Window element.
+            // So keep walking until we get to the Window element.
+            op.IfBlock(
+                window.GetPropertyValue(op.NewEnum(winrt::AutomationPropertyId::ControlType)).AsControlType().IsEqual(op.NewEnum(winrt::AutomationControlType::Custom)),
+                [&]() { window.Set(window.GetParentElement()); }
+            );
+            
             window.PopulateCache(cacheRequest);
             const auto windowToken = op.RequestResponse(window);
 
@@ -371,7 +378,14 @@ namespace WinRTBuilderTests
             cacheRequest.AddProperty(op.NewEnum(static_cast<winrt::AutomationPropertyId>(UIA_NamePropertyId)));
             cacheRequest.AddPattern(op.NewEnum(static_cast<winrt::AutomationPatternId>(UIA_TextPatternId)));
 
-            const auto window = remoteCalc.GetParentElement().GetParentElement();
+            auto window = remoteCalc.GetParentElement().GetParentElement();
+            // Newer versions of Calculator have an extra ancestor element (with custom controlType) between the grouping element and the Window element.
+            // So keep walking until we get to the Window element.
+            op.IfBlock(
+                window.GetPropertyValue(op.NewEnum(winrt::AutomationPropertyId::ControlType)).AsControlType().IsEqual(op.NewEnum(winrt::AutomationControlType::Custom)),
+                [&]() { window.Set(window.GetParentElement()); }
+            );
+
             window.PopulateCache(cacheRequest);
             const auto windowToken = op.RequestResponse(window);
 
