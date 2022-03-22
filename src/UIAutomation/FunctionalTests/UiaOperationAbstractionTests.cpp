@@ -2565,5 +2565,155 @@ namespace UiaOperationAbstractionTests
         {
             IsOpcodeSupportedTest_BeforeImport(false);
         }
+
+        // Test equality of UiaGuid objects.
+        void UiaGuidEqualityTest(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+            UiaElement element = calc;
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(element);
+
+            // Some UiaGuids from actual local GUID values
+            UiaGuid nameGuid{Name_Property_GUID};
+            UiaGuid controlTypeGuid{ControlType_Property_GUID};
+
+            // Find out if these UiaGuids are equal or not,
+            // They should b different
+            auto areNameAndControlTypeGuidsSame = nameGuid == controlTypeGuid;
+            scope.BindResult(areNameAndControlTypeGuidsSame);
+            auto areNameAndControlTypeGuidsDifferent = nameGuid != controlTypeGuid;
+            scope.BindResult(areNameAndControlTypeGuidsDifferent);
+
+            // Make copies of these UiaGuids
+            // Deliberately initializing with a NULL guid and then copying by assignment, not constructing by reference,
+            // As we do want them to be physically different objects.
+            winrt::guid GUID_NULL{0, 0, 0, {0, 0, 0, 0, 0, 0, 0, 0}};
+            UiaGuid nameGuid_copy{GUID_NULL};
+            nameGuid_copy = nameGuid;
+            scope.BindResult(nameGuid_copy);
+            UiaGuid controlTypeGuid_copy{GUID_NULL};
+            controlTypeGuid_copy = controlTypeGuid;
+            scope.BindResult(controlTypeGuid_copy);
+
+            //Find out if the original and its copy are equal.
+            // They should be.
+            auto areNameGuidAndCopySame = nameGuid == nameGuid_copy;
+            scope.BindResult(areNameGuidAndCopySame);
+            auto areNameGuidAndCopyDifferent = nameGuid != nameGuid_copy;
+            scope.BindResult(areNameGuidAndCopyDifferent);
+
+            // Find out if the copies are different from each other,
+            // They should be.
+            auto areGuidCopiesSame = nameGuid_copy == controlTypeGuid_copy;
+            scope.BindResult(areGuidCopiesSame);
+            auto areGuidCopiesDifferent = nameGuid_copy != controlTypeGuid_copy;
+            scope.BindResult(areGuidCopiesDifferent);
+
+            // Actually execute
+            scope.Resolve();
+
+            // Assert all our remote findings
+            Assert::IsFalse(areNameAndControlTypeGuidsSame);
+            Assert::IsTrue(areNameAndControlTypeGuidsDifferent);
+            Assert::IsTrue(areNameGuidAndCopySame);
+            Assert::IsFalse(areNameGuidAndCopyDifferent);
+            Assert::IsFalse(areGuidCopiesSame);
+            Assert::IsTrue(areGuidCopiesDifferent);
+
+            // Make a new local GUID from one of the generated copies,
+            // And ensure it holds the correct GUID value
+            winrt::guid nameGuid_final = nameGuid_copy;
+            Assert::IsTrue(IsEqualGUID(nameGuid_final, Name_Property_GUID));
+        }
+
+        TEST_METHOD(UiaGuidEquality_Remote)
+        {
+            UiaGuidEqualityTest(true);
+        }
+
+        TEST_METHOD(UiaGuidEquality_Local)
+        {
+            UiaGuidEqualityTest(false);
+        }
+
+        // UiaGuid: test looking up property IDs
+        void UiaGuidLookupPropertyIdTest(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+            UiaElement element = calc;
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(element);
+
+            UiaGuid propGuid{Name_Property_GUID};
+            auto propId = propGuid.LookupPropertyId();
+
+            auto isNamePropertyId = propId == UiaPropertyId(UIA_NamePropertyId);
+            scope.BindResult(isNamePropertyId);
+            auto isControlTypePropertyId = propId == UiaPropertyId(UIA_ControlTypePropertyId);
+            scope.BindResult(isControlTypePropertyId);
+
+            scope.Resolve();
+
+            Assert::IsTrue(isNamePropertyId);
+            Assert::IsFalse(isControlTypePropertyId);
+        }
+
+        TEST_METHOD(UiaGuidLookupPropertyId_Remote)
+        {
+            UiaGuidLookupPropertyIdTest(true);
+        }
+
+        TEST_METHOD(UiaGuidLookupPropertyId_Local)
+        {
+            UiaGuidLookupPropertyIdTest(false);
+        }
+
+        // UiaGuid: test looking up annotation type IDs 
+        void UiaGuidLookupAnnotationTypeIdTest(const bool useRemoteOperations)
+        {
+            auto guard = InitializeUiaOperationAbstraction(useRemoteOperations);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+            UiaElement element = calc;
+
+            auto scope = UiaOperationScope::StartNew();
+            scope.BindInput(element);
+
+            UiaGuid annotationTypeGuid{Annotation_SpellingError_GUID};
+            auto annotationTypeId = annotationTypeGuid.LookupAnnotationType();
+
+            auto isSpellingErrorAnnotationTypeId = annotationTypeId == UiaAnnotationType(AnnotationType_SpellingError);
+            scope.BindResult(isSpellingErrorAnnotationTypeId);
+            auto isCommentAnnotationTypeId = annotationTypeId == UiaAnnotationType(AnnotationType_Comment);
+            scope.BindResult(isCommentAnnotationTypeId);
+
+            scope.Resolve();
+
+            Assert::IsTrue(isSpellingErrorAnnotationTypeId);
+            Assert::IsFalse(isCommentAnnotationTypeId);
+        }
+
+        TEST_METHOD(UiaGuidLookupAnnotationTypeId_Remote)
+        {
+            UiaGuidLookupAnnotationTypeIdTest(true);
+        }
+
+        TEST_METHOD(UiaGuidLookupAnnotationTypeId_Local)
+        {
+            UiaGuidLookupAnnotationTypeIdTest(false);
+        }
     };
 }

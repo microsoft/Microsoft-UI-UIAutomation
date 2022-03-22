@@ -674,6 +674,81 @@ namespace UiaOperationAbstraction
         }
     }
 
+    UiaGuid::UiaGuid(const winrt::guid& value):
+        UiaTypeBase(value)
+    {
+        ToRemote();
+    }
+
+    UiaGuid::UiaGuid(winrt::Microsoft::UI::UIAutomation::AutomationRemoteGuid remoteValue):
+        UiaTypeBase(remoteValue)
+    {
+    }
+
+    UiaGuid::UiaGuid(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject remoteValue):
+        UiaTypeBase(remoteValue.AsGuid())
+    {
+    }
+
+    UiaGuid& UiaGuid::operator=(const UiaGuid& other)
+    {
+        AssignCopyTo<UiaGuid>(this->m_member, other.m_member);
+        return *this;
+    }
+
+    UiaBool UiaGuid::operator==(const UiaGuid& rhs) const
+    {
+        return BinaryOperator<UiaGuid, Equal>(this->m_member, rhs.m_member);
+    }
+
+    UiaBool UiaGuid::operator!=(const UiaGuid& rhs) const
+    {
+        return BinaryOperator<UiaGuid, NotEqual>(this->m_member, rhs.m_member);
+    }
+
+    UiaAnnotationType UiaGuid::LookupAnnotationType()
+    {
+        if (ShouldUseRemoteApi())
+        {
+            ToRemote();
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->LookupAnnotationType();
+            }
+        }
+
+        GUID localValue = std::get<LocalType>(m_member);
+        return UiaLookupId(AutomationIdentifierType_Annotation, &localValue);
+    }
+
+    UiaPropertyId UiaGuid::LookupPropertyId()
+    {
+        if (ShouldUseRemoteApi())
+        {
+            ToRemote();
+            auto remoteValue = std::get_if<RemoteType>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->LookupPropertyId();
+            }
+        }
+
+        GUID localValue = std::get<LocalType>(m_member);
+        return UiaLookupId(AutomationIdentifierType_Property, &localValue);
+    }
+
+    UiaGuid::operator winrt::guid() const
+    {
+        return std::get<winrt::guid>(m_member);
+    }
+
+    void UiaGuid::FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
+    {
+        m_member = winrt::unbox_value<GUID>(result);
+    }
+
+
     namespace impl
     {
         template <>
@@ -1008,6 +1083,17 @@ namespace UiaOperationAbstraction
         }
     }
 
+    void UiaOperationDelegator::ConvertVariantDataToRemote(std::variant<winrt::guid,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteGuid>& localGuidVariant) const
+    {
+        if (m_useRemoteApi && m_remoteOperation)
+        {
+            if (auto localGuid = std::get_if<winrt::guid>(&localGuidVariant))
+            {
+                localGuidVariant = m_remoteOperation.NewGuid(*localGuid);
+            }
+        }
+    }
 
 
     UiaBool::UiaBool(bool value):

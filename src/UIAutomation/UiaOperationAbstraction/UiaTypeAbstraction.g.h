@@ -2154,6 +2154,24 @@
 
         UiaVariant GetMetadataValue(UiaPropertyId propertyId, UiaMetadata metadataId);
 
+        UiaBool IsExtensionSupported(UiaGuid guid);
+
+        template<typename... ArgTypes> void CallExtension(UiaGuid guid, ArgTypes&... args)
+        {
+            if (UiaOperationAbstraction::ShouldUseRemoteApi())
+            {
+                this->ToRemote();
+                guid.ToRemote();
+                auto remoteValue = std::get<winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>(m_member);
+                (args.ToRemote(),...);
+                remoteValue.CallExtension(guid, {static_cast<winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject>(args)...});
+                return;
+            }
+
+            // No local equivalent
+            throw winrt::hresult_not_implemented();
+        }
+
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {
             m_member = result.as<IUIAutomationElement>();
