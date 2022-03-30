@@ -2650,7 +2650,7 @@ namespace UiaOperationAbstraction
         template<class Body>
         void While(UiaBool&&, Body body) = delete;
 
-        void ResolveInternal(winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus& status, HRESULT& extendedError);
+        std::pair<winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus, HRESULT> ResolveInternal();
 
     };
 

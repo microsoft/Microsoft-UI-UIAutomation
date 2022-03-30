@@ -2316,9 +2316,7 @@ namespace UiaOperationAbstraction
 
     void UiaOperationScope::Resolve()
     {
-        auto status = winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::Success;
-        HRESULT extendedError = S_OK;
-        ResolveInternal(status, extendedError);
+                auto [status, extendedError] = ResolveInternal();
         switch(status)
         {
             case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::MalformedBytecode:
@@ -2336,17 +2334,15 @@ namespace UiaOperationAbstraction
 
     [[nodiscard]] HRESULT UiaOperationScope::ResolveHr() noexcept try
     {
-        auto status = winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::Success;
-        HRESULT extendedError = S_OK;
-        ResolveInternal(status, extendedError);
+        auto [status, extendedError] = ResolveInternal();
         return extendedError;
     }
     CATCH_RETURN();
   
-    void UiaOperationScope::ResolveInternal(winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus& status, HRESULT& extendedError)
+    std::pair<winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus, HRESULT> UiaOperationScope::ResolveInternal()
     {
-        status = winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::Success;
-        extendedError = S_OK;
+        auto status = winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::Success;
+        HRESULT extendedError = S_OK;
 
         // Resolve does nothing if we don't own the current context. 
         if (m_ownContext)
@@ -2391,7 +2387,8 @@ namespace UiaOperationAbstraction
             s_scopeContextManager.Get().PopContext();
             m_ownContext = false;
         }
-    }   
+        return {status, extendedError};
+    }
 
     UiaOperationScope UiaOperationScope::StartNew()
     {
