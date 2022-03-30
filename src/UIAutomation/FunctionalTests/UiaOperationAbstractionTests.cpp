@@ -2717,7 +2717,7 @@ namespace UiaOperationAbstractionTests
         }
 
         // Test that hitting the instruction limit in a remote operation causes an InstructionLimitExceededException in resolve.
-        TEST_METHOD(instructionLimitExceeded)
+        TEST_METHOD(ResolveThrowsInstructionLimitExceededException)
         {
             auto guard = InitializeUiaOperationAbstraction(true);
 
@@ -2758,7 +2758,7 @@ namespace UiaOperationAbstractionTests
         }
 
         // Test that  a runtime error within a remote operation causes an UnhandledRemoteException in resolve.
-        TEST_METHOD(unhandledRemoteException)
+        TEST_METHOD(ResolveThrowsUnhandledRemoteException)
         {
             auto guard = InitializeUiaOperationAbstraction(true);
 
@@ -2788,8 +2788,8 @@ namespace UiaOperationAbstractionTests
             });
         }
 
-        // Test that  a execution failure within a remote operation causes an ExecutionFailureException in resolve.
-        TEST_METHOD(executionFailureException)
+        // Test that  an execution failure within a remote operation causes an ExecutionFailureException in resolve.
+        TEST_METHOD(ResolveThrowsExecutionFailureException)
         {
             auto guard = InitializeUiaOperationAbstraction(true);
 
