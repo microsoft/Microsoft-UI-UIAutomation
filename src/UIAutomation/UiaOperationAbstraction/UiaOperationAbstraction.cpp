@@ -2322,15 +2322,15 @@ namespace UiaOperationAbstraction
         switch(status)
         {
             case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::MalformedBytecode:
-            throw MalformedBytecodeException(extendedError);
+                throw MalformedBytecodeException(extendedError);
             case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::InstructionLimitExceeded:
-            throw InstructionLimitExceededException(extendedError);
+                throw InstructionLimitExceededException(extendedError);
             case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::UnhandledException:
-            throw UnhandledRemoteException(extendedError);
+                throw UnhandledRemoteException(extendedError);
             case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::ExecutionFailure:
-            throw ExecutionFailureException(extendedError);
+                throw ExecutionFailureException(extendedError);
             default:
-            THROW_IF_FAILED(extendedError);
+                THROW_IF_FAILED(extendedError);
         }
     }
 
