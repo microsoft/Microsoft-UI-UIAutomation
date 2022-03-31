@@ -2757,6 +2757,38 @@ namespace UiaOperationAbstractionTests
             LogOutput(L"x = ",static_cast<int>(x));
         }
 
+        // Test that creating a remote operation that is too large raises a MalformedByteCodeException
+        TEST_METHOD(ResolveThrowsMalformedBytecodeException)
+        {
+            auto guard = InitializeUiaOperationAbstraction(true);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+
+            for(auto i=0; i<200000; ++i)
+            {
+                UiaBool b{true};
+            }
+
+            Assert::ExpectException<MalformedBytecodeException>([&]()
+            {
+                try
+                {
+                    scope.Resolve();
+                }
+                catch(winrt::hresult_error& e)
+                {
+                    Assert::AreEqual(E_FAIL, static_cast<HRESULT>(e.code()));
+                    throw;
+                }
+            });
+        }
+
         // Test that  a runtime error within a remote operation causes an UnhandledRemoteException in resolve.
         TEST_METHOD(ResolveThrowsUnhandledRemoteException)
         {
