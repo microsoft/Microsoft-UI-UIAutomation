@@ -2316,7 +2316,7 @@ namespace UiaOperationAbstraction
 
     void UiaOperationScope::Resolve()
     {
-                auto [status, extendedError] = ResolveInternal();
+        auto [status, extendedError] = ResolveInternal();
         switch(status)
         {
             case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::MalformedBytecode:
