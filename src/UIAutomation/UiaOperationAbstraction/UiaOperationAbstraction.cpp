@@ -2371,7 +2371,7 @@ namespace UiaOperationAbstraction
 
                 // Fetch bound results on success, but also
                 // instruction limit exceeded, 
-                // As we no certainly some of the remote operation did execute.
+                // As we know certainly some of the remote operation did execute.
                 if (
                     status == winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::Success
                     || status == winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::InstructionLimitExceeded
