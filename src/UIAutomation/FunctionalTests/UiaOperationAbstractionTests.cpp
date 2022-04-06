@@ -414,9 +414,17 @@ namespace UiaOperationAbstractionTests
             cacheRequest.AddProperty(UIA_NamePropertyId);
             cacheRequest.AddPattern(UIA_TextPatternId);
 
+            auto parent = element.GetParentElement();
+            // New versions of Calculator have an extra ancestor element (with custom controlType) between the grouping and the first Window element.
+            // Skip over this if found.
+            scope.If(
+                parent.GetParentElement().GetControlType() == UIA_CustomControlTypeId,
+                [&]() { parent = parent.GetParentElement(); }
+            );
+
             // Get the parent of the parent, since this should be the window element.
-            auto uncachedParent = element.GetParentElement().GetParentElement();
-            auto cachedParent = element.GetParentElement().GetParentElement(cacheRequest);
+            auto uncachedParent = parent.GetParentElement();
+            auto cachedParent = parent.GetParentElement(cacheRequest);
             scope.BindResult(uncachedParent);
             scope.BindResult(cachedParent);
 
@@ -493,7 +501,12 @@ namespace UiaOperationAbstractionTests
                 },
                 [&]() // body
                 {
-                    parentChain.Append(element);
+                    // New versions of Calculator have an extra ancestor element (with custom controlType) between the display and window element.
+                    // Don't include this in the collected ancestors
+                    scope.If(
+                        element.GetControlType() != UIA_CustomControlTypeId,
+                        [&]() { parentChain.Append(element); }
+                    );
                     // The last element we get should be Null here, we are testing wrapper implementation
                     // could make sure the whole operation won't abort due to this.
                     UiaElement parent = element.GetParentElement(cacheRequest);
