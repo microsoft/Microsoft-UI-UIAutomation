@@ -2316,22 +2316,33 @@ namespace UiaOperationAbstraction
 
     void UiaOperationScope::Resolve()
     {
-        HRESULT operationResult = S_OK;
-        ResolveHrInternal(operationResult);
-        THROW_IF_FAILED(operationResult);
+        auto [status, extendedError] = ResolveInternal();
+        switch(status)
+        {
+            case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::MalformedBytecode:
+                throw MalformedBytecodeException(extendedError);
+            case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::InstructionLimitExceeded:
+                throw InstructionLimitExceededException(extendedError);
+            case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::UnhandledException:
+                throw UnhandledRemoteException(extendedError);
+            case winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::ExecutionFailure:
+                throw ExecutionFailureException(extendedError);
+            default:
+                THROW_IF_FAILED(extendedError);
+        }
     }
 
     [[nodiscard]] HRESULT UiaOperationScope::ResolveHr() noexcept try
     {
-        HRESULT operationResult = S_OK;
-        ResolveHrInternal(operationResult);
-        return operationResult;
+        auto [status, extendedError] = ResolveInternal();
+        return extendedError;
     }
     CATCH_RETURN();
   
-    void UiaOperationScope::ResolveHrInternal(HRESULT& operationResult)
+    std::pair<winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus, HRESULT> UiaOperationScope::ResolveInternal()
     {
-        operationResult = S_OK;
+        auto status = winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::Success;
+        HRESULT extendedError = S_OK;
 
         // Resolve does nothing if we don't own the current context. 
         if (m_ownContext)
@@ -2346,9 +2357,25 @@ namespace UiaOperationAbstraction
 
                 auto result = delegator->Execute();
 
-                operationResult = result.OperationStatus();
+                status = result.Status();
+                extendedError = result.ExtendedError();
 
-                if (SUCCEEDED(operationResult))
+                // instructionLimitExceeded status comes with an extendedError of success.
+                // Force it to E_FAIL to stay compatible with the older OperationStatus method.
+                // I.e. on InstructionLimitExceeded, ResolveHr will still return E_FAIL
+                // and resolve will throw InstructionLimitExceededException (which inherits from winrt::hresult_error) with a code of E_FAIL.
+                if(status == winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::InstructionLimitExceeded)
+                {
+                    extendedError = E_FAIL;
+                }
+
+                // Fetch bound results on success, but also
+                // instruction limit exceeded, 
+                // As we know certainly some of the remote operation did execute.
+                if (
+                    status == winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::Success
+                    || status == winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::InstructionLimitExceeded
+                )
                 {
                     for (auto& resolver : remoteOperationResolvers)
                     {
@@ -2360,7 +2387,8 @@ namespace UiaOperationAbstraction
             s_scopeContextManager.Get().PopContext();
             m_ownContext = false;
         }
-    }   
+        return {status, extendedError};
+    }
 
     UiaOperationScope UiaOperationScope::StartNew()
     {

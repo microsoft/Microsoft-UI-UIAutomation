@@ -2728,5 +2728,145 @@ namespace UiaOperationAbstractionTests
         {
             UiaGuidLookupAnnotationTypeIdTest(false);
         }
+
+        // Test that hitting the instruction limit in a remote operation causes an InstructionLimitExceededException in resolve.
+        TEST_METHOD(ResolveThrowsInstructionLimitExceededException)
+        {
+            auto guard = InitializeUiaOperationAbstraction(true);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+
+            UiaInt x{0};
+            UiaBool keepRunning{true};
+
+            scope.While(
+                [&]() { return keepRunning; },
+                [&]() { x += 1; }
+            );
+
+            scope.BindResult(x);
+
+            Assert::ExpectException<InstructionLimitExceededException>([&]()
+            {
+                try
+                {
+                    scope.Resolve();
+                }
+                catch(winrt::hresult_error& e)
+                {
+                    Assert::AreEqual(E_FAIL, static_cast<HRESULT>(e.code()));
+                    throw;
+                }
+            });
+
+            // And we can still access the calculated results so far
+            Assert::AreEqual(static_cast<int>(x) > 0, true);
+            LogOutput(L"x = ",static_cast<int>(x));
+        }
+
+        // Test that creating a remote operation that is too large raises a MalformedByteCodeException
+        TEST_METHOD(ResolveThrowsMalformedBytecodeException)
+        {
+            auto guard = InitializeUiaOperationAbstraction(true);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+
+            for(auto i=0; i<200000; ++i)
+            {
+                UiaBool b{true};
+            }
+
+            Assert::ExpectException<MalformedBytecodeException>([&]()
+            {
+                try
+                {
+                    scope.Resolve();
+                }
+                catch(winrt::hresult_error& e)
+                {
+                    Assert::AreEqual(E_FAIL, static_cast<HRESULT>(e.code()));
+                    throw;
+                }
+            });
+        }
+
+        // Test that  a runtime error within a remote operation causes an UnhandledRemoteException in resolve.
+        TEST_METHOD(ResolveThrowsUnhandledRemoteException)
+        {
+            auto guard = InitializeUiaOperationAbstraction(true);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+
+            UiaArray<UiaInt> a;
+            // Accessing an element of an empty array should cause an E_BOUNDS error
+            auto x = a.GetAt(0);
+
+            Assert::ExpectException<UnhandledRemoteException>([&]()
+            {
+                try
+                {
+                    scope.Resolve();
+                }
+                catch(winrt::hresult_error& e)
+                {
+                    Assert::AreEqual(E_BOUNDS, static_cast<HRESULT>(e.code()));
+                    throw;
+                }
+            });
+        }
+
+        // Test that  an execution failure within a remote operation causes an ExecutionFailureException in resolve.
+        TEST_METHOD(ResolveThrowsExecutionFailureException)
+        {
+            auto guard = InitializeUiaOperationAbstraction(true);
+
+            ModernApp app1(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app1.Activate();
+            auto calc1 = WaitForElementFocus(L"Display is 0");
+
+            ModernApp app2(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app2.Activate();
+            auto calc2 = WaitForElementFocus(L"Display is 0");
+            
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element1 = calc1;
+            UiaElement element2 = calc2;
+            UiaBool sameNames = element1.GetName() == element2.GetName();
+            scope.BindResult(sameNames);
+
+            // As this operation deals with elements from 2 different processes
+            // resolving will cause an execution failure.
+            Assert::ExpectException<ExecutionFailureException>([&]()
+            {
+                try
+                {
+                    scope.Resolve();
+                }
+                catch(winrt::hresult_error& e)
+                {
+                    Assert::AreEqual(E_UNEXPECTED, static_cast<HRESULT>(e.code()));
+                    throw;
+                }
+            });
+        }
     };
 }
