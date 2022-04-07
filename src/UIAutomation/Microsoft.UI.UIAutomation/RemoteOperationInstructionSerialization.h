@@ -33,6 +33,7 @@ private:
     void Write(const UiaPoint& value);
     void Write(const UiaRect& value);
     void Write(const GUID& value);
+    void Write(const uint8_t& value);
 
     // Write the instructions themselves...
     void Write(const bytecode::Nop&);
@@ -116,6 +117,8 @@ private:
     void Write(const bytecode::Stringify&);
     void Write(const bytecode::CallExtension&);
     void Write(const bytecode::IsExtensionSupported&);
+    void Write(const bytecode::IsExtensionTarget&);
+    void Write(const bytecode::NewByteArray&);
 
     void Write(const bytecode::GetterBase&);
 #include "RemoteOperationInstructionSerializerMethods.g.h"

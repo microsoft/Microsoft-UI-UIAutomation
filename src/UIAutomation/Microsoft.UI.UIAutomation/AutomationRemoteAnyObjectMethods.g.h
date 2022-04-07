@@ -36,6 +36,7 @@
         winrt::AutomationRemoteTextPattern AsTextPattern();
         winrt::AutomationRemoteBool IsTextRange();
         winrt::AutomationRemoteTextRange AsTextRange();
+        winrt::AutomationRemoteConnectionBoundObject AsConnectionBoundObject();
         winrt::AutomationRemoteBool IsTogglePattern();
         winrt::AutomationRemoteTogglePattern AsTogglePattern();
         winrt::AutomationRemoteBool IsTransformPattern();

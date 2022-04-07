@@ -68,6 +68,11 @@ void RemoteOperationInstructionSerializer::Write(const GUID& value)
     m_builder.WriteGuid(value);
 }
 
+void RemoteOperationInstructionSerializer::Write(const uint8_t & value)
+{
+    m_builder.WriteByte(value);
+}
+
 void RemoteOperationInstructionSerializer::Serialize(const Instruction& genericInstruction)
 {
     std::visit([&](const auto& instruction)
@@ -507,6 +512,22 @@ void RemoteOperationInstructionSerializer::Write(const bytecode::IsExtensionSupp
     Write(instruction.resultId);
     Write(instruction.targetId);
     Write(instruction.extensionIdId);
+}
+
+void RemoteOperationInstructionSerializer::Write(const bytecode::IsExtensionTarget & instruction)
+{
+    Write(instruction.resultId);
+    Write(instruction.targetId);
+}
+
+void RemoteOperationInstructionSerializer::Write(const bytecode::NewByteArray & instruction)
+{
+    Write(instruction.resultId);
+    Write(static_cast<int>(instruction.initialValue.size()));
+    for (const auto& byteEntry : instruction.initialValue)
+    {
+        Write(byteEntry);
+    }
 }
 
 void RemoteOperationInstructionSerializer::Write(const GetterBase& instruction)

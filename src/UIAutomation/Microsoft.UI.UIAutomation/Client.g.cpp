@@ -3283,6 +3283,11 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return As<AutomationRemoteTextRange>();
     }
 
+    winrt::AutomationRemoteConnectionBoundObject AutomationRemoteAnyObject::AsConnectionBoundObject()
+    {
+        return As<AutomationRemoteConnectionBoundObject>();
+    }
+
     winrt::AutomationRemoteBool AutomationRemoteAnyObject::IsTogglePattern()
     {
         throw hresult_not_implemented();
