@@ -68,7 +68,7 @@ void RemoteOperationInstructionSerializer::Write(const GUID& value)
     m_builder.WriteGuid(value);
 }
 
-void RemoteOperationInstructionSerializer::Write(const uint8_t & value)
+void RemoteOperationInstructionSerializer::Write(const uint8_t& value)
 {
     m_builder.WriteByte(value);
 }
