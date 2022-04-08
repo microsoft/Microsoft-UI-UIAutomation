@@ -564,13 +564,6 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
-    // AutomationRemoteConnectionBoundObject
-
-    AutomationRemoteConnectionBoundObject::AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
-        : base_type(operandId, parent)
-    {
-    }
-
     // AutomationRemoteStringMap
 
     AutomationRemoteStringMap::AutomationRemoteStringMap(bytecode::OperandId operandId, AutomationRemoteOperation& parent) :
@@ -754,6 +747,13 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
             m_operandId,
             GetOperandId<AutomationRemoteCacheRequest>(cacheRequest)
         });
+    }
+
+    // AutomationRemoteConnectionBoundObject
+
+    AutomationRemoteConnectionBoundObject::AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
+    {
     }
 
     // AutomationRemoteAnyObject
