@@ -512,8 +512,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
 
     // AutomationRemoteByteArray
 
-    AutomationRemoteByteArray::AutomationRemoteByteArray(bytecode::OperandId operandId, AutomationRemoteOperation & parent)
-    : base_type(operandId, parent)
+    AutomationRemoteByteArray::AutomationRemoteByteArray(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
     {
     }
 
@@ -528,9 +528,9 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     {
         const auto resultId = m_parent->GetNextId();
         m_parent->InsertInstruction(bytecode::IsExtensionTarget{
-        resultId,
-        m_operandId,
-        });
+            resultId,
+            m_operandId,
+            });
 
         const auto result = Make<AutomationRemoteBool>(resultId);
         return result;
@@ -566,8 +566,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
 
     // AutomationRemoteConnectionBoundObject
 
-    AutomationRemoteConnectionBoundObject::AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation & parent)
-    : base_type(operandId, parent)
+    AutomationRemoteConnectionBoundObject::AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
     {
     }
 
@@ -996,9 +996,10 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     {
         const auto resultId = m_parent->GetNextId();
         m_parent->InsertInstruction(bytecode::IsByteArray{
-        resultId,
-        m_operandId
-        });
+            resultId,
+            m_operandId
+            });
+
         const auto result = Make<AutomationRemoteBool>(resultId);
         return result;
     }

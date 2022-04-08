@@ -514,13 +514,13 @@ void RemoteOperationInstructionSerializer::Write(const bytecode::IsExtensionSupp
     Write(instruction.extensionIdId);
 }
 
-void RemoteOperationInstructionSerializer::Write(const bytecode::IsExtensionTarget & instruction)
+void RemoteOperationInstructionSerializer::Write(const bytecode::IsExtensionTarget& instruction)
 {
     Write(instruction.resultId);
     Write(instruction.targetId);
 }
 
-void RemoteOperationInstructionSerializer::Write(const bytecode::NewByteArray & instruction)
+void RemoteOperationInstructionSerializer::Write(const bytecode::NewByteArray& instruction)
 {
     Write(instruction.resultId);
     Write(static_cast<int>(instruction.initialValue.size()));

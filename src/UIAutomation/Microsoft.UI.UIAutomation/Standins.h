@@ -528,9 +528,9 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     class AutomationRemoteByteArray : public AutomationRemoteByteArrayT<AutomationRemoteByteArray, AutomationRemoteObject>
     {
     public:
-        AutomationRemoteByteArray(bytecode::OperandId operandId, AutomationRemoteOperation & parent);
+        AutomationRemoteByteArray(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
 
-        void Set(const class_type & rhs)
+        void Set(const class_type& rhs)
         {
             AutomationRemoteObject::Set<AutomationRemoteByteArray>(rhs);
         }
@@ -611,9 +611,9 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     class AutomationRemoteConnectionBoundObject : public AutomationRemoteConnectionBoundObjectT<AutomationRemoteConnectionBoundObject, AutomationRemoteExtensionTarget>
     {
     public:
-        AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation & parent);
+        AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
 
-        void Set(const class_type & rhs)
+        void Set(const class_type& rhs)
         {
             AutomationRemoteObject::Set<AutomationRemoteConnectionBoundObject>(rhs);
         }
