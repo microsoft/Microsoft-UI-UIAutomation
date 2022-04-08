@@ -529,8 +529,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         const auto resultId = m_parent->GetNextId();
         m_parent->InsertInstruction(bytecode::IsExtensionTarget{
             resultId,
-            m_operandId,
-            });
+            m_operandId
+        });
 
         const auto result = Make<AutomationRemoteBool>(resultId);
         return result;
@@ -998,7 +998,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         m_parent->InsertInstruction(bytecode::IsByteArray{
             resultId,
             m_operandId
-            });
+        });
 
         const auto result = Make<AutomationRemoteBool>(resultId);
         return result;
