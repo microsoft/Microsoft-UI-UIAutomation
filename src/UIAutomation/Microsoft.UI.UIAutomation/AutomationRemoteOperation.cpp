@@ -152,6 +152,32 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return make<AutomationRemoteAnyObject>(newId, *this);
     }
 
+    // NewEmpty is similar to NewNull except it doesn't insert any instruction, instead NewEmpty serves as a place holder
+    // for any operands that are to be set when the Remote Operation gets executed(an out only parameter without wasting an instruction)
+    // This is particularly used with CallExtension as it takes an arrray of operands and some of them will be
+    // out params and using NullOperand for all of them would waste instructions.
+    winrt::AutomationRemoteAnyObject AutomationRemoteOperation::NewEmpty()
+    {
+        const auto newId = GetNextId();
+
+        return make<AutomationRemoteAnyObject>(newId, *this);
+    }
+
+    winrt::AutomationRemoteByteArray AutomationRemoteOperation::NewByteArray(winrt::array_view<const uint8_t> initialValue)
+    {
+        const auto newId = GetNextId();
+
+        std::vector<uint8_t> byteVector;
+        for (const auto& byteVal : initialValue)
+        {
+            byteVector.emplace_back(byteVal);
+        }
+
+        InsertInstruction(bytecode::NewByteArray{ newId, std::move(byteVector) });
+
+        return make<AutomationRemoteByteArray>(newId, *this);
+    }
+
     bool AutomationRemoteOperation::IsOpcodeSupported(const uint32_t opcode) const
     {
         return m_remoteOperation.IsOpcodeSupported(opcode);
@@ -172,6 +198,15 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         m_remoteOperation.ImportTextRange({ textRangeId.Value }, textRange);
 
         const auto result = make<AutomationRemoteTextRange>(textRangeId, *this);
+        return result;
+    }
+
+    winrt::AutomationRemoteConnectionBoundObject AutomationRemoteOperation::ImportConnectionBoundObject(winrt::AutomationConnectionBoundObject const& connectionBoundObject)
+    {
+        const auto connectionBoundObjectId = GetNextId();
+        m_remoteOperation.ImportConnectionBoundObject({ connectionBoundObjectId.Value }, connectionBoundObject);
+
+        const auto result = make<AutomationRemoteConnectionBoundObject>(connectionBoundObjectId, *this);
         return result;
     }
 

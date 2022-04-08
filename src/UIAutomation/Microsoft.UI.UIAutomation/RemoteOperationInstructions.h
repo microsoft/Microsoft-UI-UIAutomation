@@ -155,6 +155,10 @@ enum class InstructionType
     // Extensibility
     CallExtension = 0x53,
     IsExtensionSupported = 0x54,
+    IsExtensionTarget = 0x55,
+
+    NewByteArray = 0x56,
+    IsByteArray = 0x57,
 
     // UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValues.g.h"
@@ -248,6 +252,9 @@ constexpr std::array c_supportedInstructions =
     InstructionType::GetMetadataValue,
     InstructionType::CallExtension,
     InstructionType::IsExtensionSupported,
+    InstructionType::IsExtensionTarget,
+    InstructionType::NewByteArray,
+    InstructionType::IsByteArray,
 
     // Auto-generated UIA pattern getters and pattern methods
 #include "RemoteOperationInstructionEnumValuesArray.g.h"
@@ -957,6 +964,27 @@ struct IsExtensionSupported
     OperandId extensionIdId;
 };
 
+struct IsExtensionTarget
+{
+    constexpr static InstructionType type = InstructionType::IsExtensionTarget;
+
+    OperandId resultId;
+    OperandId targetId;
+};
+
+struct NewByteArray
+{
+    constexpr static InstructionType type = InstructionType::NewByteArray;
+
+    OperandId resultId;
+    std::vector<uint8_t> initialValue;
+};
+
+struct IsByteArray : GetterBase
+{
+    constexpr static InstructionType type = InstructionType::IsByteArray;
+};
+
 #include "RemoteOperationInstructions.g.h"
 
 using Instruction = std::variant<
@@ -1018,6 +1046,7 @@ using Instruction = std::variant<
     NewNull,
     NewGuid,
     NewCacheRequest,
+    NewByteArray,
 
     // Point and Rect methods
     GetPointProperty,
@@ -1074,12 +1103,14 @@ using Instruction = std::variant<
     IsElement,
     IsGuid,
     IsCacheRequest,
+    IsByteArray,
 
     Stringify,
 
     // Provider Extension methods
     CallExtension,
-    IsExtensionSupported
+    IsExtensionSupported,
+    IsExtensionTarget
 
 #include "RemoteOperationInstructionsVariantParams.g.h"
     >;

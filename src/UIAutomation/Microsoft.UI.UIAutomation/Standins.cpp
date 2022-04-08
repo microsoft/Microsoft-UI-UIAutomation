@@ -510,11 +510,30 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return result;
     }
 
+    // AutomationRemoteByteArray
+
+    AutomationRemoteByteArray::AutomationRemoteByteArray(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
+    {
+    }
+
     // AutomationRemoteExtensionTarget
 
     AutomationRemoteExtensionTarget::AutomationRemoteExtensionTarget(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
         : base_type(operandId, parent)
     {
+    }
+
+    winrt::AutomationRemoteBool AutomationRemoteExtensionTarget::IsExtensionTarget()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::IsExtensionTarget{
+            resultId,
+            m_operandId
+        });
+
+        const auto result = Make<AutomationRemoteBool>(resultId);
+        return result;
     }
 
     void AutomationRemoteExtensionTarget::CallExtension(const winrt::AutomationRemoteGuid& extensionId, winrt::array_view<const winrt::AutomationRemoteObject> operands)
@@ -728,6 +747,13 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
             m_operandId,
             GetOperandId<AutomationRemoteCacheRequest>(cacheRequest)
         });
+    }
+
+    // AutomationRemoteConnectionBoundObject
+
+    AutomationRemoteConnectionBoundObject::AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation& parent)
+        : base_type(operandId, parent)
+    {
     }
 
     // AutomationRemoteAnyObject
@@ -964,5 +990,22 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteCacheRequest AutomationRemoteAnyObject::AsCacheRequest()
     {
         return As<AutomationRemoteCacheRequest>();
+    }
+
+    winrt::AutomationRemoteBool AutomationRemoteAnyObject::IsByteArray()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::IsByteArray{
+            resultId,
+            m_operandId
+        });
+
+        const auto result = Make<AutomationRemoteBool>(resultId);
+        return result;
+    }
+
+    winrt::AutomationRemoteByteArray AutomationRemoteAnyObject::AsByteArray()
+    {
+        return As<AutomationRemoteByteArray>();
     }
 }

@@ -16,7 +16,9 @@
 #include "AutomationRemoteArray.g.h"
 #include "AutomationRemoteStringMap.g.h"
 #include "AutomationRemoteCacheRequest.g.h"
+#include "AutomationRemoteByteArray.g.h"
 #include "AutomationRemoteElement.g.h"
+#include "AutomationRemoteConnectionBoundObject.g.h"
 #include "AutomationRemoteAnyObject.g.h"
 #include "AutomationRemoteExtensionTarget.g.h"
 #include "AutomationRemoteOperation.h"
@@ -523,11 +525,23 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteString Stringify();
     };
 
-     class AutomationRemoteExtensionTarget : public AutomationRemoteExtensionTargetT<AutomationRemoteExtensionTarget, AutomationRemoteObject>
+    class AutomationRemoteByteArray : public AutomationRemoteByteArrayT<AutomationRemoteByteArray, AutomationRemoteObject>
+    {
+    public:
+        AutomationRemoteByteArray(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
+
+        void Set(const class_type& rhs)
+        {
+            AutomationRemoteObject::Set<AutomationRemoteByteArray>(rhs);
+        }
+    };
+
+    class AutomationRemoteExtensionTarget : public AutomationRemoteExtensionTargetT<AutomationRemoteExtensionTarget, AutomationRemoteObject>
     {
     public:
         AutomationRemoteExtensionTarget(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
 
+        winrt::AutomationRemoteBool IsExtensionTarget();
         void CallExtension(const winrt::AutomationRemoteGuid& extensionId, winrt::array_view<const winrt::AutomationRemoteObject> operands);
         winrt::AutomationRemoteBool IsExtensionSupported(const winrt::AutomationRemoteGuid& extensionId);
     };
@@ -594,6 +608,17 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteElement Navigate(NavigateDirection direction);
     };
 
+    class AutomationRemoteConnectionBoundObject : public AutomationRemoteConnectionBoundObjectT<AutomationRemoteConnectionBoundObject, AutomationRemoteExtensionTarget>
+    {
+    public:
+        AutomationRemoteConnectionBoundObject(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
+
+        void Set(const class_type& rhs)
+        {
+            AutomationRemoteObject::Set<AutomationRemoteConnectionBoundObject>(rhs);
+        }
+    };
+
     class AutomationRemoteAnyObject : public AutomationRemoteAnyObjectT<AutomationRemoteAnyObject, AutomationRemoteObject>
     {
     public:
@@ -627,6 +652,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteElement AsElement();
         winrt::AutomationRemoteBool IsCacheRequest();
         winrt::AutomationRemoteCacheRequest AsCacheRequest();
+        winrt::AutomationRemoteBool IsByteArray();
+        winrt::AutomationRemoteByteArray AsByteArray();
 
 #include "AutomationRemoteAnyObjectMethods.g.h"
 
