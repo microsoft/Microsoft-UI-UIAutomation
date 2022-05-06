@@ -2803,7 +2803,7 @@ namespace UiaOperationAbstractionTests
         }
 
         // Test that  a runtime error within a remote operation causes an UnhandledRemoteException in resolve.
-        TEST_METHOD(ResolveThrowsUnhandledRemoteException)
+        TEST_METHOD(ResolveThrowsUnhandledRemoteExceptionForRuntimeError)
         {
             auto guard = InitializeUiaOperationAbstraction(true);
 
@@ -2816,8 +2816,12 @@ namespace UiaOperationAbstractionTests
             UiaElement element = calc;
 
             UiaArray<UiaInt> a;
-            // Accessing an element of an empty array should cause an E_BOUNDS error
+            a.Append(42);
             auto x = a.GetAt(0);
+            // Accessing an out of bounds index of an array should raise E_BOUNDS
+            auto y = a.GetAt(1);
+
+            scope.BindResult(x);
 
             Assert::ExpectException<UnhandledRemoteException>([&]()
             {
@@ -2831,6 +2835,49 @@ namespace UiaOperationAbstractionTests
                     throw;
                 }
             });
+
+            // Verify that we still can access the result of a variable calculated before the exception
+            Assert::AreEqual(static_cast<int>(x), 42);
+        }
+
+        // Test that aborting an operation  causes an UnhandledRemoteException in resolve,
+        // and that calculated results before the abort are still available.
+        TEST_METHOD(ResolveThrowsUnhandledRemoteExceptionOnAboart)
+        {
+            auto guard = InitializeUiaOperationAbstraction(true);
+
+            ModernApp app(L"Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+            app.Activate();
+            auto calc = WaitForElementFocus(L"Display is 0");
+
+            auto scope = UiaOperationScope::StartNew();
+
+            UiaElement element = calc;
+
+            UiaArray<UiaInt> a;
+            a.Append(42);
+            auto x = a.GetAt(0);
+            // Aborting a remote operation should result in an Unhandled exception
+            const HRESULT myError = -1234;
+            scope.AbortOperationWithHresult(myError);
+            
+            scope.BindResult(x);
+
+            Assert::ExpectException<UnhandledRemoteException>([&]()
+            {
+                try
+                {
+                    scope.Resolve();
+                }
+                catch(winrt::hresult_error& e)
+                {
+                    Assert::AreEqual(myError, static_cast<HRESULT>(e.code()));
+                    throw;
+                }
+            });
+
+            // Verify that we still can access the result of a variable calculated before the exception
+            Assert::AreEqual(static_cast<int>(x), 42);
         }
 
         // Test that  an execution failure within a remote operation causes an ExecutionFailureException in resolve.
