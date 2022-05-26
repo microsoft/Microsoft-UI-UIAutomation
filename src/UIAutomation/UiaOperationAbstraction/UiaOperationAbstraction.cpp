@@ -2370,11 +2370,12 @@ namespace UiaOperationAbstraction
                 }
 
                 // Fetch bound results on success, but also
-                // instruction limit exceeded, 
+                // instruction limit exceeded and UnhandledException, 
                 // As we know certainly some of the remote operation did execute.
                 if (
                     status == winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::Success
                     || status == winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::InstructionLimitExceeded
+                    || status == winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationStatus::UnhandledException
                 )
                 {
                     for (auto& resolver : remoteOperationResolvers)
