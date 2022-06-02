@@ -541,9 +541,14 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     public:
         AutomationRemoteExtensionTarget(bytecode::OperandId operandId, AutomationRemoteOperation& parent);
 
-        winrt::AutomationRemoteBool IsExtensionTarget();
+        /* Deprecated */ winrt::AutomationRemoteBool IsExtensionTarget();
         void CallExtension(const winrt::AutomationRemoteGuid& extensionId, winrt::array_view<const winrt::AutomationRemoteObject> operands);
         winrt::AutomationRemoteBool IsExtensionSupported(const winrt::AutomationRemoteGuid& extensionId);
+
+        void Set(const class_type& rhs)
+        {
+            AutomationRemoteObject::Set<AutomationRemoteExtensionTarget>(rhs);
+        }
     };
 
     struct AutomationRemoteStringMap : AutomationRemoteStringMapT<AutomationRemoteStringMap, Microsoft::UI::UIAutomation::implementation::AutomationRemoteObject>
@@ -654,6 +659,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         winrt::AutomationRemoteCacheRequest AsCacheRequest();
         winrt::AutomationRemoteBool IsByteArray();
         winrt::AutomationRemoteByteArray AsByteArray();
+        winrt::AutomationRemoteBool IsExtensionTarget();
+        winrt::AutomationRemoteExtensionTarget AsExtensionTarget();
 
 #include "AutomationRemoteAnyObjectMethods.g.h"
 

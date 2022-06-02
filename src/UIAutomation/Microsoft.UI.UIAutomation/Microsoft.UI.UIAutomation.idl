@@ -144,9 +144,10 @@ namespace Microsoft.UI.UIAutomation
 
     unsealed runtimeclass AutomationRemoteExtensionTarget : AutomationRemoteObject
     {
-        AutomationRemoteBool IsExtensionTarget();
+        /* Deprecated */ AutomationRemoteBool IsExtensionTarget();
         void CallExtension(AutomationRemoteGuid extensionId, AutomationRemoteObject[] operands);
         AutomationRemoteBool IsExtensionSupported(AutomationRemoteGuid extensionId);
+        void Set(AutomationRemoteExtensionTarget rhs);
     }
 
     runtimeclass AutomationRemoteArray : AutomationRemoteObject
@@ -268,6 +269,8 @@ namespace Microsoft.UI.UIAutomation
         AutomationRemoteCacheRequest AsCacheRequest();
         AutomationRemoteBool IsByteArray();
         AutomationRemoteByteArray AsByteArray();
+        AutomationRemoteBool IsExtensionTarget();
+        AutomationRemoteExtensionTarget AsExtensionTarget();
     }
 
     enum AutomationActiveEnd
