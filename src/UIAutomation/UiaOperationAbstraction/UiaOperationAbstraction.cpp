@@ -1045,6 +1045,25 @@ namespace UiaOperationAbstraction
         }
     }
 
+    void UiaOperationDelegator::ConvertVariantDataToRemote(std::variant<winrt::com_ptr<IUnknown>,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteExtensionTarget>& localExtensionTargetVariant) const
+    {
+        if (m_useRemoteApi && m_remoteOperation)
+        {
+            if (auto localExtensionTarget = std::get_if<winrt::com_ptr<IUnknown>>(&localExtensionTargetVariant))
+            {
+                if (*localExtensionTarget)
+                {
+                    localExtensionTargetVariant = m_remoteOperation.ImportConnectionBoundObject(FromAbi<AutomationConnectionBoundObject>(localExtensionTarget->get()));
+                }
+                else
+                {
+                    localExtensionTargetVariant = m_remoteOperation.NewNull().AsExtensionTarget();
+                }
+            }
+        }
+    }
+
     void UiaOperationDelegator::ConvertVariantDataToRemote(std::variant<winrt::com_ptr<IUIAutomationElement>,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>& localElementVariant) const
     {

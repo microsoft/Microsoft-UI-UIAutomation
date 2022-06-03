@@ -806,7 +806,99 @@
         }
     };
 
-    class UiaTextRange: public UiaTypeBase<
+    template<typename LocalType, typename RemoteType> class UiaTypeBaseWithExtensionSupport: public UiaTypeBase<
+        typename LocalType,
+        typename RemoteType>
+    {
+        public:
+        static constexpr VARTYPE c_comVariantType = VT_UNKNOWN;
+        static constexpr auto c_variantMember = &VARIANT::punkVal;
+
+        using UiaTypeBase<typename LocalType, typename RemoteType>::UiaTypeBase;
+
+        UiaBool IsExtensionSupported(UiaGuid guid)
+        {
+            if (UiaOperationAbstraction::ShouldUseRemoteApi())
+            {
+                this->ToRemote();
+                guid.ToRemote();
+                auto remoteValue = std::get<typename RemoteType>(m_member);
+                return remoteValue.IsExtensionSupported(guid);
+            }
+
+            // No local equivalent
+            throw winrt::hresult_not_implemented();
+        } 
+
+        template<typename... ArgTypes> void CallExtension(UiaGuid guid, ArgTypes&... args)
+        {
+            if (UiaOperationAbstraction::ShouldUseRemoteApi())
+            {
+                this->ToRemote();
+                guid.ToRemote();
+                auto remoteValue = std::get<typename RemoteType>(m_member);
+                (args.ToRemote(),...);
+                remoteValue.CallExtension(guid, {static_cast<winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject>(args)...});
+                return;
+            }
+
+            // No local equivalent
+            throw winrt::hresult_not_implemented();
+        }
+    };
+
+    class UiaConnectionBoundObject: public UiaTypeBaseWithExtensionSupport<
+        winrt::com_ptr<IUnknown>,
+        winrt::Microsoft::UI::UIAutomation::AutomationRemoteExtensionTarget>
+    {
+    public:
+        static constexpr VARTYPE c_comVariantType = VT_UNKNOWN;
+        static constexpr auto c_variantMember = &VARIANT::punkVal;
+        static constexpr auto c_anyTest = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::IsExtensionTarget;
+        static constexpr auto c_anyCast = &winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject::AsExtensionTarget;
+
+        UiaConnectionBoundObject(_In_ IUnknown* connectionBoundObject);
+        UiaConnectionBoundObject(winrt::com_ptr<IUnknown> const& connectionBoundObject);
+        UiaConnectionBoundObject(winrt::Microsoft::UI::UIAutomation::AutomationRemoteExtensionTarget const& extentionTarget);
+        explicit UiaConnectionBoundObject(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject const& extensionTarget);
+        UiaConnectionBoundObject(const UiaConnectionBoundObject& other) = default;
+        UiaConnectionBoundObject& operator=(const UiaConnectionBoundObject& other);
+
+        operator winrt::com_ptr<IUnknown>() const;
+        operator wil::com_ptr<IUnknown>() const;
+
+        IUnknown* get() const;
+        IUnknown* operator->() const {return get();}
+        void reset();
+        IUnknown** operator&();
+        operator bool() const {return !!get();}
+        UiaBool operator!() const {return IsNull();}
+        operator UiaBool() const {return !IsNull();}
+
+        template <typename T>
+        void copy_to(T** to) const try
+        {
+            std::get<winrt::com_ptr<IUnknown>>(m_member).as(to);
+        }
+        catch(...)
+        {
+            THROW_HR(static_cast<HRESULT>(winrt::to_hresult()));
+        }
+
+        template <>
+        void copy_to(IUnknown** to) const try
+        {
+            std::get<winrt::com_ptr<IUnknown>>(m_member).copy_to(to);
+        }
+        catch(...)
+        {
+            THROW_HR(static_cast<HRESULT>(winrt::to_hresult()));
+        }
+
+        UiaBool IsNull() const;
+    };
+
+    class UiaTextRange: public UiaTypeBaseWithExtensionSupport<
         winrt::com_ptr<IUIAutomationTextRange>,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextRange>
     {
@@ -2010,7 +2102,7 @@
         }
     };
 
-    class UiaElement: public UiaTypeBase<
+    class UiaElement: public UiaTypeBaseWithExtensionSupport<
         winrt::com_ptr<IUIAutomationElement>,
         winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>
     {
@@ -2153,24 +2245,6 @@
         UiaElement GetPreviousSiblingElement(std::optional<UiaCacheRequest> cacheRequest = std::nullopt);
 
         UiaVariant GetMetadataValue(UiaPropertyId propertyId, UiaMetadata metadataId);
-
-        UiaBool IsExtensionSupported(UiaGuid guid);
-
-        template<typename... ArgTypes> void CallExtension(UiaGuid guid, ArgTypes&... args)
-        {
-            if (UiaOperationAbstraction::ShouldUseRemoteApi())
-            {
-                this->ToRemote();
-                guid.ToRemote();
-                auto remoteValue = std::get<winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>(m_member);
-                (args.ToRemote(),...);
-                remoteValue.CallExtension(guid, {static_cast<winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject>(args)...});
-                return;
-            }
-
-            // No local equivalent
-            throw winrt::hresult_not_implemented();
-        }
 
         void FromRemoteResult(const winrt::Windows::Foundation::IInspectable& result)
         {

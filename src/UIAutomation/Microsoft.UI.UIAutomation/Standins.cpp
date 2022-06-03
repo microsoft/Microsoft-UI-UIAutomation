@@ -694,7 +694,7 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteElement AutomationRemoteElement::GetUpdatedCacheElement(const winrt::AutomationRemoteCacheRequest& cacheRequest)
     {
         auto result = m_parent->NewNull().AsElement();
-        result.Set(*this);
+        result.Set(static_cast<winrt::AutomationRemoteElement>(*this));
         result.PopulateCache(cacheRequest);
         return result;
     }
@@ -1007,5 +1007,22 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
     winrt::AutomationRemoteByteArray AutomationRemoteAnyObject::AsByteArray()
     {
         return As<AutomationRemoteByteArray>();
+    }
+
+    winrt::AutomationRemoteBool AutomationRemoteAnyObject::IsExtensionTarget()
+    {
+        const auto resultId = m_parent->GetNextId();
+        m_parent->InsertInstruction(bytecode::IsExtensionTarget{
+            resultId,
+            m_operandId
+        });
+
+        const auto result = Make<AutomationRemoteBool>(resultId);
+        return result;
+    }
+
+    winrt::AutomationRemoteExtensionTarget AutomationRemoteAnyObject::AsExtensionTarget()
+    {
+        return As<AutomationRemoteExtensionTarget>();
     }
 }
