@@ -436,6 +436,9 @@ namespace UiaOperationAbstraction
             std::shared_ptr<wil::unique_variant>,
             winrt::Microsoft::UI::UIAutomation::AutomationRemoteObject>& localVariantVariant) const;
         void ConvertVariantDataToRemote(std::variant<
+            winrt::com_ptr<IUnknown>,
+            winrt::Microsoft::UI::UIAutomation::AutomationRemoteExtensionTarget>& localExtensionTargetVariant) const;
+        void ConvertVariantDataToRemote(std::variant<
             winrt::com_ptr<IUIAutomationElement>,
             winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>& localElementVariant) const;
         void ConvertVariantDataToRemote(std::variant<

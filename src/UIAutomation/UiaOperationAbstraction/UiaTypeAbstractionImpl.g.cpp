@@ -2008,24 +2008,24 @@
     }
 
     UiaTextRange::UiaTextRange(_In_ IUIAutomationTextRange* object):
-        UiaTypeBase(MakeWinrtComPtr(object))
+        UiaTypeBaseWithExtensionSupport(MakeWinrtComPtr(object))
     {
         ToRemote();
     }
 
     UiaTextRange::UiaTextRange(winrt::com_ptr<IUIAutomationTextRange> const& object):
-        UiaTypeBase(object)
+        UiaTypeBaseWithExtensionSupport(object)
     {
         ToRemote();
     }
 
     UiaTextRange::UiaTextRange(winrt::Microsoft::UI::UIAutomation::AutomationRemoteTextRange const& object):
-        UiaTypeBase(object)
+        UiaTypeBaseWithExtensionSupport(object)
     {
     }
 
     UiaTextRange::UiaTextRange(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject const& object):
-        UiaTypeBase(object.AsTextRange())
+        UiaTypeBaseWithExtensionSupport(object.AsTextRange())
     {
     }
 
@@ -5031,24 +5031,24 @@
     }
 
     UiaElement::UiaElement(_In_ IUIAutomationElement* element):
-        UiaTypeBase(MakeWinrtComPtr(element))
+        UiaTypeBaseWithExtensionSupport(MakeWinrtComPtr(element))
     {
         ToRemote();
     }
 
     UiaElement::UiaElement(winrt::com_ptr<IUIAutomationElement> const& element):
-        UiaTypeBase(element)
+        UiaTypeBaseWithExtensionSupport(element)
     {
         ToRemote();
     }
 
     UiaElement::UiaElement(winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement const& element):
-        UiaTypeBase(element)
+        UiaTypeBaseWithExtensionSupport(element)
     {
     }
 
     UiaElement::UiaElement(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject const& element):
-        UiaTypeBase(element.AsElement())
+        UiaTypeBaseWithExtensionSupport(element.AsElement())
     {
     }
 
@@ -7224,16 +7224,71 @@
         return metadataValue;
     }
 
-    UiaBool UiaElement::IsExtensionSupported(UiaGuid guid)
+    UiaConnectionBoundObject::UiaConnectionBoundObject(_In_ IUnknown* target):
+        UiaTypeBaseWithExtensionSupport(MakeWinrtComPtr(target))
+    {
+        ToRemote();
+    }
+
+    UiaConnectionBoundObject::UiaConnectionBoundObject(winrt::com_ptr<IUnknown> const& target):
+        UiaTypeBaseWithExtensionSupport(target)
+    {
+        ToRemote();
+    }
+
+    UiaConnectionBoundObject::UiaConnectionBoundObject(winrt::Microsoft::UI::UIAutomation::AutomationRemoteExtensionTarget const& target):
+        UiaTypeBaseWithExtensionSupport(target)
+    {
+    }
+
+    UiaConnectionBoundObject::UiaConnectionBoundObject(winrt::Microsoft::UI::UIAutomation::AutomationRemoteAnyObject const& target):
+        UiaTypeBaseWithExtensionSupport(target.AsExtensionTarget())
+    {
+    }
+
+    UiaConnectionBoundObject& UiaConnectionBoundObject::operator=(const UiaConnectionBoundObject& other)
+    {
+        AssignCopyTo<UiaConnectionBoundObject>(m_member, other.m_member);
+        return *this;
+    }
+
+    UiaConnectionBoundObject::operator winrt::com_ptr<IUnknown>() const
+    {
+        return std::get<winrt::com_ptr<IUnknown>>(m_member);
+    }
+
+    UiaConnectionBoundObject::operator wil::com_ptr<IUnknown>() const
+    {
+        return wil::com_ptr<IUnknown>(std::get<winrt::com_ptr<IUnknown>>(m_member).get());
+    }
+
+    IUnknown* UiaConnectionBoundObject::get() const
+    {
+        return std::get<winrt::com_ptr<IUnknown>>(m_member).get();
+    }
+
+    void UiaConnectionBoundObject::reset()
+    {
+        std::get<winrt::com_ptr<IUnknown>>(m_member) = nullptr;
+    }
+
+    IUnknown** UiaConnectionBoundObject::operator&()
+    {
+        reset();
+        return std::get<winrt::com_ptr<IUnknown>>(m_member).put();
+    }
+
+    UiaBool UiaConnectionBoundObject::IsNull() const
     {
         if (UiaOperationAbstraction::ShouldUseRemoteApi())
         {
-            this->ToRemote();
-            guid.ToRemote();
-            auto remoteValue = std::get<winrt::Microsoft::UI::UIAutomation::AutomationRemoteElement>(m_member);
-            return remoteValue.IsExtensionSupported(guid);
+            auto remoteValue = std::get_if<AutomationRemoteExtensionTarget>(&m_member);
+            if (remoteValue)
+            {
+                return remoteValue->IsNull();
+            }
         }
 
-        // No local equivalent
-        throw winrt::hresult_not_implemented();
-    } 
+        return !get();
+    }
+
