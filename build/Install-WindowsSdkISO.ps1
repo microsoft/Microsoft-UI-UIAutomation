@@ -1,6 +1,21 @@
+<#
+.SYNOPSIS
+Downloads and installs the Windows Insider Preview SDK matching a given build number.
+
+.PARAMETER buildNumber
+The Windows build number of the preview SDK to install, e.g. 19613.
+
+.PARAMETER expectedSha256
+Optional SHA-256 hash of the expected ISO. When supplied, the download is rejected unless it
+matches. Supply this whenever a known-good hash is available: it is the only check that
+validates the entire image rather than just the setup binary.
+#>
 [CmdletBinding()]
 param([Parameter(Mandatory=$true, Position=0)]
-      [string]$buildNumber)
+      [string]$buildNumber,
+      [Parameter(Mandatory=$false)]
+      [ValidatePattern('^[0-9A-Fa-f]{64}$')]
+      [string]$expectedSha256)
 
 # Ensure the error action preference is set to the default for PowerShell3, 'Stop'
 $ErrorActionPreference = 'Stop'
@@ -29,7 +44,6 @@ function Download-File
 
     $downloadPath = Join-Path $outDir "$downloadName.download"
     $downloadDest = Join-Path $outDir $downloadName
-    $downloadDestTemp = Join-Path $outDir "$downloadName.tmp"
 
     Write-Host -NoNewline "Downloading $downloadName..."
 
@@ -47,29 +61,21 @@ function Download-File
         {
             Write-Host
             Write-Warning "Failed to fetch updated file from $downloadUrl : $($error[0])"
-            if (!(Test-Path $downloadDest))
+
+            $retries--
+            if ($retries -le 0)
             {
-                if ($retries -gt 0)
-                {
-                    Write-Host "$retries retries left, trying download again"
-                    $retries--
-                    start-sleep -Seconds 10
-                }
-                else
-                {
-                    throw "$downloadName was not found at $downloadDest"
-                }
+                throw "$downloadName could not be downloaded from $downloadUrl"
             }
-            else
-            {
-                Write-Warning "$downloadName may be out of date"
-            }
+
+            Write-Host "$retries retries left, trying download again"
+            Start-Sleep -Seconds 10
         }
     }
 
-    Unblock-File $downloadPath
-
-    $downloadDestTemp = $downloadPath;
+    # NOTE: deliberately no Unblock-File here. The Mark-of-the-Web is left intact rather than
+    # stripped from content that has not yet passed an integrity check. Mount-DiskImage does
+    # not require the file to be unblocked.
 
     # Delete and rename to final dest
     Write-Host "testing $downloadDest"
@@ -79,7 +85,7 @@ function Download-File
         Remove-Item $downloadDest -Force
     }
 
-    Move-Item -Force $downloadDestTemp $downloadDest
+    Move-Item -Force $downloadPath $downloadDest
     Write-Host "Done"
 
     return $downloadDest
@@ -128,9 +134,12 @@ function Dismount-ISO
 {
     param ([string] $isoPath)
 
-    $isoDrive = (Get-DiskImage -ImagePath $isoPath | Get-Volume).DriveLetter
+    # Guard against the image never having been attached: Get-Volume on an unattached image is
+    # a terminating error under $ErrorActionPreference = 'Stop', which would mask whatever
+    # exception sent us into the finally block in the first place.
+    $diskImage = Get-DiskImage -ImagePath $isoPath -ErrorAction SilentlyContinue
 
-    if ($isoDrive)
+    if ($diskImage -and $diskImage.Attached)
     {
         Write-Verbose "$isoPath dismounted"
         Dismount-DiskImage -ImagePath $isoPath | Out-Null
@@ -304,6 +313,30 @@ if ($InstallWindowsSDK)
     }
 
     # TODO Check if zip, exe, iso, etc.
+
+    # Integrity check. The size floor above validates nothing about the content, and TLS alone
+    # is not an integrity guarantee for code that is about to be executed elevated.
+    if ($expectedSha256)
+    {
+        Write-Host -NoNewline "Verifying ISO SHA-256..."
+        $actualSha256 = (Get-FileHash $downloadFile -Algorithm SHA256).Hash
+
+        if ($actualSha256 -ne $expectedSha256)
+        {
+            Write-Host
+            Remove-Item $downloadFile -Force -ErrorAction SilentlyContinue
+            throw "ERROR: ISO integrity check FAILED. Expected '$expectedSha256', got '$actualSha256'. Refusing to mount."
+        }
+
+        Write-Host "OK"
+    }
+    else
+    {
+        Write-Warning "No -expectedSha256 supplied; relying on Authenticode validation of the setup binary."
+    }
+
+    $isoRejected = $false
+
     try
     {
         Write-Host -NoNewline "Mounting ISO $file..."
@@ -312,11 +345,39 @@ if ($InstallWindowsSDK)
 
         $isoDrive = Get-ISODriveLetter $downloadFile
 
-        if (Test-Path $isoDrive)
+        if ($isoDrive -and (Test-Path $isoDrive))
         {
-            Write-Host -NoNewLine "Installing WinSDK..."
-
             $setupPath = Join-Path "$isoDrive" "WinSDKSetup.exe"
+
+            if (!(Test-Path $setupPath))
+            {
+                throw "WinSDKSetup.exe was not found on the mounted image at ${isoDrive}"
+            }
+
+            # Validate the publisher before running this binary as Administrator. This check
+            # holds even if TLS was intercepted or the CDN object was substituted.
+            Write-Host -NoNewline "Validating WinSDKSetup.exe signature..."
+            $signature = Get-AuthenticodeSignature $setupPath
+
+            if ($signature.Status -ne 'Valid')
+            {
+                Write-Host
+                throw "ERROR: WinSDKSetup.exe Authenticode status is '$($signature.Status)'. Refusing to execute."
+            }
+
+            $signerSubject = $signature.SignerCertificate.Subject
+
+            # Match the O= RDN rather than an unanchored substring of the whole subject.
+            if ($signerSubject -notmatch '(^|,\s*)O=Microsoft Corporation(,|$)')
+            {
+                Write-Host
+                throw "ERROR: WinSDKSetup.exe is signed by an unexpected publisher: $signerSubject"
+            }
+
+            Write-Host "OK"
+            Write-Verbose "WinSDKSetup.exe signer: $signerSubject"
+
+            Write-Host -NoNewLine "Installing WinSDK..."
             Start-Process -Wait $setupPath "/features $WindowsSDKOptions /q"
             Write-Host "Done"
         }
@@ -325,11 +386,30 @@ if ($InstallWindowsSDK)
             throw "Could not find mounted ISO at ${isoDrive}"
         }
     }
+    catch
+    {
+        $isoRejected = $true
+        throw
+    }
     finally
     {
-        Write-Host -NoNewline "Dismounting ISO $file..."
-        Dismount-ISO $downloadFile
-        Write-Host "Done"
+        try
+        {
+            Write-Host -NoNewline "Dismounting ISO $file..."
+            Dismount-ISO $downloadFile
+            Write-Host "Done"
+        }
+        catch
+        {
+            Write-Host
+            Write-Warning "Failed to dismount ${file}: $($_.Exception.Message)"
+        }
+
+        # Don't leave an image that failed validation on disk for something else to pick up.
+        if ($isoRejected)
+        {
+            Remove-Item $downloadFile -Force -ErrorAction SilentlyContinue
+        }
     }
 }
 
