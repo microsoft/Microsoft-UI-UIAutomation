@@ -33,6 +33,10 @@ namespace WinRTBuilderTests
 
             auto results = op.Execute();
             AssertSucceeded(results.OperationStatus());
+
+            auto platformResult = results.PlatformResult();
+            Assert::IsTrue(results.Status() == platformResult.Status());
+
             auto name = winrt::unbox_value<winrt::hstring>(results.GetResult(nameToken));
 
             Assert::AreEqual(winrt::hstring(L"Display is 0"), name);

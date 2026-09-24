@@ -36,6 +36,11 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
         return m_result.ExtendedError();
     }
 
+    winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationResult AutomationRemoteOperationResultSet::PlatformResult()
+    {
+        return m_result;
+    }
+
     bool AutomationRemoteOperationResultSet::HasResult(Microsoft::UI::UIAutomation::AutomationRemoteOperationResponseToken const& token)
     {
         return m_result.HasOperand({ token.Value });

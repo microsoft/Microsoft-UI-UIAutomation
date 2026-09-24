@@ -196,6 +196,7 @@ namespace Microsoft.UI.UIAutomation
         HRESULT OperationStatus{ get; };
         Windows.UI.UIAutomation.Core.AutomationRemoteOperationStatus Status{ get; };
         HRESULT ExtendedError{ get; };
+        Windows.UI.UIAutomation.Core.AutomationRemoteOperationResult PlatformResult{ get; };
         Boolean HasResult(AutomationRemoteOperationResponseToken token);
         IInspectable GetResult(AutomationRemoteOperationResponseToken token);
     }

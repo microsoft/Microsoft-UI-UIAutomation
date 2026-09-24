@@ -43,6 +43,8 @@ namespace winrt::Microsoft::UI::UIAutomation::implementation
 
         winrt::hresult ExtendedError();
 
+        winrt::Windows::UI::UIAutomation::Core::AutomationRemoteOperationResult PlatformResult();
+
         bool HasResult(winrt::AutomationRemoteOperationResponseToken const& token);
         winrt::IInspectable GetResult(winrt::AutomationRemoteOperationResponseToken const& token);
 
